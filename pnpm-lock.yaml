@@ -49,7 +49,7 @@ dependencies:
     version: 0.22.8
   drizzle-orm:
     specifier: ^0.31.4
-    version: 0.31.4(@neondatabase/serverless@0.9.5)(@types/react@19.0.0)(react@19.0.0)
+    version: 0.31.4(@neondatabase/serverless@0.9.5)(@types/react@19.0.0)(postgres@3.4.5)(react@19.0.0)
   drizzle-zod:
     specifier: ^0.5.1
     version: 0.5.1(drizzle-orm@0.31.4)(zod@3.24.1)
@@ -65,6 +65,9 @@ dependencies:
   postcss:
     specifier: ^8.4.49
     version: 8.5.1
+  postgres:
+    specifier: ^3.4.5
+    version: 3.4.5
   prettier:
     specifier: ^3.4.2
     version: 3.4.2
@@ -1787,7 +1790,7 @@ packages:
       - supports-color
     dev: false
 
-  /drizzle-orm@0.31.4(@neondatabase/serverless@0.9.5)(@types/react@19.0.0)(react@19.0.0):
+  /drizzle-orm@0.31.4(@neondatabase/serverless@0.9.5)(@types/react@19.0.0)(postgres@3.4.5)(react@19.0.0):
     resolution: {integrity: sha512-VGD9SH9aStF2z4QOTnVlVX/WghV/EnuEzTmsH3fSVp2E4fFgc8jl3viQrS/XUJx1ekW4rVVLJMH42SfGQdjX3Q==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
@@ -1878,6 +1881,7 @@ packages:
     dependencies:
       '@neondatabase/serverless': 0.9.5
       '@types/react': 19.0.0
+      postgres: 3.4.5
       react: 19.0.0
     dev: false
 
@@ -1887,7 +1891,7 @@ packages:
       drizzle-orm: '>=0.23.13'
       zod: '*'
     dependencies:
-      drizzle-orm: 0.31.4(@neondatabase/serverless@0.9.5)(@types/react@19.0.0)(react@19.0.0)
+      drizzle-orm: 0.31.4(@neondatabase/serverless@0.9.5)(@types/react@19.0.0)(postgres@3.4.5)(react@19.0.0)
       zod: 3.24.1
     dev: false
 
@@ -2482,6 +2486,11 @@ packages:
 
   /postgres-range@1.1.4:
     resolution: {integrity: sha512-i/hbxIE9803Alj/6ytL7UHQxRvZkI9O4Sy+J3HGc4F4oo/2eQAjTSNJ0bfxyse3bH0nuVesCk+3IRLaMtG3H6w==}
+    dev: false
+
+  /postgres@3.4.5:
+    resolution: {integrity: sha512-cDWgoah1Gez9rN3H4165peY9qfpEo+SA61oQv65O3cRUE1pOEoJWwddwcqKE8XZYjbblOJlYDlLV4h67HrEVDg==}
+    engines: {node: '>=12'}
     dev: false
 
   /preact-render-to-string@5.2.3(preact@10.11.3):
