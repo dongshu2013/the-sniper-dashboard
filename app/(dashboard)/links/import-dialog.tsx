@@ -12,6 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { importLinks } from './actions';
+import { PlusCircle } from 'lucide-react';
 
 export function ImportLinksDialog() {
   const [open, setOpen] = useState(false);
@@ -33,7 +34,12 @@ export function ImportLinksDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Import Links</Button>
+        <Button size="sm" className="h-8 gap-1">
+          <PlusCircle className="h-3.5 w-3.5" />
+          <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+            Import Links
+          </span>
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
