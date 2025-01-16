@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Home, Link2, LogOut } from 'lucide-react';
+import { Home, Link2, LogOut, MessageCircle, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
@@ -61,6 +61,14 @@ function DesktopNav({ onLogout }: { onLogout: () => void }) {
         <NavItem href="/dashboard/links" label="Telegram Links">
           <Link2 className="h-5 w-5" />
         </NavItem>
+
+        <NavItem href="/dashboard/groups" label="Groups">
+          <MessageCircle className="h-5 w-5" />
+        </NavItem>
+
+        <NavItem href="/dashboard/accounts" label="Accounts">
+          <User className="h-5 w-5" />
+        </NavItem>
       </nav>
       <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
         <Tooltip>
@@ -113,6 +121,14 @@ function MobileNav({ onLogout }: { onLogout: () => void }) {
           <Link href="/dashboard/links" className="flex items-center gap-2">
             <Link2 className="h-5 w-5" />
             <span>Telegram Links</span>
+          </Link>
+          <Link href="/dashboard/groups" className="flex items-center gap-2">
+            <MessageCircle className="h-5 w-5" />
+            <span>Groups</span>
+          </Link>
+          <Link href="/dashboard/accounts" className="flex items-center gap-2">
+            <User className="h-5 w-5" />
+            <span>Accounts</span>
           </Link>
           <button
             onClick={onLogout}
