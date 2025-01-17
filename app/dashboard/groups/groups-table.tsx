@@ -26,6 +26,8 @@ import { updateBlockStatus } from './actions';
 import { GroupTableColumn } from '@/lib/types';
 import { Pagination } from '@/components/ui/pagination';
 import { formatDateTime } from '@/lib/utils';
+import { TruncatedCell } from '@/components/ui/truncated-cell';
+import { ExpandableCell } from '@/components/ui/expandable-cell';
 
 export function GroupsTable({
   chats,
@@ -62,26 +64,25 @@ export function GroupsTable({
   const renderTableCell = (chat: ChatMetadata, column: GroupTableColumn) => {
     switch (column) {
       case 'name':
-        return <TableCell className="font-medium">{chat.name}</TableCell>;
+        return (
+          <TruncatedCell content={chat.name ?? ''} maxWidth="max-w-[200px]" />
+        );
       case 'username':
         return <TableCell>@{chat.username}</TableCell>;
       case 'participants':
         return <TableCell>{chat.participantsCount}</TableCell>;
       case 'entity':
         return (
-          <TableCell>
-            <pre className="max-w-xs truncate">
-              {JSON.stringify(chat.entity, null, 2)}
-            </pre>
-          </TableCell>
+          <TruncatedCell
+            content={JSON.stringify(chat.entity, null, 2)}
+            maxWidth="max-w-[300px]"
+          />
         );
       case 'reports':
         return (
-          <TableCell>
-            <pre className="max-w-xs truncate">
-              {JSON.stringify(chat.qualityReports, null, 2)}
-            </pre>
-          </TableCell>
+          <TruncatedCell
+            content={JSON.stringify(chat.qualityReports, null, 2)}
+          />
         );
       case 'status':
         return (
