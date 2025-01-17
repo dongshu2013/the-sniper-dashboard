@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Table,
   TableBody,
@@ -18,6 +18,7 @@ import {
   CardTitle
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   Select,
@@ -41,6 +42,13 @@ export function LinksTable({
 }) {
   const [selectedLinks, setSelectedLinks] = useState<number[]>([]);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const handlePageChange = (newOffset: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('offset', newOffset.toString());
+    router.push(`/dashboard/links?${params.toString()}`);
+  };
 
   const handleStatusChange = async (status: string) => {
     if (selectedLinks.length === 0) return;
@@ -48,6 +56,9 @@ export function LinksTable({
     setSelectedLinks([]);
     router.refresh();
   };
+
+  const totalPages = Math.ceil(totalLinks / 10);
+  const currentPage = Math.floor(offset / 10) + 1;
 
   return (
     <Card>
@@ -128,10 +139,28 @@ export function LinksTable({
           </TableBody>
         </Table>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="flex justify-between">
         <div className="text-sm text-muted-foreground">
           Showing {offset + 1}-{Math.min(offset + 10, totalLinks)} of{' '}
           {totalLinks} links
+        </div>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handlePageChange(offset - 10)}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handlePageChange(offset + 10)}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </Button>
         </div>
       </CardFooter>
     </Card>
