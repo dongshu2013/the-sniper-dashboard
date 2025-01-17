@@ -5,15 +5,15 @@ import postgres from 'postgres';
 import {
   pgTable,
   text,
-  numeric,
   integer,
   timestamp,
   pgEnum,
   serial,
-  varchar
+  varchar,
+  jsonb,
+  boolean
 } from 'drizzle-orm/pg-core';
-import { count, eq, ilike, inArray } from 'drizzle-orm';
-import { createInsertSchema } from 'drizzle-zod';
+import { count, eq, ilike, inArray, or, and } from 'drizzle-orm';
 import { z } from 'zod';
 import { TgLinkStatus } from './types';
 
@@ -21,59 +21,6 @@ const client = postgres(process.env.POSTGRES_URL!);
 export const db = drizzle(client);
 
 export const statusEnum = pgEnum('status', ['active', 'inactive', 'archived']);
-
-export const products = pgTable('products', {
-  id: serial('id').primaryKey(),
-  imageUrl: text('image_url').notNull(),
-  name: text('name').notNull(),
-  status: statusEnum('status').notNull(),
-  price: numeric('price', { precision: 10, scale: 2 }).notNull(),
-  stock: integer('stock').notNull(),
-  availableAt: timestamp('available_at').notNull()
-});
-
-export type SelectProduct = typeof products.$inferSelect;
-export const insertProductSchema = createInsertSchema(products);
-
-export async function getProducts(
-  search: string,
-  offset: number
-): Promise<{
-  products: SelectProduct[];
-  newOffset: number | null;
-  totalProducts: number;
-}> {
-  // Always search the full table, not per page
-  if (search) {
-    return {
-      products: await db
-        .select()
-        .from(products)
-        .where(ilike(products.name, `%${search}%`))
-        .limit(1000),
-      newOffset: null,
-      totalProducts: 0
-    };
-  }
-
-  if (offset === null) {
-    return { products: [], newOffset: null, totalProducts: 0 };
-  }
-
-  let totalProducts = await db.select({ count: count() }).from(products);
-  let moreProducts = await db.select().from(products).limit(5).offset(offset);
-  let newOffset = moreProducts.length >= 5 ? offset + 5 : null;
-
-  return {
-    products: moreProducts,
-    newOffset,
-    totalProducts: totalProducts[0].count
-  };
-}
-
-export async function deleteProductById(id: number) {
-  await db.delete(products).where(eq(products.id, id));
-}
 
 export const tgLinkStatusEnum = pgEnum(
   'tg_link_status',
@@ -117,8 +64,6 @@ export async function getTgLinks(
     conditions.push(inArray(tgLinks.status, statuses));
   }
 
-  const whereClause = conditions.length > 0 ? { where: conditions[0] } : {};
-
   let totalLinks = await db
     .select({ count: count() })
     .from(tgLinks)
@@ -159,4 +104,74 @@ export async function importTgLinks(
     .insert(tgLinks)
     .values(values)
     .onConflictDoNothing({ target: tgLinks.tgLink });
+}
+
+export const chatMetadata = pgTable('chat_metadata', {
+  id: serial('id').primaryKey(),
+  chatId: varchar('chat_id', { length: 255 }).unique().notNull(),
+  name: varchar('name', { length: 255 }).default(''),
+  about: text('about').default(''),
+  username: varchar('username', { length: 255 }).default(''),
+  participantsCount: integer('participants_count').default(0),
+  entity: jsonb('entity'),
+  qualityReports: jsonb('quality_reports').default('[]'),
+  isBlocked: boolean('is_blocked').default(false),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+});
+
+export type ChatMetadata = typeof chatMetadata.$inferSelect;
+
+export async function getChatMetadata(
+  search: string,
+  offset: number,
+  isBlocked?: boolean,
+  pageSize: number = 20
+): Promise<{
+  chats: ChatMetadata[];
+  totalChats: number;
+}> {
+  const conditions = [];
+
+  if (search) {
+    conditions.push(
+      or(
+        ilike(chatMetadata.name, `%${search}%`),
+        ilike(chatMetadata.username, `%${search}%`)
+      )
+    );
+  }
+
+  if (isBlocked !== undefined) {
+    conditions.push(eq(chatMetadata.isBlocked, isBlocked));
+  }
+
+  const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
+  const totalChats = await db
+    .select({ count: count() })
+    .from(chatMetadata)
+    .where(whereClause);
+
+  const chats = await db
+    .select()
+    .from(chatMetadata)
+    .where(whereClause)
+    .limit(pageSize)
+    .offset(offset);
+
+  return {
+    chats,
+    totalChats: totalChats[0].count
+  };
+}
+
+export async function updateChatBlockStatus(ids: number[], isBlocked: boolean) {
+  await db
+    .update(chatMetadata)
+    .set({
+      isBlocked,
+      updatedAt: new Date()
+    })
+    .where(inArray(chatMetadata.id, ids));
 }

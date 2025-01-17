@@ -1,10 +1,9 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { getTgLinks } from '@/lib/db';
 import { LinksTable } from './links-table';
 import { ImportLinksDialog } from './import-dialog';
-import { TgLinkStatus, TAB_COLUMNS } from '@/lib/types';
-import { TabWrapper } from './tab-wrapper';
-import { redirect } from 'next/navigation';
+import { TgLinkStatus, LINK_TAB_COLUMNS } from '@/lib/types';
+import { TabWrapper } from '@/components/shared/tab-wrapper';
 
 export default async function LinksPage(props: {
   searchParams: Promise<{
@@ -39,7 +38,7 @@ export default async function LinksPage(props: {
   );
 
   return (
-    <TabWrapper>
+    <TabWrapper basePath="/dashboard/links" defaultTab="todo">
       <div className="flex items-center">
         <TabsList>
           <TabsTrigger value="todo">TODO</TabsTrigger>
@@ -58,7 +57,7 @@ export default async function LinksPage(props: {
           pageSize={pageSize}
           showCheckboxes={true}
           showStatus={false}
-          columns={TAB_COLUMNS.todo}
+          columns={LINK_TAB_COLUMNS.todo}
         />
       </TabsContent>
       <TabsContent value="queued" className="mt-4">
@@ -69,7 +68,7 @@ export default async function LinksPage(props: {
           pageSize={pageSize}
           showCheckboxes={false}
           showStatus={false}
-          columns={TAB_COLUMNS.queued}
+          columns={LINK_TAB_COLUMNS.queued}
         />
       </TabsContent>
       <TabsContent value="processed" className="mt-4">
@@ -80,7 +79,7 @@ export default async function LinksPage(props: {
           pageSize={pageSize}
           showCheckboxes={false}
           showStatus={true}
-          columns={TAB_COLUMNS.processed}
+          columns={LINK_TAB_COLUMNS.processed}
         />
       </TabsContent>
     </TabWrapper>

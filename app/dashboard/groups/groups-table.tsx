@@ -21,97 +21,81 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { TgLink } from '@/lib/db';
-import { updateLinkStatus } from './actions';
-import { TgLinkStatus, LinkTableColumn, LINK_TAB_COLUMNS } from '@/lib/types';
+import { ChatMetadata } from '@/lib/db';
+import { updateBlockStatus } from './actions';
+import { GroupTableColumn } from '@/lib/types';
 import { Pagination } from '@/components/ui/pagination';
 import { formatDateTime } from '@/lib/utils';
 
-export function LinksTable({
-  links,
+export function GroupsTable({
+  chats,
   offset,
-  totalLinks,
+  totalChats,
   pageSize = 20,
   showCheckboxes = true,
-  showStatus = false,
   columns
 }: {
-  links: TgLink[];
+  chats: ChatMetadata[];
   offset: number;
-  totalLinks: number;
+  totalChats: number;
   pageSize?: number;
   showCheckboxes?: boolean;
-  showStatus?: boolean;
-  columns: LinkTableColumn[];
+  columns: GroupTableColumn[];
 }) {
-  const [selectedLinks, setSelectedLinks] = useState<number[]>([]);
+  const [selectedChats, setSelectedChats] = useState<number[]>([]);
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const handleStatusChange = async (status: string) => {
-    if (selectedLinks.length === 0) return;
-    await updateLinkStatus(selectedLinks, status);
-    setSelectedLinks([]);
+  const handleBlockStatusChange = async (isBlocked: boolean) => {
+    if (selectedChats.length === 0) return;
+    await updateBlockStatus(selectedChats, isBlocked);
+    setSelectedChats([]);
     router.refresh();
   };
 
   const handlePageChange = (newOffset: number) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set('offset', newOffset.toString());
-    router.push(`/dashboard/links?${params.toString()}`);
+    router.push(`/dashboard/groups?${params.toString()}`);
   };
 
-  const handlePageSizeChange = (newPageSize: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('pageSize', newPageSize.toString());
-    params.set('offset', '0'); // Reset to first page
-    router.push(`/dashboard/links?${params.toString()}`);
-  };
-
-  const totalPages = Math.ceil(totalLinks / pageSize);
-  const currentPage = Math.floor(offset / pageSize) + 1;
-
-  const renderTableCell = (link: TgLink, column: LinkTableColumn) => {
+  const renderTableCell = (chat: ChatMetadata, column: GroupTableColumn) => {
     switch (column) {
-      case 'link':
+      case 'name':
+        return <TableCell className="font-medium">{chat.name}</TableCell>;
+      case 'username':
+        return <TableCell>@{chat.username}</TableCell>;
+      case 'participants':
+        return <TableCell>{chat.participantsCount}</TableCell>;
+      case 'entity':
         return (
-          <TableCell className="font-medium">
-            <a
-              href={link.tgLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 hover:text-blue-700 hover:underline"
-            >
-              {link.tgLink}
-            </a>
+          <TableCell>
+            <pre className="max-w-xs truncate">
+              {JSON.stringify(chat.entity, null, 2)}
+            </pre>
           </TableCell>
         );
-      case 'chatName':
+      case 'reports':
         return (
-          <TableCell className="font-medium">
-            <a
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-              }}
-              className="text-blue-500 hover:text-blue-700 hover:underline cursor-pointer"
-            >
-              {link.chatName}
-            </a>
+          <TableCell>
+            <pre className="max-w-xs truncate">
+              {JSON.stringify(chat.qualityReports, null, 2)}
+            </pre>
           </TableCell>
         );
       case 'status':
         return (
           <TableCell>
-            <Badge variant="outline" className="capitalize">
-              {link.status}
+            <Badge
+              variant={chat.isBlocked ? 'destructive' : 'outline'}
+              className="capitalize"
+            >
+              {chat.isBlocked ? 'Blocked' : 'Active'}
             </Badge>
           </TableCell>
         );
       case 'createdAt':
-        return <TableCell>{formatDateTime(link.createdAt)}</TableCell>;
-      case 'processedAt':
-        return <TableCell>{formatDateTime(link.processedAt)}</TableCell>;
+        return <TableCell>{formatDateTime(chat.createdAt)}</TableCell>;
       default:
         return null;
     }
@@ -120,18 +104,18 @@ export function LinksTable({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Telegram Links</CardTitle>
-        {showCheckboxes && selectedLinks.length > 0 && (
+        <CardTitle>Telegram Groups</CardTitle>
+        {showCheckboxes && selectedChats.length > 0 && (
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">
-              {selectedLinks.length} selected
+              {selectedChats.length} selected
             </span>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => handleStatusChange(TgLinkStatus.PROCESSED)}
+              onClick={() => handleBlockStatusChange(true)}
             >
-              Mark as Processed
+              Block Selected
             </Button>
           </div>
         )}
@@ -143,10 +127,10 @@ export function LinksTable({
               {showCheckboxes && (
                 <TableHead className="w-[50px]">
                   <Checkbox
-                    checked={selectedLinks.length === links.length}
+                    checked={selectedChats.length === chats.length}
                     onCheckedChange={(checked) => {
-                      setSelectedLinks(
-                        checked ? links.map((link) => link.id) : []
+                      setSelectedChats(
+                        checked ? chats.map((chat) => chat.id) : []
                       );
                     }}
                   />
@@ -160,25 +144,25 @@ export function LinksTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {links.map((link) => (
-              <TableRow key={link.id}>
+            {chats.map((chat) => (
+              <TableRow key={chat.id}>
                 {showCheckboxes && (
                   <TableCell>
                     <Checkbox
-                      checked={selectedLinks.includes(link.id)}
+                      checked={selectedChats.includes(chat.id)}
                       onCheckedChange={(checked) => {
-                        setSelectedLinks(
+                        setSelectedChats(
                           checked
-                            ? [...selectedLinks, link.id]
-                            : selectedLinks.filter((id) => id !== link.id)
+                            ? [...selectedChats, chat.id]
+                            : selectedChats.filter((id) => id !== chat.id)
                         );
                       }}
                     />
                   </TableCell>
                 )}
                 {columns.map((column) => (
-                  <React.Fragment key={`${link.id}-${column}`}>
-                    {renderTableCell(link, column)}
+                  <React.Fragment key={`${chat.id}-${column}`}>
+                    {renderTableCell(chat, column)}
                   </React.Fragment>
                 ))}
               </TableRow>
@@ -188,18 +172,23 @@ export function LinksTable({
       </CardContent>
       <CardFooter className="flex justify-between">
         <div className="text-sm text-muted-foreground">
-          Showing {offset + 1}-{Math.min(offset + pageSize, totalLinks)} of{' '}
-          {totalLinks} links
+          Showing {offset + 1}-{Math.min(offset + pageSize, totalChats)} of{' '}
+          {totalChats} groups
         </div>
         <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
+          currentPage={Math.floor(offset / pageSize) + 1}
+          totalPages={Math.ceil(totalChats / pageSize)}
           pageSize={pageSize}
           onPageChange={(page) => {
             const newOffset = (page - 1) * pageSize;
             handlePageChange(newOffset);
           }}
-          onPageSizeChange={handlePageSizeChange}
+          onPageSizeChange={(newPageSize) => {
+            const params = new URLSearchParams(searchParams.toString());
+            params.set('pageSize', newPageSize.toString());
+            params.set('offset', '0');
+            router.push(`/dashboard/groups?${params.toString()}`);
+          }}
         />
       </CardFooter>
     </Card>
