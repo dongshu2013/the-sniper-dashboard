@@ -58,6 +58,7 @@ export default async function LinksPage(props: {
           offset={offset}
           totalLinks={totalLinks}
           showCheckboxes={true}
+          showStatus={false}
         />
       </TabsContent>
       <TabsContent value="queued" className="mt-4">
@@ -66,6 +67,7 @@ export default async function LinksPage(props: {
           offset={offset}
           totalLinks={totalLinks}
           showCheckboxes={false}
+          showStatus={false}
         />
       </TabsContent>
       <TabsContent value="processed" className="mt-4">
@@ -74,6 +76,7 @@ export default async function LinksPage(props: {
           offset={offset}
           totalLinks={totalLinks}
           showCheckboxes={false}
+          showStatus={true}
         />
       </TabsContent>
     </TabWrapper>

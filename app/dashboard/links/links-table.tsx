@@ -35,12 +35,14 @@ export function LinksTable({
   links,
   offset,
   totalLinks,
-  showCheckboxes = true
+  showCheckboxes = true,
+  showStatus = false
 }: {
   links: TgLink[];
   offset: number;
   totalLinks: number;
   showCheckboxes?: boolean;
+  showStatus?: boolean;
 }) {
   const [selectedLinks, setSelectedLinks] = useState<number[]>([]);
   const router = useRouter();
@@ -111,7 +113,7 @@ export function LinksTable({
               )}
               <TableHead>Link</TableHead>
               <TableHead>Chat Name</TableHead>
-              <TableHead>Status</TableHead>
+              {showStatus && <TableHead>Status</TableHead>}
               <TableHead>Processed At</TableHead>
             </TableRow>
           </TableHeader>
@@ -134,11 +136,13 @@ export function LinksTable({
                 )}
                 <TableCell className="font-medium">{link.tgLink}</TableCell>
                 <TableCell className="font-medium">{link.chatName}</TableCell>
-                <TableCell>
-                  <Badge variant="outline" className="capitalize">
-                    {link.status}
-                  </Badge>
-                </TableCell>
+                {showStatus && (
+                  <TableCell>
+                    <Badge variant="outline" className="capitalize">
+                      {link.status}
+                    </Badge>
+                  </TableCell>
+                )}
                 <TableCell>{link.processedAt?.toLocaleDateString()}</TableCell>
               </TableRow>
             ))}
