@@ -1,5 +1,6 @@
 'use client';
 
+import * as React from 'react';
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
@@ -24,6 +25,7 @@ import { TgLink } from '@/lib/db';
 import { updateLinkStatus } from './actions';
 import { TgLinkStatus, TableColumn, TAB_COLUMNS } from '@/lib/types';
 import { Pagination } from '@/components/ui/pagination';
+import { formatDateTime } from '@/lib/utils';
 
 export function LinksTable({
   links,
@@ -107,9 +109,9 @@ export function LinksTable({
           </TableCell>
         );
       case 'createdAt':
-        return <TableCell>{link.createdAt?.toLocaleDateString()}</TableCell>;
+        return <TableCell>{formatDateTime(link.createdAt)}</TableCell>;
       case 'processedAt':
-        return <TableCell>{link.processedAt?.toLocaleDateString()}</TableCell>;
+        return <TableCell>{formatDateTime(link.processedAt)}</TableCell>;
       default:
         return null;
     }
@@ -174,7 +176,11 @@ export function LinksTable({
                     />
                   </TableCell>
                 )}
-                {columns.map((column) => renderTableCell(link, column))}
+                {columns.map((column) => (
+                  <React.Fragment key={`${link.id}-${column}`}>
+                    {renderTableCell(link, column)}
+                  </React.Fragment>
+                ))}
               </TableRow>
             ))}
           </TableBody>
