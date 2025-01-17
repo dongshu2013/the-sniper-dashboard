@@ -53,13 +53,28 @@ export default async function LinksPage(props: {
         </div>
       </div>
       <TabsContent value="processing" className="mt-4">
-        <LinksTable links={links} offset={offset} totalLinks={totalLinks} />
+        <LinksTable
+          links={links}
+          offset={offset}
+          totalLinks={totalLinks}
+          showCheckboxes={true}
+        />
       </TabsContent>
       <TabsContent value="queued" className="mt-4">
-        <LinksTable links={links} offset={offset} totalLinks={totalLinks} />
+        <LinksTable
+          links={links}
+          offset={offset}
+          totalLinks={totalLinks}
+          showCheckboxes={false}
+        />
       </TabsContent>
       <TabsContent value="processed" className="mt-4">
-        <LinksTable links={links} offset={offset} totalLinks={totalLinks} />
+        <LinksTable
+          links={links}
+          offset={offset}
+          totalLinks={totalLinks}
+          showCheckboxes={false}
+        />
       </TabsContent>
     </TabWrapper>
   );

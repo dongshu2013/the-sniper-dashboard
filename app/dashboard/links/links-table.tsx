@@ -34,11 +34,13 @@ import { TgLinkStatus } from '@/lib/types';
 export function LinksTable({
   links,
   offset,
-  totalLinks
+  totalLinks,
+  showCheckboxes = true
 }: {
   links: TgLink[];
   offset: number;
   totalLinks: number;
+  showCheckboxes?: boolean;
 }) {
   const [selectedLinks, setSelectedLinks] = useState<number[]>([]);
   const router = useRouter();
@@ -64,7 +66,7 @@ export function LinksTable({
     <Card>
       <CardHeader>
         <CardTitle>Telegram Links</CardTitle>
-        {selectedLinks.length > 0 && (
+        {showCheckboxes && selectedLinks.length > 0 && (
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">
               {selectedLinks.length} selected
@@ -95,16 +97,18 @@ export function LinksTable({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[50px]">
-                <Checkbox
-                  checked={selectedLinks.length === links.length}
-                  onCheckedChange={(checked) => {
-                    setSelectedLinks(
-                      checked ? links.map((link) => link.id) : []
-                    );
-                  }}
-                />
-              </TableHead>
+              {showCheckboxes && (
+                <TableHead className="w-[50px]">
+                  <Checkbox
+                    checked={selectedLinks.length === links.length}
+                    onCheckedChange={(checked) => {
+                      setSelectedLinks(
+                        checked ? links.map((link) => link.id) : []
+                      );
+                    }}
+                  />
+                </TableHead>
+              )}
               <TableHead>Link</TableHead>
               <TableHead>Chat Name</TableHead>
               <TableHead>Status</TableHead>
@@ -114,18 +118,20 @@ export function LinksTable({
           <TableBody>
             {links.map((link) => (
               <TableRow key={link.id}>
-                <TableCell>
-                  <Checkbox
-                    checked={selectedLinks.includes(link.id)}
-                    onCheckedChange={(checked) => {
-                      setSelectedLinks(
-                        checked
-                          ? [...selectedLinks, link.id]
-                          : selectedLinks.filter((id) => id !== link.id)
-                      );
-                    }}
-                  />
-                </TableCell>
+                {showCheckboxes && (
+                  <TableCell>
+                    <Checkbox
+                      checked={selectedLinks.includes(link.id)}
+                      onCheckedChange={(checked) => {
+                        setSelectedLinks(
+                          checked
+                            ? [...selectedLinks, link.id]
+                            : selectedLinks.filter((id) => id !== link.id)
+                        );
+                      }}
+                    />
+                  </TableCell>
+                )}
                 <TableCell className="font-medium">{link.tgLink}</TableCell>
                 <TableCell className="font-medium">{link.chatName}</TableCell>
                 <TableCell>
