@@ -3,6 +3,7 @@ import { getChatMetadata } from '@/lib/db';
 import { GroupsTable } from './groups-table';
 import { GROUP_TAB_COLUMNS } from '@/lib/types';
 import { TabWrapper } from '@/components/shared/tab-wrapper';
+import { Search } from './search';
 
 export default async function GroupsPage(props: {
   searchParams: Promise<{
@@ -27,11 +28,12 @@ export default async function GroupsPage(props: {
 
   return (
     <TabWrapper basePath="/dashboard/groups" defaultTab="active">
-      <div className="flex items-center">
+      <div className="flex items-center justify-between">
         <TabsList>
           <TabsTrigger value="active">Active</TabsTrigger>
           <TabsTrigger value="blocked">Blocked</TabsTrigger>
         </TabsList>
+        <Search />
       </div>
       <TabsContent value="active" className="mt-4">
         <GroupsTable
