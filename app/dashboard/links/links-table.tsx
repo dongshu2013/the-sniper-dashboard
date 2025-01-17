@@ -144,7 +144,17 @@ export function LinksTable({
                     {link.tgLink}
                   </a>
                 </TableCell>
-                <TableCell className="font-medium">{link.chatName}</TableCell>
+                <TableCell className="font-medium">
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                    }}
+                    className="text-blue-500 hover:text-blue-700 hover:underline cursor-pointer"
+                  >
+                    {link.chatName}
+                  </a>
+                </TableCell>
                 {showStatus && (
                   <TableCell>
                     <Badge variant="outline" className="capitalize">
