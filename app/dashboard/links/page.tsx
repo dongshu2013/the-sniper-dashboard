@@ -1,14 +1,12 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
 import { getTgLinks } from '@/lib/db';
 import { LinksTable } from './links-table';
 import { ImportLinksDialog } from './import-dialog';
 
-export default async function LinksPage({
-  searchParams
-}: {
-  searchParams: { q: string; offset: string };
+export default async function LinksPage(props: {
+  searchParams: Promise<{ q: string; offset: string }>;
 }) {
+  const searchParams = await props.searchParams;
   const search = searchParams.q ?? '';
   const offset = searchParams.offset ?? 0;
   const { links, newOffset, totalLinks } = await getTgLinks(
