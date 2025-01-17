@@ -99,31 +99,36 @@ export const importLinkSchema = z.object({
 
 export async function getTgLinks(
   search: string,
-  offset: number
+  offset: number,
+  statuses?: string[]
 ): Promise<{
   links: TgLink[];
   newOffset: number | null;
   totalLinks: number;
 }> {
+  const baseQuery = db.select().from(tgLinks);
+  const conditions = [];
+
   if (search) {
-    return {
-      links: await db
-        .select()
-        .from(tgLinks)
-        .where(ilike(tgLinks.tgLink, `%${search}%`))
-        .limit(1000),
-      newOffset: null,
-      totalLinks: 0
-    };
+    conditions.push(ilike(tgLinks.tgLink, `%${search}%`));
   }
 
-  let totalLinks = await db.select({ count: count() }).from(tgLinks);
-  let moreLinks = await db.select().from(tgLinks).limit(10).offset(offset);
-  let newOffset = moreLinks.length >= 10 ? offset + 10 : null;
+  if (statuses && statuses.length > 0) {
+    conditions.push(inArray(tgLinks.status, statuses));
+  }
+
+  const whereClause = conditions.length > 0 ? { where: conditions[0] } : {};
+
+  let totalLinks = await db
+    .select({ count: count() })
+    .from(tgLinks)
+    .where(conditions[0]);
+
+  let moreLinks = await baseQuery.where(conditions[0]).limit(10).offset(offset);
 
   return {
     links: moreLinks,
-    newOffset,
+    newOffset: moreLinks.length >= 10 ? offset + 10 : null,
     totalLinks: totalLinks[0].count
   };
 }
