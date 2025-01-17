@@ -20,13 +20,6 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
 import { TgLink } from '@/lib/db';
 import { updateLinkStatus } from './actions';
 import { TgLinkStatus } from '@/lib/types';
@@ -73,25 +66,13 @@ export function LinksTable({
             <span className="text-sm text-muted-foreground">
               {selectedLinks.length} selected
             </span>
-            <Select onValueChange={handleStatusChange}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Update status..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={TgLinkStatus.PENDING_PRE_PROCESSING}>
-                  Mark as Pending
-                </SelectItem>
-                <SelectItem value={TgLinkStatus.PROCESSED}>
-                  Mark as Processed
-                </SelectItem>
-                <SelectItem value={TgLinkStatus.ERROR}>
-                  Mark as Error
-                </SelectItem>
-                <SelectItem value={TgLinkStatus.IGNORED}>
-                  Mark as Ignored
-                </SelectItem>
-              </SelectContent>
-            </Select>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleStatusChange(TgLinkStatus.PROCESSED)}
+            >
+              Mark as Processed
+            </Button>
           </div>
         )}
       </CardHeader>
