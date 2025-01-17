@@ -15,6 +15,7 @@ import {
 import { count, eq, ilike, inArray } from 'drizzle-orm';
 import { createInsertSchema } from 'drizzle-zod';
 import { z } from 'zod';
+import { TgLinkStatus } from './types';
 
 const client = postgres(process.env.POSTGRES_URL!);
 export const db = drizzle(client);
@@ -74,12 +75,10 @@ export async function deleteProductById(id: number) {
   await db.delete(products).where(eq(products.id, id));
 }
 
-export const tgLinkStatusEnum = pgEnum('tg_link_status', [
-  'pending',
-  'processed',
-  'error',
-  'ignored'
-]);
+export const tgLinkStatusEnum = pgEnum(
+  'tg_link_status',
+  Object.values(TgLinkStatus) as [string, ...string[]]
+);
 
 export const tgLinks = pgTable('tg_link_status', {
   id: serial('id').primaryKey(),
@@ -146,7 +145,7 @@ export async function importTgLinks(
   const values = links.map((link) => ({
     tgLink: link,
     source,
-    status: 'pending_pre_processing'
+    status: TgLinkStatus.PENDING_PRE_PROCESSING
   }));
 
   await db.insert(tgLinks).values(values);

@@ -28,6 +28,7 @@ import {
 } from '@/components/ui/select';
 import { TgLink } from '@/lib/db';
 import { updateLinkStatus } from './actions';
+import { TgLinkStatus } from '@/lib/types';
 
 export function LinksTable({
   links,
@@ -62,10 +63,18 @@ export function LinksTable({
                 <SelectValue placeholder="Update status..." />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="pending">Mark as Pending</SelectItem>
-                <SelectItem value="processed">Mark as Processed</SelectItem>
-                <SelectItem value="error">Mark as Error</SelectItem>
-                <SelectItem value="ignored">Mark as Ignored</SelectItem>
+                <SelectItem value={TgLinkStatus.PENDING_PRE_PROCESSING}>
+                  Mark as Pending
+                </SelectItem>
+                <SelectItem value={TgLinkStatus.PROCESSED}>
+                  Mark as Processed
+                </SelectItem>
+                <SelectItem value={TgLinkStatus.ERROR}>
+                  Mark as Error
+                </SelectItem>
+                <SelectItem value={TgLinkStatus.IGNORED}>
+                  Mark as Ignored
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
