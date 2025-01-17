@@ -86,7 +86,8 @@ export const tgLinks = pgTable('tg_link_status', {
   tgLink: text('tg_link').notNull(),
   source: text('source'),
   chatId: varchar('chat_id', { length: 255 }),
-  status: varchar('status', { length: 255 }).default('pending'),
+  chatName: varchar('chat_name', { length: 255 }),
+  status: varchar('status', { length: 255 }).default('pending_pre_processing'),
   processedAt: timestamp('processed_at'),
   createdAt: timestamp('created_at').defaultNow()
 });
@@ -145,7 +146,7 @@ export async function importTgLinks(
   const values = links.map((link) => ({
     tgLink: link,
     source,
-    status: 'pending'
+    status: 'pending_pre_processing'
   }));
 
   await db.insert(tgLinks).values(values);

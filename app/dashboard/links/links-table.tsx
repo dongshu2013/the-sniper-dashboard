@@ -17,7 +17,6 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -87,6 +86,7 @@ export function LinksTable({
                 />
               </TableHead>
               <TableHead>Link</TableHead>
+              <TableHead>Chat Name</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Processed At</TableHead>
             </TableRow>
@@ -107,6 +107,7 @@ export function LinksTable({
                   />
                 </TableCell>
                 <TableCell className="font-medium">{link.tgLink}</TableCell>
+                <TableCell className="font-medium">{link.chatName}</TableCell>
                 <TableCell>
                   <Badge variant="outline" className="capitalize">
                     {link.status}
