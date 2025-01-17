@@ -22,7 +22,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { TgLink } from '@/lib/db';
 import { updateLinkStatus } from './actions';
-import { TgLinkStatus } from '@/lib/types';
+import { TgLinkStatus, TableColumn, TAB_COLUMNS } from '@/lib/types';
 import { Pagination } from '@/components/ui/pagination';
 
 export function LinksTable({
@@ -31,7 +31,8 @@ export function LinksTable({
   totalLinks,
   pageSize = 20,
   showCheckboxes = true,
-  showStatus = false
+  showStatus = false,
+  columns
 }: {
   links: TgLink[];
   offset: number;
@@ -39,6 +40,7 @@ export function LinksTable({
   pageSize?: number;
   showCheckboxes?: boolean;
   showStatus?: boolean;
+  columns: TableColumn[];
 }) {
   const [selectedLinks, setSelectedLinks] = useState<number[]>([]);
   const router = useRouter();
@@ -66,6 +68,52 @@ export function LinksTable({
 
   const totalPages = Math.ceil(totalLinks / pageSize);
   const currentPage = Math.floor(offset / pageSize) + 1;
+
+  const renderTableCell = (link: TgLink, column: TableColumn) => {
+    switch (column) {
+      case 'link':
+        return (
+          <TableCell className="font-medium">
+            <a
+              href={link.tgLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 hover:text-blue-700 hover:underline"
+            >
+              {link.tgLink}
+            </a>
+          </TableCell>
+        );
+      case 'chatName':
+        return (
+          <TableCell className="font-medium">
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+              }}
+              className="text-blue-500 hover:text-blue-700 hover:underline cursor-pointer"
+            >
+              {link.chatName}
+            </a>
+          </TableCell>
+        );
+      case 'status':
+        return (
+          <TableCell>
+            <Badge variant="outline" className="capitalize">
+              {link.status}
+            </Badge>
+          </TableCell>
+        );
+      case 'createdAt':
+        return <TableCell>{link.createdAt?.toLocaleDateString()}</TableCell>;
+      case 'processedAt':
+        return <TableCell>{link.processedAt?.toLocaleDateString()}</TableCell>;
+      default:
+        return null;
+    }
+  };
 
   return (
     <Card>
@@ -102,10 +150,11 @@ export function LinksTable({
                   />
                 </TableHead>
               )}
-              <TableHead>Link</TableHead>
-              <TableHead>Chat Name</TableHead>
-              {showStatus && <TableHead>Status</TableHead>}
-              <TableHead>Processed At</TableHead>
+              {columns.map((column) => (
+                <TableHead key={column} className="capitalize">
+                  {column.replace(/([A-Z])/g, ' $1').trim()}
+                </TableHead>
+              ))}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -125,35 +174,7 @@ export function LinksTable({
                     />
                   </TableCell>
                 )}
-                <TableCell className="font-medium">
-                  <a
-                    href={link.tgLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:text-blue-700 hover:underline"
-                  >
-                    {link.tgLink}
-                  </a>
-                </TableCell>
-                <TableCell className="font-medium">
-                  <a
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                    }}
-                    className="text-blue-500 hover:text-blue-700 hover:underline cursor-pointer"
-                  >
-                    {link.chatName}
-                  </a>
-                </TableCell>
-                {showStatus && (
-                  <TableCell>
-                    <Badge variant="outline" className="capitalize">
-                      {link.status}
-                    </Badge>
-                  </TableCell>
-                )}
-                <TableCell>{link.processedAt?.toLocaleDateString()}</TableCell>
+                {columns.map((column) => renderTableCell(link, column))}
               </TableRow>
             ))}
           </TableBody>

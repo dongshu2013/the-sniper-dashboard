@@ -2,7 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { getTgLinks } from '@/lib/db';
 import { LinksTable } from './links-table';
 import { ImportLinksDialog } from './import-dialog';
-import { TgLinkStatus } from '@/lib/types';
+import { TgLinkStatus, TAB_COLUMNS } from '@/lib/types';
 import { TabWrapper } from './tab-wrapper';
 import { redirect } from 'next/navigation';
 
@@ -58,6 +58,7 @@ export default async function LinksPage(props: {
           pageSize={pageSize}
           showCheckboxes={true}
           showStatus={false}
+          columns={TAB_COLUMNS.todo}
         />
       </TabsContent>
       <TabsContent value="queued" className="mt-4">
@@ -68,6 +69,7 @@ export default async function LinksPage(props: {
           pageSize={pageSize}
           showCheckboxes={false}
           showStatus={false}
+          columns={TAB_COLUMNS.queued}
         />
       </TabsContent>
       <TabsContent value="processed" className="mt-4">
@@ -78,6 +80,7 @@ export default async function LinksPage(props: {
           pageSize={pageSize}
           showCheckboxes={false}
           showStatus={true}
+          columns={TAB_COLUMNS.processed}
         />
       </TabsContent>
     </TabWrapper>

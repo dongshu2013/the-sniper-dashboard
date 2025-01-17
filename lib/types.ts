@@ -5,3 +5,16 @@ export enum TgLinkStatus {
   ERROR = 'error',
   IGNORED = 'ignored'
 }
+
+export type TableColumn =
+  | 'link'
+  | 'chatName'
+  | 'status'
+  | 'createdAt'
+  | 'processedAt';
+
+export const TAB_COLUMNS: Record<string, TableColumn[]> = {
+  todo: ['link', 'chatName', 'createdAt'],
+  queued: ['link', 'createdAt'],
+  processed: ['link', 'chatName', 'status', 'createdAt', 'processedAt']
+};
