@@ -134,7 +134,16 @@ export function LinksTable({
                     />
                   </TableCell>
                 )}
-                <TableCell className="font-medium">{link.tgLink}</TableCell>
+                <TableCell className="font-medium">
+                  <a
+                    href={link.tgLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:text-blue-700 hover:underline"
+                  >
+                    {link.tgLink}
+                  </a>
+                </TableCell>
                 <TableCell className="font-medium">{link.chatName}</TableCell>
                 {showStatus && (
                   <TableCell>
