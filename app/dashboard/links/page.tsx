@@ -12,11 +12,11 @@ export default async function LinksPage(props: {
   const searchParams = await props.searchParams;
   const search = searchParams.q ?? '';
   const offset = parseInt(searchParams.offset ?? '0');
-  const currentTab = searchParams.tab ?? 'processing';
+  const currentTab = searchParams.tab ?? 'todo';
 
   // Map tabs to their corresponding statuses
   const statusMap = {
-    processing: [TgLinkStatus.PENDING_PROCESSING],
+    todo: [TgLinkStatus.PENDING_PROCESSING],
     queued: [TgLinkStatus.PENDING_PRE_PROCESSING],
     processed: [
       TgLinkStatus.PROCESSED,
@@ -44,7 +44,7 @@ export default async function LinksPage(props: {
     <TabWrapper>
       <div className="flex items-center">
         <TabsList>
-          <TabsTrigger value="processing">Processing</TabsTrigger>
+          <TabsTrigger value="todo">TODO</TabsTrigger>
           <TabsTrigger value="queued">Queued</TabsTrigger>
           <TabsTrigger value="processed">Processed</TabsTrigger>
         </TabsList>
@@ -52,7 +52,7 @@ export default async function LinksPage(props: {
           <ImportLinksDialog />
         </div>
       </div>
-      <TabsContent value="processing" className="mt-4">
+      <TabsContent value="todo" className="mt-4">
         <LinksTable
           links={links}
           offset={offset}
