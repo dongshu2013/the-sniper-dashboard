@@ -21,16 +21,16 @@ export const LINK_TAB_COLUMNS: Record<string, LinkTableColumn[]> = {
 
 export type ChatMetadata = {
   id: number;
-  chat_id: string;
+  chatId: string;
   name: string;
   about: string;
   username: string;
-  participants_count: number;
+  participantsCount: number;
   entity: any;
-  quality_reports: any[];
-  is_blocked: boolean;
-  created_at: Date;
-  updated_at: Date;
+  qualityReports: any[];
+  isBlocked: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export type GroupTableColumn =

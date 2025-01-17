@@ -3,26 +3,30 @@ import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatDateTime } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { ChatMetadata } from '@/lib/types';
 
-export default async function GroupDetailsPage({
-  params
-}: {
-  params: Promise<{ chatId: string }> | { chatId: string };
-}) {
-  const resolvedParams = await Promise.resolve(params);
-  const chat = await getChatMetadataById(resolvedParams.chatId);
+type Params = Promise<{ chatId: string }>;
+
+export default async function GroupDetailsPage(props: { params: Params }) {
+  const { chatId } = await props.params;
+  const chat = await getChatMetadataById(chatId);
 
   if (!chat) {
     notFound();
   }
+
+  const typedChat = chat as unknown as ChatMetadata;
+
+  console.log('chat', chat);
+  console.log('typedChat', typedChat);
 
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Group Details</CardTitle>
-          <Badge variant={chat.isBlocked ? 'destructive' : 'outline'}>
-            {chat.isBlocked ? 'Blocked' : 'Active'}
+          <Badge variant={typedChat.isBlocked ? 'destructive' : 'outline'}>
+            {typedChat.isBlocked ? 'Blocked' : 'Active'}
           </Badge>
         </CardHeader>
         <CardContent>
@@ -33,25 +37,27 @@ export default async function GroupDetailsPage({
                 <div className="text-sm font-medium text-muted-foreground">
                   Name
                 </div>
-                <div>{chat.name || 'N/A'}</div>
+                <div>{typedChat.name || 'N/A'}</div>
               </div>
               <div className="space-y-1">
                 <div className="text-sm font-medium text-muted-foreground">
                   Username
                 </div>
-                <div>{chat.username ? `@${chat.username}` : 'N/A'}</div>
+                <div>
+                  {typedChat.username ? `@${typedChat.username}` : 'N/A'}
+                </div>
               </div>
               <div className="space-y-1">
                 <div className="text-sm font-medium text-muted-foreground">
                   Participants
                 </div>
-                <div>{chat.participantsCount}</div>
+                <div>{typedChat.participantsCount}</div>
               </div>
               <div className="space-y-1">
                 <div className="text-sm font-medium text-muted-foreground">
                   ID
                 </div>
-                <div className="font-mono text-sm">{chat.chatId}</div>
+                <div className="font-mono text-sm">{typedChat.chatId}</div>
               </div>
             </div>
 
@@ -61,13 +67,13 @@ export default async function GroupDetailsPage({
                 <div className="text-sm font-medium text-muted-foreground">
                   Created At
                 </div>
-                <div>{formatDateTime(chat.createdAt)}</div>
+                <div>{formatDateTime(typedChat.createdAt)}</div>
               </div>
               <div className="space-y-1">
                 <div className="text-sm font-medium text-muted-foreground">
                   Last Updated
                 </div>
-                <div>{formatDateTime(chat.updatedAt)}</div>
+                <div>{formatDateTime(typedChat.updatedAt)}</div>
               </div>
             </div>
 
@@ -77,33 +83,34 @@ export default async function GroupDetailsPage({
                 About
               </div>
               <div className="whitespace-pre-wrap rounded-md bg-muted p-4">
-                {chat.about || 'No description available'}
+                {typedChat.about || 'No description available'}
               </div>
             </div>
 
             {/* Entity Data */}
-            {chat.entity && (
+            {typedChat.entity && (
               <div className="space-y-1">
                 <div className="text-sm font-medium text-muted-foreground">
                   Entity Data
                 </div>
                 <pre className="whitespace-pre-wrap rounded-md bg-muted p-4 text-sm">
-                  {JSON.stringify(chat.entity, null, 2)}
+                  {JSON.stringify(typedChat.entity, null, 2)}
                 </pre>
               </div>
             )}
 
             {/* Quality Reports */}
-            {chat.qualityReports && chat.qualityReports.length > 0 && (
-              <div className="space-y-1">
-                <div className="text-sm font-medium text-muted-foreground">
-                  Quality Reports
+            {typedChat.qualityReports &&
+              typedChat.qualityReports.length > 0 && (
+                <div className="space-y-1">
+                  <div className="text-sm font-medium text-muted-foreground">
+                    Quality Reports
+                  </div>
+                  <pre className="whitespace-pre-wrap rounded-md bg-muted p-4 text-sm">
+                    {JSON.stringify(typedChat.qualityReports, null, 2)}
+                  </pre>
                 </div>
-                <pre className="whitespace-pre-wrap rounded-md bg-muted p-4 text-sm">
-                  {JSON.stringify(chat.qualityReports, null, 2)}
-                </pre>
-              </div>
-            )}
+              )}
           </div>
         </CardContent>
       </Card>
