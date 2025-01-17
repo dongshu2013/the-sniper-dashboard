@@ -7,11 +7,17 @@ import { TabWrapper } from './tab-wrapper';
 import { redirect } from 'next/navigation';
 
 export default async function LinksPage(props: {
-  searchParams: Promise<{ q?: string; offset?: string; tab?: string }>;
+  searchParams: Promise<{
+    q?: string;
+    offset?: string;
+    tab?: string;
+    pageSize?: string;
+  }>;
 }) {
   const searchParams = await props.searchParams;
   const search = searchParams.q ?? '';
   const offset = parseInt(searchParams.offset ?? '0');
+  const pageSize = parseInt(searchParams.pageSize ?? '20');
   const currentTab = searchParams.tab ?? 'todo';
 
   // Map tabs to their corresponding statuses
@@ -28,17 +34,9 @@ export default async function LinksPage(props: {
   const { links, totalLinks } = await getTgLinks(
     search,
     offset,
-    statusMap[currentTab as keyof typeof statusMap]
+    statusMap[currentTab as keyof typeof statusMap],
+    pageSize
   );
-
-  const handlePageChange = (newOffset: number) => {
-    const params = new URLSearchParams({
-      ...(search && { q: search }),
-      offset: newOffset.toString(),
-      tab: currentTab
-    });
-    redirect(`/dashboard/links?${params.toString()}`);
-  };
 
   return (
     <TabWrapper>
@@ -57,6 +55,7 @@ export default async function LinksPage(props: {
           links={links}
           offset={offset}
           totalLinks={totalLinks}
+          pageSize={pageSize}
           showCheckboxes={true}
           showStatus={false}
         />
@@ -66,6 +65,7 @@ export default async function LinksPage(props: {
           links={links}
           offset={offset}
           totalLinks={totalLinks}
+          pageSize={pageSize}
           showCheckboxes={false}
           showStatus={false}
         />
@@ -75,6 +75,7 @@ export default async function LinksPage(props: {
           links={links}
           offset={offset}
           totalLinks={totalLinks}
+          pageSize={pageSize}
           showCheckboxes={false}
           showStatus={true}
         />

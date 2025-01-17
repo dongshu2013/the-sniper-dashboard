@@ -100,10 +100,10 @@ export const importLinkSchema = z.object({
 export async function getTgLinks(
   search: string,
   offset: number,
-  statuses?: string[]
+  statuses?: string[],
+  pageSize: number = 20
 ): Promise<{
   links: TgLink[];
-  newOffset: number | null;
   totalLinks: number;
 }> {
   const baseQuery = db.select().from(tgLinks);
@@ -124,11 +124,13 @@ export async function getTgLinks(
     .from(tgLinks)
     .where(conditions[0]);
 
-  let moreLinks = await baseQuery.where(conditions[0]).limit(10).offset(offset);
+  let links = await baseQuery
+    .where(conditions[0])
+    .limit(pageSize)
+    .offset(offset);
 
   return {
-    links: moreLinks,
-    newOffset: moreLinks.length >= 10 ? offset + 10 : null,
+    links,
     totalLinks: totalLinks[0].count
   };
 }

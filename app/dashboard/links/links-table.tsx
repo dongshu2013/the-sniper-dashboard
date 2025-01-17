@@ -23,29 +23,26 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { TgLink } from '@/lib/db';
 import { updateLinkStatus } from './actions';
 import { TgLinkStatus } from '@/lib/types';
+import { Pagination } from '@/components/ui/pagination';
 
 export function LinksTable({
   links,
   offset,
   totalLinks,
+  pageSize = 20,
   showCheckboxes = true,
   showStatus = false
 }: {
   links: TgLink[];
   offset: number;
   totalLinks: number;
+  pageSize?: number;
   showCheckboxes?: boolean;
   showStatus?: boolean;
 }) {
   const [selectedLinks, setSelectedLinks] = useState<number[]>([]);
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  const handlePageChange = (newOffset: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('offset', newOffset.toString());
-    router.push(`/dashboard/links?${params.toString()}`);
-  };
 
   const handleStatusChange = async (status: string) => {
     if (selectedLinks.length === 0) return;
@@ -54,8 +51,21 @@ export function LinksTable({
     router.refresh();
   };
 
-  const totalPages = Math.ceil(totalLinks / 10);
-  const currentPage = Math.floor(offset / 10) + 1;
+  const handlePageChange = (newOffset: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('offset', newOffset.toString());
+    router.push(`/dashboard/links?${params.toString()}`);
+  };
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('pageSize', newPageSize.toString());
+    params.set('offset', '0'); // Reset to first page
+    router.push(`/dashboard/links?${params.toString()}`);
+  };
+
+  const totalPages = Math.ceil(totalLinks / pageSize);
+  const currentPage = Math.floor(offset / pageSize) + 1;
 
   return (
     <Card>
@@ -151,27 +161,19 @@ export function LinksTable({
       </CardContent>
       <CardFooter className="flex justify-between">
         <div className="text-sm text-muted-foreground">
-          Showing {offset + 1}-{Math.min(offset + 10, totalLinks)} of{' '}
+          Showing {offset + 1}-{Math.min(offset + pageSize, totalLinks)} of{' '}
           {totalLinks} links
         </div>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handlePageChange(offset - 10)}
-            disabled={currentPage === 1}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handlePageChange(offset + 10)}
-            disabled={currentPage === totalPages}
-          >
-            Next
-          </Button>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          pageSize={pageSize}
+          onPageChange={(page) => {
+            const newOffset = (page - 1) * pageSize;
+            handlePageChange(newOffset);
+          }}
+          onPageSizeChange={handlePageSizeChange}
+        />
       </CardFooter>
     </Card>
   );
