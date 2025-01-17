@@ -11,7 +11,6 @@ export function Search() {
   const searchParams = useSearchParams();
   const [value, setValue] = useState(searchParams.get('q') ?? '');
 
-  // Debounce the search to avoid too many requests
   const debouncedSearch = useDebouncedCallback((term: string) => {
     const params = new URLSearchParams(searchParams.toString());
     if (term) {
@@ -20,7 +19,7 @@ export function Search() {
       params.delete('q');
     }
     params.set('offset', '0'); // Reset pagination when searching
-    router.push(`/dashboard/groups?${params.toString()}`);
+    router.push(`/dashboard/links?${params.toString()}`);
   }, 300);
 
   const handleSearch = useCallback(
@@ -31,7 +30,6 @@ export function Search() {
     [debouncedSearch]
   );
 
-  // Sync URL search param with input value
   useEffect(() => {
     setValue(searchParams.get('q') ?? '');
   }, [searchParams]);
@@ -41,7 +39,7 @@ export function Search() {
       <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
       <Input
         type="search"
-        placeholder="Search groups by name..."
+        placeholder="Search links by chat name..."
         className="pl-8"
         value={value}
         onChange={(e) => handleSearch(e.target.value)}

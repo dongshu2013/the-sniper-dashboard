@@ -53,24 +53,32 @@ export async function getTgLinks(
   links: TgLink[];
   totalLinks: number;
 }> {
-  const baseQuery = db.select().from(tgLinks);
   const conditions = [];
 
   if (search) {
-    conditions.push(ilike(tgLinks.tgLink, `%${search}%`));
+    conditions.push(
+      or(
+        ilike(tgLinks.tgLink, `%${search}%`),
+        ilike(tgLinks.chatName, `%${search}%`)
+      )
+    );
   }
 
   if (statuses && statuses.length > 0) {
     conditions.push(inArray(tgLinks.status, statuses));
   }
 
-  let totalLinks = await db
+  const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
+  const totalLinks = await db
     .select({ count: count() })
     .from(tgLinks)
-    .where(conditions[0]);
+    .where(whereClause);
 
-  let links = await baseQuery
-    .where(conditions[0])
+  const links = await db
+    .select()
+    .from(tgLinks)
+    .where(whereClause)
     .limit(pageSize)
     .offset(offset);
 

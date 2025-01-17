@@ -1,9 +1,10 @@
 import { TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { getTgLinks } from '@/lib/db';
 import { LinksTable } from './links-table';
-import { ImportLinksDialog } from './import-dialog';
-import { TgLinkStatus, LINK_TAB_COLUMNS } from '@/lib/types';
+import { LINK_TAB_COLUMNS, TgLinkStatus } from '@/lib/types';
 import { TabWrapper } from '@/components/shared/tab-wrapper';
+import { ImportLinksDialog } from './import-dialog';
+import { Search } from './search';
 
 export default async function LinksPage(props: {
   searchParams: Promise<{
@@ -19,7 +20,6 @@ export default async function LinksPage(props: {
   const pageSize = parseInt(searchParams.pageSize ?? '20');
   const currentTab = searchParams.tab ?? 'todo';
 
-  // Map tabs to their corresponding statuses
   const statusMap = {
     todo: [TgLinkStatus.PENDING_PROCESSING],
     queued: [TgLinkStatus.PENDING_PRE_PROCESSING],
@@ -39,13 +39,14 @@ export default async function LinksPage(props: {
 
   return (
     <TabWrapper basePath="/dashboard/links" defaultTab="todo">
-      <div className="flex items-center">
+      <div className="flex items-center justify-between">
         <TabsList>
           <TabsTrigger value="todo">TODO</TabsTrigger>
           <TabsTrigger value="queued">Queued</TabsTrigger>
           <TabsTrigger value="processed">Processed</TabsTrigger>
         </TabsList>
-        <div className="ml-auto">
+        <div className="flex items-center gap-4">
+          <Search />
           <ImportLinksDialog />
         </div>
       </div>
