@@ -27,7 +27,7 @@ import { GroupTableColumn } from '@/lib/types';
 import { Pagination } from '@/components/ui/pagination';
 import { formatDateTime } from '@/lib/utils';
 import { TruncatedCell } from '@/components/ui/truncated-cell';
-import { ExpandableCell } from '@/components/ui/expandable-cell';
+import { Eye } from 'lucide-react';
 
 export function GroupsTable({
   chats,
@@ -72,12 +72,7 @@ export function GroupsTable({
       case 'participants':
         return <TableCell>{chat.participantsCount}</TableCell>;
       case 'entity':
-        return (
-          <TruncatedCell
-            content={JSON.stringify(chat.entity, null, 2)}
-            maxWidth="max-w-[300px]"
-          />
-        );
+        return <TruncatedCell content={JSON.stringify(chat.entity, null, 2)} />;
       case 'reports':
         return (
           <TruncatedCell
@@ -166,6 +161,19 @@ export function GroupsTable({
                     {renderTableCell(chat, column)}
                   </React.Fragment>
                 ))}
+                <TableCell>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() =>
+                      router.push(`/dashboard/groups/${chat.chatId}`)
+                    }
+                    className="flex items-center gap-2"
+                  >
+                    <Eye className="h-4 w-4" />
+                    <span>View</span>
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

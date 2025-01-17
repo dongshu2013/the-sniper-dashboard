@@ -90,10 +90,7 @@ export function LinksTable({
         return (
           <TableCell className="font-medium">
             <a
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-              }}
+              href={`/dashboard/groups/${link.chatId}`}
               className="text-blue-500 hover:text-blue-700 hover:underline cursor-pointer"
             >
               {link.chatName}

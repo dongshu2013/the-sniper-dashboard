@@ -175,3 +175,15 @@ export async function updateChatBlockStatus(ids: number[], isBlocked: boolean) {
     })
     .where(inArray(chatMetadata.id, ids));
 }
+
+export async function getChatMetadataById(
+  chatId: string
+): Promise<ChatMetadata | null> {
+  const result = await db
+    .select()
+    .from(chatMetadata)
+    .where(eq(chatMetadata.chatId, chatId))
+    .limit(1);
+
+  return result[0] || null;
+}
