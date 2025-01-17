@@ -153,5 +153,8 @@ export async function importTgLinks(
     status: TgLinkStatus.PENDING_PRE_PROCESSING
   }));
 
-  await db.insert(tgLinks).values(values);
+  await db
+    .insert(tgLinks)
+    .values(values)
+    .onConflictDoNothing({ target: tgLinks.tgLink });
 }
