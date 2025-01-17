@@ -6,7 +6,7 @@ import { Tabs } from '@/components/ui/tabs';
 export function TabWrapper({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const currentTab = searchParams.get('tab') ?? 'processing';
+  const currentTab = searchParams.get('tab') ?? 'todo';
 
   return (
     <Tabs
