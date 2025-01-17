@@ -6,11 +6,10 @@ import { TgLinkStatus } from '@/lib/types';
 import { TabWrapper } from './tab-wrapper';
 import { redirect } from 'next/navigation';
 
-export default async function LinksPage({
-  searchParams
-}: {
-  searchParams: { q?: string; offset?: string; tab?: string };
+export default async function LinksPage(props: {
+  searchParams: Promise<{ q?: string; offset?: string; tab?: string }>;
 }) {
+  const searchParams = await props.searchParams;
   const search = searchParams.q ?? '';
   const offset = parseInt(searchParams.offset ?? '0');
   const currentTab = searchParams.tab ?? 'processing';
