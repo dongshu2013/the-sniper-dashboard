@@ -2,6 +2,15 @@
 
 import Link from 'next/link';
 import { Home, Link2, LogOut, MessageCircle, User } from 'lucide-react';
+
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator
+} from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
@@ -11,7 +20,9 @@ import {
   TooltipTrigger
 } from '@/components/ui/tooltip';
 import { NavItem } from './nav-item';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
+import { SearchInput } from './search';
+import React from 'react';
 
 export default function DashboardLayout({
   children
@@ -40,6 +51,8 @@ export default function DashboardLayout({
         <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
           <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
             <MobileNav onLogout={handleLogout} />
+            <DashboardBreadcrumb />
+            <SearchInput />
           </header>
           <main className="grid flex-1 items-start gap-2 p-4 sm:px-6 sm:py-0 md:gap-4 bg-muted/40">
             {children}
@@ -141,4 +154,53 @@ function MobileNav({ onLogout }: { onLogout: () => void }) {
       </SheetContent>
     </Sheet>
   );
+}
+
+function DashboardBreadcrumb() {
+  const pathname = usePathname();
+
+  const breadcrumbItems = getBreadcrumbItems(pathname);
+
+  return (
+    <Breadcrumb className="hidden md:flex">
+      <BreadcrumbList>
+        {breadcrumbItems.map((item, index) => (
+          <React.Fragment key={item.href}>
+            <BreadcrumbItem>
+              {index === breadcrumbItems.length - 1 ? (
+                <BreadcrumbPage>{item.label}</BreadcrumbPage>
+              ) : (
+                <BreadcrumbLink asChild>
+                  <Link href={item.href}>{item.label}</Link>
+                </BreadcrumbLink>
+              )}
+            </BreadcrumbItem>
+            {index < breadcrumbItems.length - 1 && <BreadcrumbSeparator />}
+          </React.Fragment>
+        ))}
+      </BreadcrumbList>
+    </Breadcrumb>
+  );
+}
+
+const pathMap: Record<string, string> = {
+  dashboard: 'Dashboard',
+  overview: 'Overview',
+  links: 'Telegram Links',
+  groups: 'Groups',
+  accounts: 'Accounts'
+};
+
+function getBreadcrumbItems(pathname: string) {
+  const paths = pathname.split('/').filter(Boolean);
+
+  return paths.map((path, index) => {
+    const href = `/${paths.slice(0, index + 1).join('/')}`;
+    const label = pathMap[path] || path;
+
+    return {
+      href,
+      label
+    };
+  });
 }
