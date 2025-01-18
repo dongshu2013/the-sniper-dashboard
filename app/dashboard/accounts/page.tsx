@@ -57,24 +57,24 @@ export default async function AccountsPage(props: {
           currentTab="active"
         />
       </TabsContent>
-      <TabsContent value="inactive" className="mt-4">
+      <TabsContent value="banned" className="mt-4">
         <AccountsTable
           accounts={accounts}
           offset={offset}
           totalAccounts={totalAccounts}
           pageSize={pageSize}
-          columns={ACCOUNT_TAB_COLUMNS.inactive}
-          currentTab="inactive"
+          columns={ACCOUNT_TAB_COLUMNS.banned}
+          currentTab="banned"
         />
       </TabsContent>
-      <TabsContent value="archived" className="mt-4">
+      <TabsContent value="suspended" className="mt-4">
         <AccountsTable
           accounts={accounts}
           offset={offset}
           totalAccounts={totalAccounts}
           pageSize={pageSize}
-          columns={ACCOUNT_TAB_COLUMNS.archived}
-          currentTab="archived"
+          columns={ACCOUNT_TAB_COLUMNS.suspended}
+          currentTab="suspended"
         />
       </TabsContent>
     </TabWrapper>

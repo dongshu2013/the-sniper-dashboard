@@ -29,7 +29,7 @@ interface AccountsTableProps {
   totalAccounts: number;
   pageSize: number;
   columns: AccountTableColumn[];
-  currentTab: 'active' | 'inactive' | 'archived';
+  currentTab: 'active' | 'banned' | 'suspended';
 }
 
 export function AccountsTable({
