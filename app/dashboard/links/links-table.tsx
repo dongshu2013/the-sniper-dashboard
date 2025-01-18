@@ -118,7 +118,7 @@ export function LinksTable({
     <Card>
       <CardHeader>
         <CardTitle>Telegram Links</CardTitle>
-        {showCheckboxes && selectedLinks.length > 0 && (
+        {showCheckboxes && (
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">
               {selectedLinks.length} selected
@@ -126,9 +126,10 @@ export function LinksTable({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => handleStatusChange(TgLinkStatus.PROCESSED)}
+              onClick={() => handleStatusChange(TgLinkStatus.PROCESSING)}
+              disabled={selectedLinks.length === 0}
             >
-              Mark as Processed
+              Mark as Processing
             </Button>
           </div>
         )}

@@ -21,8 +21,9 @@ export default async function LinksPage(props: {
   const currentTab = searchParams.tab ?? 'todo';
 
   const statusMap = {
-    todo: [TgLinkStatus.PENDING_PROCESSING],
     queued: [TgLinkStatus.PENDING_PRE_PROCESSING],
+    todo: [TgLinkStatus.PENDING_PROCESSING],
+    processing: [TgLinkStatus.PENDING_PROCESSING],
     processed: [
       TgLinkStatus.PROCESSED,
       TgLinkStatus.ERROR,
@@ -41,8 +42,9 @@ export default async function LinksPage(props: {
     <TabWrapper basePath="/dashboard/links" defaultTab="todo">
       <div className="flex items-center justify-between">
         <TabsList>
-          <TabsTrigger value="todo">TODO</TabsTrigger>
           <TabsTrigger value="queued">Queued</TabsTrigger>
+          <TabsTrigger value="todo">TODO</TabsTrigger>
+          <TabsTrigger value="processing">Processing</TabsTrigger>
           <TabsTrigger value="processed">Processed</TabsTrigger>
         </TabsList>
         <div className="flex items-center gap-4">
@@ -50,6 +52,17 @@ export default async function LinksPage(props: {
           <ImportLinksDialog />
         </div>
       </div>
+      <TabsContent value="queued" className="mt-4">
+        <LinksTable
+          links={links}
+          offset={offset}
+          totalLinks={totalLinks}
+          pageSize={pageSize}
+          showCheckboxes={false}
+          showStatus={false}
+          columns={LINK_TAB_COLUMNS.queued}
+        />
+      </TabsContent>
       <TabsContent value="todo" className="mt-4">
         <LinksTable
           links={links}
@@ -61,15 +74,15 @@ export default async function LinksPage(props: {
           columns={LINK_TAB_COLUMNS.todo}
         />
       </TabsContent>
-      <TabsContent value="queued" className="mt-4">
+      <TabsContent value="processing" className="mt-4">
         <LinksTable
           links={links}
           offset={offset}
           totalLinks={totalLinks}
           pageSize={pageSize}
-          showCheckboxes={false}
+          showCheckboxes={true}
           showStatus={false}
-          columns={LINK_TAB_COLUMNS.queued}
+          columns={LINK_TAB_COLUMNS.processing}
         />
       </TabsContent>
       <TabsContent value="processed" className="mt-4">
