@@ -31,6 +31,8 @@ import {
   SortDirection
 } from '@/components/ui/sortable-table-header';
 import { useTableSort } from '@/lib/hooks/use-table-sort';
+import { FilterableTableHeader } from '@/components/ui/filterable-table-header';
+import { useTableFilter } from '@/lib/hooks/use-table-filter';
 
 interface LinksTableProps {
   links: TgLink[];
@@ -67,6 +69,7 @@ export function LinksTable({
   const searchParams = useSearchParams();
   const [localLinks, setLocalLinks] = useState(links);
   const { sortConfig, handleSort } = useTableSort(links);
+  const { filterConfig, handleFilter, updateFilter } = useTableFilter(links);
 
   const handleStatusChange = async (status: string) => {
     if (selectedLinks.length === 0) return;
@@ -142,6 +145,8 @@ export function LinksTable({
     }
   };
 
+  const filteredLinks = handleFilter(localLinks, filterConfig);
+
   return (
     <Card>
       <CardHeader>
@@ -187,12 +192,14 @@ export function LinksTable({
                 </TableHead>
               )}
               {columns.map((column) => (
-                <SortableTableHeader
+                <FilterableTableHeader
                   key={column}
                   column={column}
                   label={column.replace(/([A-Z])/g, ' $1').trim()}
+                  filterValue={filterConfig[COLUMN_MAP[column] || column] || ''}
+                  onFilterChange={updateFilter}
                   sortDirection={
-                    sortConfig.column === COLUMN_MAP[column]
+                    sortConfig.column === (COLUMN_MAP[column] || column)
                       ? sortConfig.direction
                       : null
                   }
@@ -202,7 +209,7 @@ export function LinksTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {localLinks.map((link) => (
+            {filteredLinks.map((link) => (
               <TableRow key={link.id}>
                 {showCheckboxes && (
                   <TableCell>
