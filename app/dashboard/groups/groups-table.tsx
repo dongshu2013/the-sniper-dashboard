@@ -101,7 +101,7 @@ export function GroupsTable({
     <Card>
       <CardHeader>
         <CardTitle>Telegram Groups</CardTitle>
-        {showCheckboxes && selectedChats.length > 0 && (
+        {showCheckboxes && (
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">
               {selectedChats.length} selected
@@ -110,6 +110,7 @@ export function GroupsTable({
               variant="outline"
               size="sm"
               onClick={() => handleBlockStatusChange(true)}
+              disabled={selectedChats.length === 0}
             >
               Block Selected
             </Button>

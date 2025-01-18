@@ -26,12 +26,6 @@ import { updateLinkStatus } from './actions';
 import { TgLinkStatus, LinkTableColumn, LINK_TAB_COLUMNS } from '@/lib/types';
 import { Pagination } from '@/components/ui/pagination';
 import { formatDateTime } from '@/lib/utils';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger
-} from '@/components/ui/tooltip';
 
 interface LinksTableProps {
   links: TgLink[];
@@ -135,31 +129,22 @@ export function LinksTable({
             <span className="text-sm text-muted-foreground">
               {selectedLinks.length} selected
             </span>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() =>
-                      handleStatusChange(
-                        currentTab === 'todo'
-                          ? TgLinkStatus.PROCESSING
-                          : TgLinkStatus.PROCESSED
-                      )
-                    }
-                    disabled={selectedLinks.length === 0}
-                  >
-                    {currentTab === 'todo'
-                      ? 'Mark as Processing'
-                      : 'Mark as Processed'}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Please select links first</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                handleStatusChange(
+                  currentTab === 'todo'
+                    ? TgLinkStatus.PROCESSING
+                    : TgLinkStatus.PROCESSED
+                )
+              }
+              disabled={selectedLinks.length === 0}
+            >
+              {currentTab === 'todo'
+                ? 'Mark as Processing'
+                : 'Mark as Processed'}
+            </Button>
           </div>
         )}
       </CardHeader>
