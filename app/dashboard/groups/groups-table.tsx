@@ -43,7 +43,8 @@ const COLUMN_MAP: Record<string, string> = {
   name: 'name',
   username: 'username',
   createdAt: 'createdAt',
-  entity: 'entity.name'
+  entity: 'entity.name',
+  quality: 'qualityReports'
 };
 
 export function GroupsTable({

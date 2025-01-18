@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { SortDirection } from '@/components/ui/sortable-table-header';
+import { getQualityBadgeProps } from '../utils';
 
 export function useTableSort<T>(initialData: T[]) {
   const [sortConfig, setSortConfig] = useState<{
@@ -23,6 +24,12 @@ export function useTableSort<T>(initialData: T[]) {
       if (!direction) return data;
 
       return [...data].sort((a: any, b: any) => {
+        if (column === 'qualityReports') {
+          const aScore = getQualityBadgeProps(a[column]).score || 0;
+          const bScore = getQualityBadgeProps(b[column]).score || 0;
+          return direction === 'asc' ? aScore - bScore : bScore - aScore;
+        }
+
         const aValue = getValueByPath(a, column);
         const bValue = getValueByPath(b, column);
 
