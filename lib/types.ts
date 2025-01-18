@@ -31,6 +31,12 @@ export interface Entity {
   website?: string;
 }
 
+export interface QualityReport {
+  score: number;
+  reason: string;
+  processed_at: number;
+}
+
 export type ChatMetadata = {
   id: number;
   chatId: string;
@@ -39,7 +45,7 @@ export type ChatMetadata = {
   username: string;
   participantsCount: number;
   entity: Entity | null;
-  qualityReports: any[];
+  qualityReports: QualityReport[];
   isBlocked: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -51,7 +57,7 @@ export type GroupTableColumn =
   | 'username'
   | 'participants'
   | 'entity'
-  | 'reports'
+  | 'quality'
   | 'status'
   | 'createdAt';
 
@@ -61,7 +67,7 @@ export const GROUP_TAB_COLUMNS: Record<string, GroupTableColumn[]> = {
     'username',
     'participants',
     'entity',
-    'reports',
+    'quality',
     'createdAt'
   ],
   blocked: ['name', 'username', 'participants', 'status', 'createdAt']

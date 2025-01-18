@@ -36,6 +36,7 @@ import {
 import { useTableSort } from '@/lib/hooks/use-table-sort';
 import { useTableFilter } from '@/lib/hooks/use-table-filter';
 import { FilterableTableHeader } from '@/components/ui/filterable-table-header';
+import { getQualityBadgeProps } from '@/lib/utils';
 
 const COLUMN_MAP: Record<string, string> = {
   participants: 'participantsCount',
@@ -109,11 +110,19 @@ export function GroupsTable({
         return <TableCell>{chat.participantsCount}</TableCell>;
       case 'entity':
         return <TableCell>{chat.entity?.name}</TableCell>;
-      case 'reports':
+      case 'quality':
+        const { score, variant, label } = getQualityBadgeProps(
+          chat.qualityReports
+        );
         return (
-          <TruncatedCell
-            content={JSON.stringify(chat.qualityReports, null, 2)}
-          />
+          <TableCell>
+            <div className="flex items-center gap-2">
+              <span className="text-sm tabular-nums">
+                {isNaN(score) ? '0' : score.toFixed(1)}
+              </span>
+              <Badge variant={variant}>{label}</Badge>
+            </div>
+          </TableCell>
         );
       case 'status':
         return (
