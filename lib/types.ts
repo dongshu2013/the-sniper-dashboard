@@ -34,6 +34,7 @@ export type ChatMetadata = {
   isBlocked: boolean;
   createdAt: Date;
   updatedAt: Date;
+  photo: { path?: string };
 };
 
 export type GroupTableColumn =

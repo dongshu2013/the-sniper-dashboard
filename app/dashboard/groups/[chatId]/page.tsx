@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatDateTime } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { ChatMetadata } from '@/lib/types';
+import { GroupAvatar } from '@/components/ui/avatar';
 
 type Params = Promise<{ chatId: string }>;
 
@@ -17,14 +18,18 @@ export default async function GroupDetailsPage(props: { params: Params }) {
 
   const typedChat = chat as unknown as ChatMetadata;
 
-  console.log('chat', chat);
-  console.log('typedChat', typedChat);
-
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Group Details</CardTitle>
+          <div className="flex items-center gap-4">
+            <GroupAvatar
+              photo={typedChat.photo}
+              name={typedChat.name || ''}
+              size={48}
+            />
+            <CardTitle>Group Details</CardTitle>
+          </div>
           <Badge variant={typedChat.isBlocked ? 'destructive' : 'outline'}>
             {typedChat.isBlocked ? 'Blocked' : 'Active'}
           </Badge>
@@ -43,9 +48,7 @@ export default async function GroupDetailsPage(props: { params: Params }) {
                 <div className="text-sm font-medium text-muted-foreground">
                   Username
                 </div>
-                <div>
-                  {typedChat.username ? `@${typedChat.username}` : 'N/A'}
-                </div>
+                <div>{typedChat.username}</div>
               </div>
               <div className="space-y-1">
                 <div className="text-sm font-medium text-muted-foreground">

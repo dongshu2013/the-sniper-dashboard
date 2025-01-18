@@ -128,6 +128,7 @@ export const chatMetadata = pgTable('chat_metadata', {
   entity: jsonb('entity'),
   qualityReports: jsonb('quality_reports').default('[]'),
   isBlocked: boolean('is_blocked').default(false),
+  photo: jsonb('photo').default('{}'),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
 });

@@ -28,6 +28,7 @@ import { Pagination } from '@/components/ui/pagination';
 import { formatDateTime } from '@/lib/utils';
 import { TruncatedCell } from '@/components/ui/truncated-cell';
 import { Eye } from 'lucide-react';
+import { GroupAvatar } from '@/components/ui/avatar';
 
 export function GroupsTable({
   chats,
@@ -65,7 +66,18 @@ export function GroupsTable({
     switch (column) {
       case 'name':
         return (
-          <TruncatedCell content={chat.name ?? ''} maxWidth="max-w-[200px]" />
+          <TableCell>
+            <div className="flex items-center gap-1">
+              <GroupAvatar
+                photo={chat.photo as { path?: string }}
+                name={chat.name || ''}
+              />
+              <TruncatedCell
+                content={chat.name ?? ''}
+                maxWidth="max-w-[200px]"
+              />
+            </div>
+          </TableCell>
         );
       case 'username':
         return <TableCell>{chat.username}</TableCell>;
