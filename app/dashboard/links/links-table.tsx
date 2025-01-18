@@ -26,6 +26,11 @@ import { updateLinkStatus } from './actions';
 import { TgLinkStatus, LinkTableColumn, LINK_TAB_COLUMNS } from '@/lib/types';
 import { Pagination } from '@/components/ui/pagination';
 import { formatDateTime } from '@/lib/utils';
+import {
+  SortableTableHeader,
+  SortDirection
+} from '@/components/ui/sortable-table-header';
+import { useTableSort } from '@/lib/hooks/use-table-sort';
 
 interface LinksTableProps {
   links: TgLink[];
@@ -37,6 +42,15 @@ interface LinksTableProps {
   columns: LinkTableColumn[];
   currentTab: 'todo' | 'processing' | 'queued' | 'processed';
 }
+
+const COLUMN_MAP: Record<string, string> = {
+  link: 'tgLink',
+  chatName: 'chatName',
+  status: 'status',
+  markName: 'markName',
+  createdAt: 'createdAt',
+  processedAt: 'processedAt'
+};
 
 export function LinksTable({
   links,
@@ -51,6 +65,8 @@ export function LinksTable({
   const [selectedLinks, setSelectedLinks] = useState<number[]>([]);
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [localLinks, setLocalLinks] = useState(links);
+  const { sortConfig, handleSort } = useTableSort(links);
 
   const handleStatusChange = async (status: string) => {
     if (selectedLinks.length === 0) return;
@@ -74,6 +90,12 @@ export function LinksTable({
 
   const totalPages = Math.ceil(totalLinks / pageSize);
   const currentPage = Math.floor(offset / pageSize) + 1;
+
+  const handleSortChange = (column: string, direction: SortDirection) => {
+    const mappedColumn = COLUMN_MAP[column] || column;
+    const sortedData = handleSort(links, mappedColumn, direction);
+    setLocalLinks(sortedData);
+  };
 
   const renderTableCell = (link: TgLink, column: LinkTableColumn) => {
     switch (column) {
@@ -155,24 +177,32 @@ export function LinksTable({
               {showCheckboxes && (
                 <TableHead className="w-[50px]">
                   <Checkbox
-                    checked={selectedLinks.length === links.length}
+                    checked={selectedLinks.length === localLinks.length}
                     onCheckedChange={(checked) => {
                       setSelectedLinks(
-                        checked ? links.map((link) => link.id) : []
+                        checked ? localLinks.map((link) => link.id) : []
                       );
                     }}
                   />
                 </TableHead>
               )}
               {columns.map((column) => (
-                <TableHead key={column} className="capitalize">
-                  {column.replace(/([A-Z])/g, ' $1').trim()}
-                </TableHead>
+                <SortableTableHeader
+                  key={column}
+                  column={column}
+                  label={column.replace(/([A-Z])/g, ' $1').trim()}
+                  sortDirection={
+                    sortConfig.column === COLUMN_MAP[column]
+                      ? sortConfig.direction
+                      : null
+                  }
+                  onSort={handleSortChange}
+                />
               ))}
             </TableRow>
           </TableHeader>
           <TableBody>
-            {links.map((link) => (
+            {localLinks.map((link) => (
               <TableRow key={link.id}>
                 {showCheckboxes && (
                   <TableCell>
