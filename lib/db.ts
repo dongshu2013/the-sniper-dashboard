@@ -312,3 +312,78 @@ export async function updateAccountLastActive(id: number) {
     })
     .where(eq(accounts.id, id));
 }
+
+export type ChatWithAccount = ChatMetadata & {
+  account: { username: string | null } | null;
+};
+
+export async function getChatMetadataWithAccount(
+  search: string,
+  offset: number,
+  isBlocked?: boolean,
+  pageSize: number = 20
+): Promise<{
+  chats: ChatWithAccount[];
+  totalChats: number;
+}> {
+  const conditions = [];
+
+  if (search) {
+    conditions.push(
+      or(
+        ilike(chatMetadata.name, `%${search}%`),
+        ilike(chatMetadata.username, `%${search}%`)
+      )
+    );
+  }
+
+  if (isBlocked !== undefined) {
+    conditions.push(eq(chatMetadata.isBlocked, isBlocked));
+  }
+
+  const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
+  const totalChats = await db
+    .select({ count: count() })
+    .from(chatMetadata)
+    .where(whereClause);
+
+  const chats = await db
+    .select({
+      id: chatMetadata.id,
+      chatId: chatMetadata.chatId,
+      name: chatMetadata.name,
+      about: chatMetadata.about,
+      username: chatMetadata.username,
+      participantsCount: chatMetadata.participantsCount,
+      entity: chatMetadata.entity,
+      qualityReports: chatMetadata.qualityReports,
+      isBlocked: chatMetadata.isBlocked,
+      photo: chatMetadata.photo,
+      createdAt: chatMetadata.createdAt,
+      updatedAt: chatMetadata.updatedAt,
+      account: {
+        username: accounts.username
+      }
+    })
+    .from(chatMetadata)
+    .leftJoin(accountChat, eq(chatMetadata.chatId, accountChat.chatId))
+    .leftJoin(accounts, eq(accountChat.accountId, accounts.tgId))
+    .where(whereClause)
+    .limit(pageSize)
+    .offset(offset);
+
+  return {
+    chats: chats as ChatWithAccount[],
+    totalChats: totalChats[0].count
+  };
+}
+
+export const accountChat = pgTable('account_chat', {
+  id: serial('id').primaryKey(),
+  accountId: varchar('account_id', { length: 255 }).notNull(),
+  chatId: varchar('chat_id', { length: 255 }).notNull(),
+  status: varchar('status', { length: 255 }).default('watching'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+});

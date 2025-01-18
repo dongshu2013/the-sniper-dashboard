@@ -54,7 +54,7 @@ export type ChatMetadata = {
 
 export type GroupTableColumn =
   | 'name'
-  | 'username'
+  | 'account'
   | 'participants'
   | 'entity'
   | 'quality'
@@ -62,15 +62,8 @@ export type GroupTableColumn =
   | 'createdAt';
 
 export const GROUP_TAB_COLUMNS: Record<string, GroupTableColumn[]> = {
-  active: [
-    'name',
-    'username',
-    'participants',
-    'entity',
-    'quality',
-    'createdAt'
-  ],
-  blocked: ['name', 'username', 'participants', 'status', 'createdAt']
+  active: ['name', 'account', 'participants', 'entity', 'quality', 'createdAt'],
+  blocked: ['name', 'account', 'participants', 'status', 'createdAt']
 };
 
 export enum AccountStatus {

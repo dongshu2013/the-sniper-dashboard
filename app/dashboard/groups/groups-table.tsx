@@ -21,7 +21,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ChatMetadata } from '@/lib/db';
+import { ChatMetadata, ChatWithAccount } from '@/lib/db';
 import { updateBlockStatus } from './actions';
 import { GroupTableColumn } from '@/lib/types';
 import { Pagination } from '@/components/ui/pagination';
@@ -44,7 +44,8 @@ const COLUMN_MAP: Record<string, string> = {
   username: 'username',
   createdAt: 'createdAt',
   entity: 'entity.name',
-  quality: 'qualityReports'
+  quality: 'qualityReports',
+  account: 'account'
 };
 
 export function GroupsTable({
@@ -55,7 +56,7 @@ export function GroupsTable({
   showCheckboxes = true,
   columns
 }: {
-  chats: ChatMetadata[];
+  chats: ChatWithAccount[];
   offset: number;
   totalChats: number;
   pageSize?: number;
@@ -88,7 +89,7 @@ export function GroupsTable({
     setLocalChats(sortedData);
   };
 
-  const renderTableCell = (chat: ChatMetadata, column: GroupTableColumn) => {
+  const renderTableCell = (chat: ChatWithAccount, column: GroupTableColumn) => {
     switch (column) {
       case 'name':
         return (
@@ -105,8 +106,18 @@ export function GroupsTable({
             </div>
           </TableCell>
         );
-      case 'username':
-        return <TableCell>{chat.username}</TableCell>;
+      case 'account':
+        return (
+          <TableCell>
+            {chat.account?.username ? (
+              <Badge variant="secondary" className="font-mono">
+                {chat.account.username}
+              </Badge>
+            ) : (
+              <span className="text-muted-foreground">-</span>
+            )}
+          </TableCell>
+        );
       case 'participants':
         return <TableCell>{chat.participantsCount}</TableCell>;
       case 'entity':
