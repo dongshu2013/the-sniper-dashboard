@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Table,
@@ -64,11 +64,15 @@ export function GroupsTable({
   columns: GroupTableColumn[];
 }) {
   const [selectedChats, setSelectedChats] = useState<number[]>([]);
-  const [localChats, setLocalChats] = useState(chats);
   const router = useRouter();
   const searchParams = useSearchParams();
   const { sortConfig, handleSort } = useTableSort(chats);
   const { filterConfig, handleFilter, updateFilter } = useTableFilter(chats);
+  const [localChats, setLocalChats] = useState<ChatWithAccount[]>(chats);
+
+  useEffect(() => {
+    setLocalChats(chats);
+  }, [chats]);
 
   const handleBlockStatusChange = async (isBlocked: boolean) => {
     if (selectedChats.length === 0) return;

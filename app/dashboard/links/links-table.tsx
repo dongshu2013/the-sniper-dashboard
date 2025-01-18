@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Table,
@@ -67,9 +67,13 @@ export function LinksTable({
   const [selectedLinks, setSelectedLinks] = useState<number[]>([]);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [localLinks, setLocalLinks] = useState(links);
   const { sortConfig, handleSort } = useTableSort(links);
   const { filterConfig, handleFilter, updateFilter } = useTableFilter(links);
+  const [localLinks, setLocalLinks] = useState<TgLink[]>(links);
+
+  useEffect(() => {
+    setLocalLinks(links);
+  }, [links]);
 
   const handleStatusChange = async (status: string) => {
     if (selectedLinks.length === 0) return;

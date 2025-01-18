@@ -58,11 +58,11 @@ export function AccountsTable({
   columns,
   currentTab
 }: AccountsTableProps) {
-  const [localAccounts, setLocalAccounts] = useState(accounts);
   const router = useRouter();
   const searchParams = useSearchParams();
   const { sortConfig, handleSort } = useTableSort(accounts);
   const { filterConfig, handleFilter, updateFilter } = useTableFilter(accounts);
+  const [localAccounts, setLocalAccounts] = useState<Account[]>(accounts);
 
   useEffect(() => {
     setLocalAccounts(accounts);
