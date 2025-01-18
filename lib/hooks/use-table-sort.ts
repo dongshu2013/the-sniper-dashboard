@@ -11,6 +11,10 @@ export function useTableSort<T>(initialData: T[]) {
     direction: null
   });
 
+  const resetSort = useCallback(() => {
+    setSortConfig({ column: '', direction: null });
+  }, []);
+
   const getValueByPath = (obj: any, path: string) => {
     const value = path.split('.').reduce((acc, part) => {
       if (acc === null || acc === undefined) return acc;
@@ -66,6 +70,7 @@ export function useTableSort<T>(initialData: T[]) {
 
   return {
     sortConfig,
-    handleSort
+    handleSort,
+    resetSort
   };
 }

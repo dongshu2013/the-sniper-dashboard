@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Table,
@@ -66,13 +66,21 @@ export function GroupsTable({
   const [selectedChats, setSelectedChats] = useState<number[]>([]);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { sortConfig, handleSort } = useTableSort(chats);
-  const { filterConfig, handleFilter, updateFilter } = useTableFilter(chats);
+  const { sortConfig, handleSort, resetSort } = useTableSort(chats);
+  const { filterConfig, handleFilter, updateFilter, resetFilter } =
+    useTableFilter(chats);
   const [localChats, setLocalChats] = useState<ChatWithAccount[]>(chats);
+
+  const resetState = useCallback(() => {
+    setSelectedChats([]);
+    resetSort();
+    resetFilter();
+  }, [resetSort, resetFilter]);
 
   useEffect(() => {
     setLocalChats(chats);
-  }, [chats]);
+    resetState();
+  }, [chats, offset, resetState]);
 
   const handleBlockStatusChange = async (isBlocked: boolean) => {
     if (selectedChats.length === 0) return;
@@ -89,7 +97,7 @@ export function GroupsTable({
 
   const handleSortChange = (column: string, direction: SortDirection) => {
     const mappedColumn = COLUMN_MAP[column] || column;
-    const sortedData = handleSort(chats, mappedColumn, direction);
+    const sortedData = handleSort(localChats, mappedColumn, direction);
     setLocalChats(sortedData);
   };
 
@@ -187,10 +195,10 @@ export function GroupsTable({
               {showCheckboxes && (
                 <TableHead className="w-[50px]">
                   <Checkbox
-                    checked={selectedChats.length === chats.length}
+                    checked={selectedChats.length === filteredChats.length}
                     onCheckedChange={(checked) => {
                       setSelectedChats(
-                        checked ? chats.map((chat) => chat.id) : []
+                        checked ? filteredChats.map((chat) => chat.id) : []
                       );
                     }}
                   />
@@ -198,7 +206,7 @@ export function GroupsTable({
               )}
               {columns.map((column) => (
                 <FilterableTableHeader
-                  key={column}
+                  key={`header-${column}`}
                   column={column}
                   label={column.replace(/([A-Z])/g, ' $1').trim()}
                   filterValue={filterConfig[COLUMN_MAP[column] || column] || ''}
@@ -217,10 +225,10 @@ export function GroupsTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredChats.map((chat) => (
-              <TableRow key={chat.id}>
+            {filteredChats.map((chat, index) => (
+              <TableRow key={`row-${chat.id}-${index}`}>
                 {showCheckboxes && (
-                  <TableCell>
+                  <TableCell key={`checkbox-${chat.id}`}>
                     <Checkbox
                       checked={selectedChats.includes(chat.id)}
                       onCheckedChange={(checked) => {
@@ -234,11 +242,11 @@ export function GroupsTable({
                   </TableCell>
                 )}
                 {columns.map((column) => (
-                  <React.Fragment key={`${chat.id}-${column}`}>
+                  <TableCell key={`cell-${chat.id}-${column}-${index}`}>
                     {renderTableCell(chat, column)}
-                  </React.Fragment>
+                  </TableCell>
                 ))}
-                <TableCell>
+                <TableCell key={`actions-${chat.id}`}>
                   <Button
                     variant="ghost"
                     size="sm"

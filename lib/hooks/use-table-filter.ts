@@ -5,6 +5,10 @@ export type FilterConfig = Record<string, string>;
 export function useTableFilter<T>(initialData: T[]) {
   const [filterConfig, setFilterConfig] = useState<FilterConfig>({});
 
+  const resetFilter = useCallback(() => {
+    setFilterConfig({});
+  }, []);
+
   const handleFilter = useCallback((data: T[], filters: FilterConfig) => {
     return data.filter((item) => {
       return Object.entries(filters).every(([key, value]) => {
@@ -33,6 +37,7 @@ export function useTableFilter<T>(initialData: T[]) {
   return {
     filterConfig,
     handleFilter,
-    updateFilter
+    updateFilter,
+    resetFilter
   };
 }
