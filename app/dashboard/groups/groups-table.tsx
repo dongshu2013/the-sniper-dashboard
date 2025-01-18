@@ -35,6 +35,13 @@ import {
 } from '@/components/ui/sortable-table-header';
 import { useTableSort } from '@/lib/hooks/use-table-sort';
 
+const COLUMN_MAP: Record<string, string> = {
+  participants: 'participantsCount',
+  name: 'name',
+  username: 'username',
+  createdAt: 'createdAt'
+};
+
 export function GroupsTable({
   chats,
   offset,
@@ -70,20 +77,8 @@ export function GroupsTable({
   };
 
   const handleSortChange = (column: string, direction: SortDirection) => {
-    // Map column names to actual data properties
-    const columnMap: Record<string, string> = {
-      participants: 'participantsCount',
-      name: 'name',
-      username: 'username',
-      createdAt: 'createdAt'
-      // Add other mappings as needed
-    };
-
-    const sortedData = handleSort(
-      chats,
-      columnMap[column] || column,
-      direction
-    );
+    const mappedColumn = COLUMN_MAP[column] || column;
+    const sortedData = handleSort(chats, mappedColumn, direction);
     setLocalChats(sortedData);
   };
 
@@ -176,7 +171,9 @@ export function GroupsTable({
                   column={column}
                   label={column.replace(/([A-Z])/g, ' $1').trim()}
                   sortDirection={
-                    sortConfig.column === column ? sortConfig.direction : null
+                    sortConfig.column === (COLUMN_MAP[column] || column)
+                      ? sortConfig.direction
+                      : null
                   }
                   onSort={handleSortChange}
                 />
