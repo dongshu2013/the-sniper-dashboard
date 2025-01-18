@@ -10,10 +10,14 @@ export function useTableFilter<T>(initialData: T[]) {
       return Object.entries(filters).every(([key, value]) => {
         if (!value) return true;
 
-        const itemValue = String(
-          key.split('.').reduce((obj: any, key) => obj?.[key], item) ?? ''
-        ).toLowerCase();
+        const getNestedValue = (obj: any, path: string) => {
+          return path.split('.').reduce((acc, part) => {
+            if (acc === null || acc === undefined) return '';
+            return acc[part];
+          }, obj);
+        };
 
+        const itemValue = String(getNestedValue(item, key) ?? '').toLowerCase();
         return itemValue.includes(value.toLowerCase());
       });
     });

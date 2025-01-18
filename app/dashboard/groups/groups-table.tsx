@@ -41,7 +41,8 @@ const COLUMN_MAP: Record<string, string> = {
   participants: 'participantsCount',
   name: 'name',
   username: 'username',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  entity: 'entity.name'
 };
 
 export function GroupsTable({
@@ -176,7 +177,10 @@ export function GroupsTable({
                   column={column}
                   label={column.replace(/([A-Z])/g, ' $1').trim()}
                   filterValue={filterConfig[COLUMN_MAP[column] || column] || ''}
-                  onFilterChange={updateFilter}
+                  onFilterChange={(column, value) => {
+                    const mappedColumn = COLUMN_MAP[column] || column;
+                    updateFilter(mappedColumn, value);
+                  }}
                   sortDirection={
                     sortConfig.column === (COLUMN_MAP[column] || column)
                       ? sortConfig.direction
