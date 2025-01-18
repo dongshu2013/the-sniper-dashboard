@@ -23,7 +23,7 @@ export default async function LinksPage(props: {
   const statusMap = {
     queued: [TgLinkStatus.PENDING_PRE_PROCESSING],
     todo: [TgLinkStatus.PENDING_PROCESSING],
-    processing: [TgLinkStatus.PENDING_PROCESSING],
+    processing: [TgLinkStatus.PROCESSING],
     processed: [
       TgLinkStatus.PROCESSED,
       TgLinkStatus.ERROR,
@@ -61,6 +61,7 @@ export default async function LinksPage(props: {
           showCheckboxes={false}
           showStatus={false}
           columns={LINK_TAB_COLUMNS.queued}
+          currentTab="queued"
         />
       </TabsContent>
       <TabsContent value="todo" className="mt-4">
@@ -72,6 +73,7 @@ export default async function LinksPage(props: {
           showCheckboxes={true}
           showStatus={false}
           columns={LINK_TAB_COLUMNS.todo}
+          currentTab="todo"
         />
       </TabsContent>
       <TabsContent value="processing" className="mt-4">
@@ -83,6 +85,7 @@ export default async function LinksPage(props: {
           showCheckboxes={true}
           showStatus={false}
           columns={LINK_TAB_COLUMNS.processing}
+          currentTab="processing"
         />
       </TabsContent>
       <TabsContent value="processed" className="mt-4">
@@ -94,6 +97,7 @@ export default async function LinksPage(props: {
           showCheckboxes={false}
           showStatus={true}
           columns={LINK_TAB_COLUMNS.processed}
+          currentTab="processed"
         />
       </TabsContent>
     </TabWrapper>

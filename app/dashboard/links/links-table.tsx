@@ -26,6 +26,23 @@ import { updateLinkStatus } from './actions';
 import { TgLinkStatus, LinkTableColumn, LINK_TAB_COLUMNS } from '@/lib/types';
 import { Pagination } from '@/components/ui/pagination';
 import { formatDateTime } from '@/lib/utils';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from '@/components/ui/tooltip';
+
+interface LinksTableProps {
+  links: TgLink[];
+  offset: number;
+  totalLinks: number;
+  pageSize: number;
+  showCheckboxes: boolean;
+  showStatus: boolean;
+  columns: LinkTableColumn[];
+  currentTab: 'todo' | 'processing' | 'queued' | 'processed';
+}
 
 export function LinksTable({
   links,
@@ -34,16 +51,9 @@ export function LinksTable({
   pageSize = 20,
   showCheckboxes = true,
   showStatus = false,
-  columns
-}: {
-  links: TgLink[];
-  offset: number;
-  totalLinks: number;
-  pageSize?: number;
-  showCheckboxes?: boolean;
-  showStatus?: boolean;
-  columns: LinkTableColumn[];
-}) {
+  columns,
+  currentTab
+}: LinksTableProps) {
   const [selectedLinks, setSelectedLinks] = useState<number[]>([]);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -105,6 +115,8 @@ export function LinksTable({
             </Badge>
           </TableCell>
         );
+      case 'markName':
+        return <TableCell>{link.markName}</TableCell>;
       case 'createdAt':
         return <TableCell>{formatDateTime(link.createdAt)}</TableCell>;
       case 'processedAt':
@@ -123,14 +135,31 @@ export function LinksTable({
             <span className="text-sm text-muted-foreground">
               {selectedLinks.length} selected
             </span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleStatusChange(TgLinkStatus.PROCESSING)}
-              disabled={selectedLinks.length === 0}
-            >
-              Mark as Processing
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      handleStatusChange(
+                        currentTab === 'todo'
+                          ? TgLinkStatus.PROCESSING
+                          : TgLinkStatus.PROCESSED
+                      )
+                    }
+                    disabled={selectedLinks.length === 0}
+                  >
+                    {currentTab === 'todo'
+                      ? 'Mark as Processing'
+                      : 'Mark as Processed'}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Please select links first</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         )}
       </CardHeader>

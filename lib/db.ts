@@ -16,6 +16,7 @@ import {
 import { count, eq, ilike, inArray, or, and } from 'drizzle-orm';
 import { z } from 'zod';
 import { TgLinkStatus } from './types';
+import { customAlphabet } from 'nanoid';
 
 const client = postgres(process.env.POSTGRES_URL!);
 export const db = drizzle(client);
@@ -35,7 +36,8 @@ export const tgLinks = pgTable('tg_link_status', {
   chatName: varchar('chat_name', { length: 255 }),
   status: varchar('status', { length: 255 }).default('pending_pre_processing'),
   processedAt: timestamp('processed_at'),
-  createdAt: timestamp('created_at').defaultNow()
+  createdAt: timestamp('created_at').defaultNow(),
+  markName: varchar('mark_name', { length: 255 })
 });
 
 export type TgLink = typeof tgLinks.$inferSelect;
@@ -88,12 +90,16 @@ export async function getTgLinks(
   };
 }
 
+// Create a generator that uses readable characters to generate a 4-digit random string
+const generateMarkName = customAlphabet('23456789ABCDEFGHJKLMNPQRSTUVWXYZ', 4);
+
 export async function updateTgLinkStatus(ids: number[], status: string) {
   await db
     .update(tgLinks)
     .set({
       status,
-      processedAt: status === 'processed' ? new Date() : null
+      processedAt: status === TgLinkStatus.PROCESSED ? new Date() : null,
+      markName: status === TgLinkStatus.PROCESSING ? generateMarkName() : null
     })
     .where(inArray(tgLinks.id, ids));
 }

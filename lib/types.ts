@@ -12,12 +12,13 @@ export type LinkTableColumn =
   | 'chatName'
   | 'status'
   | 'createdAt'
-  | 'processedAt';
+  | 'processedAt'
+  | 'markName';
 
 export const LINK_TAB_COLUMNS: Record<string, LinkTableColumn[]> = {
   queued: ['link', 'createdAt'],
   todo: ['link', 'chatName', 'createdAt'],
-  processing: ['link', 'chatName', 'status', 'createdAt', 'processedAt'],
+  processing: ['link', 'chatName', 'createdAt', 'markName'],
   processed: ['link', 'chatName', 'status', 'createdAt', 'processedAt']
 };
 
