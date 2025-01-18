@@ -313,17 +313,17 @@ export async function updateAccountLastActive(id: number) {
     .where(eq(accounts.id, id));
 }
 
-export type ChatWithAccount = ChatMetadata & {
-  account: { username: string | null } | null;
+export type ChatWithAccounts = ChatMetadata & {
+  accounts: { username: string | null }[];
 };
 
-export async function getChatMetadataWithAccount(
+export async function getChatMetadataWithAccounts(
   search: string,
   offset: number,
   isBlocked?: boolean,
   pageSize: number = 20
 ): Promise<{
-  chats: ChatWithAccount[];
+  chats: ChatWithAccounts[];
   totalChats: number;
 }> {
   const conditions = [];
@@ -348,7 +348,7 @@ export async function getChatMetadataWithAccount(
     .from(chatMetadata)
     .where(whereClause);
 
-  const chats = await db
+  const chatsWithAccounts = await db
     .select({
       id: chatMetadata.id,
       chatId: chatMetadata.chatId,
@@ -362,19 +362,27 @@ export async function getChatMetadataWithAccount(
       photo: chatMetadata.photo,
       createdAt: chatMetadata.createdAt,
       updatedAt: chatMetadata.updatedAt,
-      account: {
-        username: accounts.username
-      }
+      accounts: sql<{ username: string | null }[]>`
+        COALESCE(
+          json_agg(
+            json_build_object(
+              'username', ${accounts.username}
+            )
+          ) FILTER (WHERE ${accounts.username} IS NOT NULL),
+          '[]'
+        )
+      `
     })
     .from(chatMetadata)
     .leftJoin(accountChat, eq(chatMetadata.chatId, accountChat.chatId))
     .leftJoin(accounts, eq(accountChat.accountId, accounts.tgId))
     .where(whereClause)
+    .groupBy(chatMetadata.id)
     .limit(pageSize)
     .offset(offset);
 
   return {
-    chats: chats as ChatWithAccount[],
+    chats: chatsWithAccounts as ChatWithAccounts[],
     totalChats: totalChats[0].count
   };
 }

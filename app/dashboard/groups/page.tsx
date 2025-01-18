@@ -1,5 +1,5 @@
 import { TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { getChatMetadataWithAccount } from '@/lib/db';
+import { getChatMetadataWithAccounts } from '@/lib/db';
 import { GroupsTable } from './groups-table';
 import { GROUP_TAB_COLUMNS } from '@/lib/types';
 import { TabWrapper } from '@/components/shared/tab-wrapper';
@@ -19,7 +19,7 @@ export default async function GroupsPage(props: {
   const pageSize = parseInt(searchParams.pageSize ?? '20');
   const currentTab = searchParams.tab ?? 'active';
 
-  const { chats, totalChats } = await getChatMetadataWithAccount(
+  const { chats, totalChats } = await getChatMetadataWithAccounts(
     search,
     offset,
     currentTab === 'blocked',

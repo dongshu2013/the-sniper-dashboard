@@ -21,7 +21,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ChatMetadata, ChatWithAccount } from '@/lib/db';
+import { ChatMetadata, ChatWithAccounts } from '@/lib/db';
 import { updateBlockStatus } from './actions';
 import { GroupTableColumn } from '@/lib/types';
 import { Pagination } from '@/components/ui/pagination';
@@ -37,6 +37,7 @@ import { useTableSort } from '@/lib/hooks/use-table-sort';
 import { useTableFilter } from '@/lib/hooks/use-table-filter';
 import { FilterableTableHeader } from '@/components/ui/filterable-table-header';
 import { getQualityBadgeProps } from '@/lib/utils';
+import { AccountsPopover } from '@/components/ui/accounts-popover';
 
 const COLUMN_MAP: Record<string, string> = {
   participants: 'participantsCount',
@@ -56,7 +57,7 @@ export function GroupsTable({
   showCheckboxes = true,
   columns
 }: {
-  chats: ChatWithAccount[];
+  chats: ChatWithAccounts[];
   offset: number;
   totalChats: number;
   pageSize?: number;
@@ -69,7 +70,7 @@ export function GroupsTable({
   const { sortConfig, handleSort, resetSort } = useTableSort(chats);
   const { filterConfig, handleFilter, updateFilter, resetFilter } =
     useTableFilter(chats);
-  const [localChats, setLocalChats] = useState<ChatWithAccount[]>(chats);
+  const [localChats, setLocalChats] = useState<ChatWithAccounts[]>(chats);
 
   const resetState = useCallback(() => {
     setSelectedChats([]);
@@ -101,7 +102,10 @@ export function GroupsTable({
     setLocalChats(sortedData);
   };
 
-  const renderTableCell = (chat: ChatWithAccount, column: GroupTableColumn) => {
+  const renderTableCell = (
+    chat: ChatWithAccounts,
+    column: GroupTableColumn
+  ) => {
     switch (column) {
       case 'name':
         return (
@@ -118,13 +122,11 @@ export function GroupsTable({
             </div>
           </TableCell>
         );
-      case 'account':
+      case 'accounts':
         return (
           <TableCell>
-            {chat.account?.username ? (
-              <Badge variant="secondary" className="font-mono">
-                {chat.account.username}
-              </Badge>
+            {chat.accounts && chat.accounts.length > 0 ? (
+              <AccountsPopover accounts={chat.accounts} />
             ) : (
               <span className="text-muted-foreground">-</span>
             )}
@@ -161,6 +163,16 @@ export function GroupsTable({
         );
       case 'createdAt':
         return <TableCell>{formatDateTime(chat.createdAt)}</TableCell>;
+      case 'accounts':
+        return (
+          <TableCell>
+            {chat.accounts && chat.accounts.length > 0 ? (
+              <AccountsPopover accounts={chat.accounts} />
+            ) : (
+              <span className="text-muted-foreground">-</span>
+            )}
+          </TableCell>
+        );
       default:
         return null;
     }
