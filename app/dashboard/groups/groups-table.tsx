@@ -34,6 +34,8 @@ import {
   SortDirection
 } from '@/components/ui/sortable-table-header';
 import { useTableSort } from '@/lib/hooks/use-table-sort';
+import { useTableFilter } from '@/lib/hooks/use-table-filter';
+import { FilterableTableHeader } from '@/components/ui/filterable-table-header';
 
 const COLUMN_MAP: Record<string, string> = {
   participants: 'participantsCount',
@@ -62,6 +64,7 @@ export function GroupsTable({
   const router = useRouter();
   const searchParams = useSearchParams();
   const { sortConfig, handleSort } = useTableSort(chats);
+  const { filterConfig, handleFilter, updateFilter } = useTableFilter(chats);
 
   const handleBlockStatusChange = async (isBlocked: boolean) => {
     if (selectedChats.length === 0) return;
@@ -129,6 +132,8 @@ export function GroupsTable({
     }
   };
 
+  const filteredChats = handleFilter(localChats, filterConfig);
+
   return (
     <Card>
       <CardHeader>
@@ -166,10 +171,12 @@ export function GroupsTable({
                 </TableHead>
               )}
               {columns.map((column) => (
-                <SortableTableHeader
+                <FilterableTableHeader
                   key={column}
                   column={column}
                   label={column.replace(/([A-Z])/g, ' $1').trim()}
+                  filterValue={filterConfig[COLUMN_MAP[column] || column] || ''}
+                  onFilterChange={updateFilter}
                   sortDirection={
                     sortConfig.column === (COLUMN_MAP[column] || column)
                       ? sortConfig.direction
@@ -181,7 +188,7 @@ export function GroupsTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {localChats.map((chat) => (
+            {filteredChats.map((chat) => (
               <TableRow key={chat.id}>
                 {showCheckboxes && (
                   <TableCell>
