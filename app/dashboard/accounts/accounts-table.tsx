@@ -27,6 +27,8 @@ import {
   SortDirection
 } from '@/components/ui/sortable-table-header';
 import { useTableSort } from '@/lib/hooks/use-table-sort';
+import { FilterableTableHeader } from '@/components/ui/filterable-table-header';
+import { useTableFilter } from '@/lib/hooks/use-table-filter';
 
 // 列名映射
 const COLUMN_MAP: Record<string, string> = {
@@ -60,6 +62,7 @@ export function AccountsTable({
   const router = useRouter();
   const searchParams = useSearchParams();
   const { sortConfig, handleSort } = useTableSort(accounts);
+  const { filterConfig, handleFilter, updateFilter } = useTableFilter(accounts);
 
   useEffect(() => {
     setLocalAccounts(accounts);
@@ -104,6 +107,8 @@ export function AccountsTable({
     }
   };
 
+  const filteredAccounts = handleFilter(localAccounts, filterConfig);
+
   return (
     <Card>
       <CardHeader>
@@ -114,12 +119,14 @@ export function AccountsTable({
           <TableHeader>
             <TableRow>
               {columns.map((column) => (
-                <SortableTableHeader
+                <FilterableTableHeader
                   key={column}
                   column={column}
                   label={column.replace(/([A-Z])/g, ' $1').trim()}
+                  filterValue={filterConfig[COLUMN_MAP[column] || column] || ''}
+                  onFilterChange={updateFilter}
                   sortDirection={
-                    sortConfig.column === COLUMN_MAP[column]
+                    sortConfig.column === (COLUMN_MAP[column] || column)
                       ? sortConfig.direction
                       : null
                   }
@@ -129,7 +136,7 @@ export function AccountsTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {localAccounts.map((account) => (
+            {filteredAccounts.map((account) => (
               <TableRow key={account.id}>
                 {columns.map((column) => (
                   <React.Fragment key={`${account.id}-${column}`}>
