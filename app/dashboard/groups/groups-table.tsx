@@ -68,7 +68,7 @@ export function GroupsTable({
           <TruncatedCell content={chat.name ?? ''} maxWidth="max-w-[200px]" />
         );
       case 'username':
-        return <TableCell>@{chat.username}</TableCell>;
+        return <TableCell>{chat.username}</TableCell>;
       case 'participants':
         return <TableCell>{chat.participantsCount}</TableCell>;
       case 'entity':
