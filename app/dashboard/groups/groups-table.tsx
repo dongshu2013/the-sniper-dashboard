@@ -29,6 +29,11 @@ import { formatDateTime } from '@/lib/utils';
 import { TruncatedCell } from '@/components/ui/truncated-cell';
 import { Eye } from 'lucide-react';
 import { GroupAvatar } from '@/components/ui/avatar';
+import {
+  SortableTableHeader,
+  SortDirection
+} from '@/components/ui/sortable-table-header';
+import { useTableSort } from '@/lib/hooks/use-table-sort';
 
 export function GroupsTable({
   chats,
@@ -46,8 +51,10 @@ export function GroupsTable({
   columns: GroupTableColumn[];
 }) {
   const [selectedChats, setSelectedChats] = useState<number[]>([]);
+  const [localChats, setLocalChats] = useState(chats);
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { sortConfig, handleSort } = useTableSort(chats);
 
   const handleBlockStatusChange = async (isBlocked: boolean) => {
     if (selectedChats.length === 0) return;
@@ -60,6 +67,24 @@ export function GroupsTable({
     const params = new URLSearchParams(searchParams.toString());
     params.set('offset', newOffset.toString());
     router.push(`/dashboard/groups?${params.toString()}`);
+  };
+
+  const handleSortChange = (column: string, direction: SortDirection) => {
+    // Map column names to actual data properties
+    const columnMap: Record<string, string> = {
+      participants: 'participantsCount',
+      name: 'name',
+      username: 'username',
+      createdAt: 'createdAt'
+      // Add other mappings as needed
+    };
+
+    const sortedData = handleSort(
+      chats,
+      columnMap[column] || column,
+      direction
+    );
+    setLocalChats(sortedData);
   };
 
   const renderTableCell = (chat: ChatMetadata, column: GroupTableColumn) => {
@@ -146,14 +171,20 @@ export function GroupsTable({
                 </TableHead>
               )}
               {columns.map((column) => (
-                <TableHead key={column} className="capitalize">
-                  {column.replace(/([A-Z])/g, ' $1').trim()}
-                </TableHead>
+                <SortableTableHeader
+                  key={column}
+                  column={column}
+                  label={column.replace(/([A-Z])/g, ' $1').trim()}
+                  sortDirection={
+                    sortConfig.column === column ? sortConfig.direction : null
+                  }
+                  onSort={handleSortChange}
+                />
               ))}
             </TableRow>
           </TableHeader>
           <TableBody>
-            {chats.map((chat) => (
+            {localChats.map((chat) => (
               <TableRow key={chat.id}>
                 {showCheckboxes && (
                   <TableCell>
