@@ -22,6 +22,15 @@ export const LINK_TAB_COLUMNS: Record<string, LinkTableColumn[]> = {
   processed: ['link', 'chatName', 'status', 'createdAt', 'processedAt']
 };
 
+export interface Entity {
+  name?: string;
+  type?: string;
+  chain?: string;
+  address?: string;
+  twitter?: string;
+  website?: string;
+}
+
 export type ChatMetadata = {
   id: number;
   chatId: string;
@@ -29,7 +38,7 @@ export type ChatMetadata = {
   about: string;
   username: string;
   participantsCount: number;
-  entity: any;
+  entity: Entity | null;
   qualityReports: any[];
   isBlocked: boolean;
   createdAt: Date;

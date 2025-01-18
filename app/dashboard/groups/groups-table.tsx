@@ -107,7 +107,7 @@ export function GroupsTable({
       case 'participants':
         return <TableCell>{chat.participantsCount}</TableCell>;
       case 'entity':
-        return <TruncatedCell content={JSON.stringify(chat.entity, null, 2)} />;
+        return <TableCell>{chat.entity?.name}</TableCell>;
       case 'reports':
         return (
           <TruncatedCell

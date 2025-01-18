@@ -15,7 +15,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { count, eq, ilike, inArray, or, and, desc } from 'drizzle-orm';
 import { z } from 'zod';
-import { TgLinkStatus } from './types';
+import { TgLinkStatus, Entity } from './types';
 import { customAlphabet } from 'nanoid';
 
 const client = postgres(process.env.POSTGRES_URL!);
@@ -125,7 +125,7 @@ export const chatMetadata = pgTable('chat_metadata', {
   about: text('about').default(''),
   username: varchar('username', { length: 255 }).default(''),
   participantsCount: integer('participants_count').default(0),
-  entity: jsonb('entity'),
+  entity: jsonb('entity').$type<Entity | null>(),
   qualityReports: jsonb('quality_reports').default('[]'),
   isBlocked: boolean('is_blocked').default(false),
   photo: jsonb('photo').default('{}'),
