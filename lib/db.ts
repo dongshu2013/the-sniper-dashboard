@@ -13,15 +13,13 @@ import {
   jsonb,
   boolean
 } from 'drizzle-orm/pg-core';
-import { count, eq, ilike, inArray, or, and } from 'drizzle-orm';
+import { count, eq, ilike, inArray, or, and, desc } from 'drizzle-orm';
 import { z } from 'zod';
 import { TgLinkStatus } from './types';
 import { customAlphabet } from 'nanoid';
 
 const client = postgres(process.env.POSTGRES_URL!);
 export const db = drizzle(client);
-
-export const statusEnum = pgEnum('status', ['active', 'inactive', 'archived']);
 
 export const tgLinkStatusEnum = pgEnum(
   'tg_link_status',
@@ -200,4 +198,114 @@ export async function getChatMetadataById(
     .limit(1);
 
   return result[0] || null;
+}
+
+// accounts table
+
+export const accounts = pgTable('accounts', {
+  id: serial('id').primaryKey(),
+  tgId: varchar('tg_id', { length: 255 }).notNull().unique(),
+  username: varchar('username', { length: 255 }),
+  apiId: varchar('api_id', { length: 255 }).notNull(),
+  apiHash: varchar('api_hash', { length: 255 }).notNull(),
+  phone: varchar('phone', { length: 255 }).notNull(),
+  status: varchar('status', { length: 255 }).default('active'),
+  fullname: varchar('fullname', { length: 255 }),
+  lastActiveAt: timestamp('last_active_at'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+});
+
+export type Account = typeof accounts.$inferSelect;
+
+export async function getAccounts(
+  search: string,
+  offset: number,
+  status?: string[],
+  pageSize: number = 20
+): Promise<{
+  accounts: Account[];
+  totalAccounts: number;
+}> {
+  const conditions = [];
+
+  if (search) {
+    conditions.push(
+      or(
+        ilike(accounts.username, `%${search}%`),
+        ilike(accounts.tgId, `%${search}%`),
+        ilike(accounts.phone, `%${search}%`)
+      )
+    );
+  }
+
+  if (status && status.length > 0) {
+    conditions.push(inArray(accounts.status, status));
+  }
+
+  const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
+  const totalAccounts = await db
+    .select({ count: count() })
+    .from(accounts)
+    .where(whereClause);
+
+  const accountsList = await db
+    .select()
+    .from(accounts)
+    .where(whereClause)
+    .limit(pageSize)
+    .offset(offset)
+    .orderBy(desc(accounts.lastActiveAt));
+
+  return {
+    accounts: accountsList,
+    totalAccounts: totalAccounts[0].count
+  };
+}
+
+export async function createAccount(data: {
+  tgId: string;
+  username?: string;
+  apiId: string;
+  apiHash: string;
+  phone: string;
+  fullname?: string;
+}) {
+  await db.insert(accounts).values({
+    ...data,
+    status: 'active',
+    lastActiveAt: new Date(),
+    updatedAt: new Date()
+  });
+}
+
+export async function updateAccountStatus(ids: number[], status: string) {
+  await db
+    .update(accounts)
+    .set({
+      status,
+      updatedAt: new Date()
+    })
+    .where(inArray(accounts.id, ids));
+}
+
+export async function getAccountById(id: number): Promise<Account | null> {
+  const result = await db
+    .select()
+    .from(accounts)
+    .where(eq(accounts.id, id))
+    .limit(1);
+
+  return result[0] || null;
+}
+
+export async function updateAccountLastActive(id: number) {
+  await db
+    .update(accounts)
+    .set({
+      lastActiveAt: new Date(),
+      updatedAt: new Date()
+    })
+    .where(eq(accounts.id, id));
 }

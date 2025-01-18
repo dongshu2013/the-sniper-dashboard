@@ -56,3 +56,31 @@ export const GROUP_TAB_COLUMNS: Record<string, GroupTableColumn[]> = {
   ],
   blocked: ['name', 'username', 'participants', 'status', 'createdAt']
 };
+
+export enum AccountStatus {
+  ACTIVE = 'active',
+  BANNED = 'banned',
+  SUSPENDED = 'suspended'
+}
+
+export type AccountTableColumn =
+  | 'username'
+  | 'tgId'
+  | 'phone'
+  | 'status'
+  | 'fullname'
+  | 'lastActiveAt'
+  | 'createdAt';
+
+export const ACCOUNT_TAB_COLUMNS: Record<string, AccountTableColumn[]> = {
+  active: [
+    'username',
+    'tgId',
+    'phone',
+    'fullname',
+    'lastActiveAt',
+    'createdAt'
+  ],
+  banned: ['username', 'tgId', 'phone', 'status', 'lastActiveAt', 'createdAt'],
+  suspended: ['username', 'tgId', 'status', 'lastActiveAt', 'createdAt']
+};
