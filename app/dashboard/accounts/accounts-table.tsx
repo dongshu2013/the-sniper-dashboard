@@ -1,12 +1,12 @@
 'use client';
 
 import * as React from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Table,
   TableBody,
   TableCell,
-  TableHead,
   TableHeader,
   TableRow
 } from '@/components/ui/table';
@@ -22,6 +22,22 @@ import { Account } from '@/lib/db';
 import { AccountTableColumn } from '@/lib/types';
 import { Pagination } from '@/components/ui/pagination';
 import { formatDateTime } from '@/lib/utils';
+import {
+  SortableTableHeader,
+  SortDirection
+} from '@/components/ui/sortable-table-header';
+import { useTableSort } from '@/lib/hooks/use-table-sort';
+
+// 列名映射
+const COLUMN_MAP: Record<string, string> = {
+  username: 'username',
+  tgId: 'tgId',
+  phone: 'phone',
+  status: 'status',
+  fullname: 'fullname',
+  lastActiveAt: 'lastActiveAt',
+  createdAt: 'createdAt'
+};
 
 interface AccountsTableProps {
   accounts: Account[];
@@ -40,8 +56,14 @@ export function AccountsTable({
   columns,
   currentTab
 }: AccountsTableProps) {
+  const [localAccounts, setLocalAccounts] = useState(accounts);
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { sortConfig, handleSort } = useTableSort(accounts);
+
+  useEffect(() => {
+    setLocalAccounts(accounts);
+  }, [accounts]);
 
   const handlePageChange = (newOffset: number) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -49,20 +71,16 @@ export function AccountsTable({
     router.push(`/dashboard/accounts?${params.toString()}`);
   };
 
-  const handlePageSizeChange = (newPageSize: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('pageSize', newPageSize.toString());
-    params.set('offset', '0');
-    router.push(`/dashboard/accounts?${params.toString()}`);
+  const handleSortChange = (column: string, direction: SortDirection) => {
+    const mappedColumn = COLUMN_MAP[column] || column;
+    const sortedData = handleSort(accounts, mappedColumn, direction);
+    setLocalAccounts(sortedData);
   };
-
-  const totalPages = Math.ceil(totalAccounts / pageSize);
-  const currentPage = Math.floor(offset / pageSize) + 1;
 
   const renderTableCell = (account: Account, column: AccountTableColumn) => {
     switch (column) {
       case 'username':
-        return <TableCell>{account.username || 'N/A'}</TableCell>;
+        return <TableCell>{account.username}</TableCell>;
       case 'tgId':
         return <TableCell>{account.tgId}</TableCell>;
       case 'phone':
@@ -76,7 +94,7 @@ export function AccountsTable({
           </TableCell>
         );
       case 'fullname':
-        return <TableCell>{account.fullname || 'N/A'}</TableCell>;
+        return <TableCell>{account.fullname}</TableCell>;
       case 'lastActiveAt':
         return <TableCell>{formatDateTime(account.lastActiveAt)}</TableCell>;
       case 'createdAt':
@@ -96,14 +114,22 @@ export function AccountsTable({
           <TableHeader>
             <TableRow>
               {columns.map((column) => (
-                <TableHead key={column} className="capitalize">
-                  {column.replace(/([A-Z])/g, ' $1').trim()}
-                </TableHead>
+                <SortableTableHeader
+                  key={column}
+                  column={column}
+                  label={column.replace(/([A-Z])/g, ' $1').trim()}
+                  sortDirection={
+                    sortConfig.column === COLUMN_MAP[column]
+                      ? sortConfig.direction
+                      : null
+                  }
+                  onSort={handleSortChange}
+                />
               ))}
             </TableRow>
           </TableHeader>
           <TableBody>
-            {accounts.map((account) => (
+            {localAccounts.map((account) => (
               <TableRow key={account.id}>
                 {columns.map((column) => (
                   <React.Fragment key={`${account.id}-${column}`}>
@@ -121,14 +147,19 @@ export function AccountsTable({
           {totalAccounts} accounts
         </div>
         <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
+          currentPage={Math.floor(offset / pageSize) + 1}
+          totalPages={Math.ceil(totalAccounts / pageSize)}
           pageSize={pageSize}
           onPageChange={(page) => {
             const newOffset = (page - 1) * pageSize;
             handlePageChange(newOffset);
           }}
-          onPageSizeChange={handlePageSizeChange}
+          onPageSizeChange={(newPageSize) => {
+            const params = new URLSearchParams(searchParams.toString());
+            params.set('pageSize', newPageSize.toString());
+            params.set('offset', '0');
+            router.push(`/dashboard/accounts?${params.toString()}`);
+          }}
         />
       </CardFooter>
     </Card>
