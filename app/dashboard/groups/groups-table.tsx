@@ -227,7 +227,7 @@ export function GroupsTable({
                     column === 'Entity' || column === 'Quality' ? (
                       <div className="flex items-center gap-1.5">
                         <AiIcon className="h-6 w-6" />
-                        <span>Entity</span>
+                        <span>{column}</span>
                       </div>
                     ) : (
                       column.replace(/([A-Z])/g, ' $1').trim()
