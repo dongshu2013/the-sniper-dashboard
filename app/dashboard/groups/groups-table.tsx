@@ -139,16 +139,12 @@ export function GroupsTable({
       case 'Entity':
         return (
           <TableCell>
-            {chat.entity?.name ? (
-              <div className="flex items-center gap-1.5">
-                {chat.entity.type === 'memecoin' && (
-                  <MemecoinIcon className="h-6 w-6" />
-                )}
-                <span>{chat.entity.name}</span>
-              </div>
-            ) : (
-              <span className="text-muted-foreground">-</span>
-            )}
+            <div className="flex items-center gap-1.5">
+              {chat.entity?.type === 'memecoin' && (
+                <MemecoinIcon className="h-6 w-6" />
+              )}
+              <span>{chat.entity?.name}</span>
+            </div>
           </TableCell>
         );
       case 'Quality':
