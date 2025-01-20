@@ -33,7 +33,7 @@ export function GroupsGrid({
 
   return (
     <Card
-      className="flex flex-col p-3 h-full hover:shadow-md transition-shadow cursor-pointer bg-card"
+      className="border-0 flex flex-col p-3 h-full hover:shadow-md transition-shadow cursor-pointer bg-card"
       onClick={handleClick}
     >
       <div className="flex items-start justify-between gap-3">
@@ -52,7 +52,7 @@ export function GroupsGrid({
         </div>
       </div>
 
-      <div className="mt-2.5 text-xs text-muted-foreground line-clamp-2">
+      <div className="mt-2.5 text-xs text-muted-foreground line-clamp-1">
         {chat.about || 'No description available'}
       </div>
 
@@ -60,11 +60,11 @@ export function GroupsGrid({
       <div className="relative mt-3 rounded-xl border border-border">
         {/* AI Icon at top center */}
         <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 bg-background px-2">
-          <AiIcon className="h-3 w-6" />
+          <AiIcon className="h-4 w-8" />
         </div>
 
         {/* Content container */}
-        <div className="mt-2 grid grid-cols-2 divide-x divide-border">
+        <div className="grid grid-cols-2 divide-x divide-border">
           {/* Entity section */}
           <div className="py-2 px-3 flex flex-col items-center justify-center">
             <div className="text-xs text-muted-foreground mb-1">Entity</div>
@@ -81,7 +81,7 @@ export function GroupsGrid({
             <div className="text-xs text-muted-foreground mb-1">Quality</div>
             <div className="flex items-center gap-1.5">
               <span className="text-[#FFB800] font-semibold text-sm">
-                {score.toFixed(1)}
+                {isNaN(score) ? '0.0' : score.toFixed(1)}
               </span>
               <Badge variant={variant} className="text-xs px-1.5 py-0.5 h-auto">
                 {label}
