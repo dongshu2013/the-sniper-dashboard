@@ -54,6 +54,25 @@ const COLUMN_MAP: Record<string, string> = {
   processedAt: 'processedAt'
 };
 
+const getBadgeVariant = (status: string | null) => {
+  if (!status) return 'outline' as const;
+  switch (status) {
+    case TgLinkStatus.PROCESSED:
+      return 'secondary' as const; // Success status - green
+    case TgLinkStatus.ERROR:
+      return 'destructive' as const; // Error status - red
+    case TgLinkStatus.IGNORED:
+      return 'outline' as const; // Ignored status - gray outline
+    case TgLinkStatus.PROCESSING:
+      return 'default' as const; // Processing status - blue
+    case TgLinkStatus.PENDING_PROCESSING:
+    case TgLinkStatus.PENDING_PRE_PROCESSING:
+      return 'outline' as const; // Pending status - gray outline
+    default:
+      return 'outline' as const;
+  }
+};
+
 export function LinksTable({
   links,
   offset,
@@ -137,7 +156,10 @@ export function LinksTable({
       case 'status':
         return (
           <TableCell>
-            <Badge variant="outline" className="capitalize">
+            <Badge
+              variant={getBadgeVariant(link.status)}
+              className="capitalize"
+            >
               {link.status}
             </Badge>
           </TableCell>
