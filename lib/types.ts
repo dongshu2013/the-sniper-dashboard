@@ -63,7 +63,7 @@ export type GroupTableColumn =
 
 export const GROUP_TAB_COLUMNS: Record<string, GroupTableColumn[]> = {
   active: ['Name', 'Intro', 'Members', 'Entity', 'Quality', 'Created At'],
-  blocked: ['Name', 'Intro', 'Members', 'Status', 'Created At']
+  blocked: ['Name', 'Intro', 'Members', 'Entity', 'Quality', 'Created At']
 };
 
 export enum AccountStatus {
