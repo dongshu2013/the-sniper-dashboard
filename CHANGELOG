@@ -30,9 +30,9 @@
   - [ ] opt: filter status
 - [ ] dashboard groups
   - [ ] block by account_chat.status
-  - [ ] entity show icon of the meme
   - [ ] card view
   - [ ] recommend view
+  - [ ] opt: entity show icon of the meme
 - [ ] dashboard accounts
   - [ ] show added groups
   - [ ] opt: add account

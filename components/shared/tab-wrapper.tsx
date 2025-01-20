@@ -6,26 +6,32 @@ import { Tabs } from '@/components/ui/tabs';
 export function TabWrapper({
   children,
   basePath,
-  defaultTab
+  defaultTab,
+  defaultView = 'list'
 }: {
   children: React.ReactNode;
   basePath: string;
   defaultTab: string;
+  defaultView?: string;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentTab = searchParams.get('tab') ?? defaultTab;
+  const currentView = searchParams.get('view') ?? defaultView;
+
+  const handleValueChange = (value: string) => {
+    const params = new URLSearchParams(searchParams);
+    if (value === 'list' || value === 'grid') {
+      params.set('view', value);
+    } else {
+      params.set('tab', value);
+      params.set('offset', '0');
+    }
+    router.push(`${basePath}?${params.toString()}`);
+  };
 
   return (
-    <Tabs
-      value={currentTab}
-      onValueChange={(value) => {
-        const params = new URLSearchParams(searchParams);
-        params.set('tab', value);
-        params.set('offset', '0');
-        router.push(`${basePath}?${params.toString()}`);
-      }}
-    >
+    <Tabs value={currentTab} onValueChange={handleValueChange}>
       {children}
     </Tabs>
   );
