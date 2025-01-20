@@ -35,6 +35,7 @@ import { useTableFilter } from '@/lib/hooks/use-table-filter';
 import { FilterableTableHeader } from '@/components/ui/filterable-table-header';
 import { getQualityBadgeProps } from '@/lib/utils';
 import { AiIcon } from '@/components/icons/ai-icon';
+import { MemecoinIcon } from '@/components/icons/memecoin-icon';
 
 const COLUMN_MAP: Record<string, string> = {
   Name: 'name',
@@ -131,7 +132,20 @@ export function GroupsTable({
       case 'Members':
         return <TableCell>{chat.participantsCount}</TableCell>;
       case 'Entity':
-        return <TableCell>{chat.entity?.name}</TableCell>;
+        return (
+          <TableCell>
+            {chat.entity?.name ? (
+              <div className="flex items-center gap-1.5">
+                {chat.entity.type === 'memecoin' && (
+                  <MemecoinIcon className="h-6 w-6" />
+                )}
+                <span>{chat.entity.name}</span>
+              </div>
+            ) : (
+              <span className="text-muted-foreground">-</span>
+            )}
+          </TableCell>
+        );
       case 'Quality':
         const { score, variant, label } = getQualityBadgeProps(
           chat.qualityReports
