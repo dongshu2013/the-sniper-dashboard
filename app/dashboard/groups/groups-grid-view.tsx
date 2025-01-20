@@ -31,8 +31,8 @@ export function GroupsGridView({
   };
 
   return (
-    <Card>
-      <CardContent>
+    <Card className="border-0 shadow-none bg-transparent">
+      <CardContent className="p-0">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 mt-4">
           {chats.map((chat) => (
             <GroupsGrid
@@ -43,7 +43,7 @@ export function GroupsGridView({
           ))}
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between">
+      <CardFooter className="flex justify-between p-0 mt-4">
         <div className="text-sm text-muted-foreground">
           Showing {offset + 1}-{Math.min(offset + pageSize, totalChats)} of{' '}
           {totalChats} groups
