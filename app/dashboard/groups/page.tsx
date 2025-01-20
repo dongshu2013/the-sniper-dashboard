@@ -1,11 +1,11 @@
 import { TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { getChatMetadataWithAccounts } from '@/lib/db';
 import { GroupsTable } from './groups-table';
-import { GroupsCard } from './groups-card';
 import { GROUP_TAB_COLUMNS } from '@/lib/types';
 import { TabWrapper } from '@/components/shared/tab-wrapper';
 import { Search } from './search';
 import { ViewSwitcher } from './view-switcher';
+import { GroupsGridView } from './groups-grid-view';
 
 export default async function GroupsPage(props: {
   searchParams: Promise<{
@@ -55,11 +55,13 @@ export default async function GroupsPage(props: {
             columns={GROUP_TAB_COLUMNS.active}
           />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {chats.map((chat) => (
-              <GroupsCard key={chat.id} chat={chat} showCheckboxes={true} />
-            ))}
-          </div>
+          <GroupsGridView
+            chats={chats}
+            offset={offset}
+            totalChats={totalChats}
+            pageSize={pageSize}
+            showCheckboxes={true}
+          />
         )}
       </TabsContent>
 
@@ -74,11 +76,13 @@ export default async function GroupsPage(props: {
             columns={GROUP_TAB_COLUMNS.blocked}
           />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {chats.map((chat) => (
-              <GroupsCard key={chat.id} chat={chat} showCheckboxes={false} />
-            ))}
-          </div>
+          <GroupsGridView
+            chats={chats}
+            offset={offset}
+            totalChats={totalChats}
+            pageSize={pageSize}
+            showCheckboxes={false}
+          />
         )}
       </TabsContent>
     </TabWrapper>

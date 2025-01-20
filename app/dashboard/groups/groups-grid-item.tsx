@@ -9,19 +9,19 @@ import { GroupAvatar } from '@/components/ui/avatar';
 import { formatDateTime, getQualityBadgeProps } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 
-interface GroupsCardProps {
+interface GroupsGridProps {
   chat: ChatWithAccounts;
   showCheckboxes?: boolean;
   onCheckChange?: (checked: boolean) => void;
   isChecked?: boolean;
 }
 
-export function GroupsCard({
+export function GroupsGrid({
   chat,
   showCheckboxes = false,
   onCheckChange,
   isChecked = false
-}: GroupsCardProps) {
+}: GroupsGridProps) {
   const router = useRouter();
   const { score, variant, label } = getQualityBadgeProps(chat.qualityReports);
 
