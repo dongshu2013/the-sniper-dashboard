@@ -34,6 +34,7 @@ import { useTableSort } from '@/lib/hooks/use-table-sort';
 import { useTableFilter } from '@/lib/hooks/use-table-filter';
 import { FilterableTableHeader } from '@/components/ui/filterable-table-header';
 import { getQualityBadgeProps } from '@/lib/utils';
+import { AiIcon } from '@/components/icons/ai-icon';
 
 const COLUMN_MAP: Record<string, string> = {
   Name: 'name',
@@ -205,7 +206,16 @@ export function GroupsTable({
                 <FilterableTableHeader
                   key={`header-${column}`}
                   column={column}
-                  label={column.replace(/([A-Z])/g, ' $1').trim()}
+                  label={
+                    column === 'Entity' || column === 'Quality' ? (
+                      <div className="flex items-center gap-1.5">
+                        <AiIcon className="h-6 w-6" />
+                        <span>Entity</span>
+                      </div>
+                    ) : (
+                      column.replace(/([A-Z])/g, ' $1').trim()
+                    )
+                  }
                   filterValue={filterConfig[COLUMN_MAP[column] || column] || ''}
                   onFilterChange={(column, value) => {
                     const mappedColumn = COLUMN_MAP[column] || column;

@@ -19,7 +19,7 @@ export type FilterConfig = {
 
 interface FilterableTableHeaderProps {
   column: string;
-  label: string;
+  label: string | React.ReactNode;
   filterValue: string;
   onFilterChange: (column: string, value: string) => void;
   sortDirection?: 'asc' | 'desc' | null;
@@ -55,7 +55,7 @@ export function FilterableTableHeader({
         <DropdownMenuContent align="start" className="w-[200px]">
           <div className="flex items-center gap-2 p-2">
             <Input
-              placeholder={`Filter ${label.toLowerCase()}...`}
+              placeholder={`Filter ${typeof label === 'string' ? label.toLowerCase() : column.toLowerCase()}...`}
               value={filterValue}
               onChange={(e) => onFilterChange(column, e.target.value)}
               className="h-8"
