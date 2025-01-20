@@ -21,7 +21,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ChatMetadata, ChatWithAccounts } from '@/lib/db';
+import { ChatWithAccounts } from '@/lib/db';
 import { updateBlockStatus } from './actions';
 import { GroupTableColumn } from '@/lib/types';
 import { Pagination } from '@/components/ui/pagination';
@@ -29,24 +29,20 @@ import { formatDateTime } from '@/lib/utils';
 import { TruncatedCell } from '@/components/ui/truncated-cell';
 import { Eye } from 'lucide-react';
 import { GroupAvatar } from '@/components/ui/avatar';
-import {
-  SortableTableHeader,
-  SortDirection
-} from '@/components/ui/sortable-table-header';
+import { SortDirection } from '@/components/ui/sortable-table-header';
 import { useTableSort } from '@/lib/hooks/use-table-sort';
 import { useTableFilter } from '@/lib/hooks/use-table-filter';
 import { FilterableTableHeader } from '@/components/ui/filterable-table-header';
 import { getQualityBadgeProps } from '@/lib/utils';
-import { AccountsPopover } from '@/components/ui/accounts-popover';
 
 const COLUMN_MAP: Record<string, string> = {
-  participants: 'participantsCount',
-  name: 'name',
-  username: 'username',
-  createdAt: 'createdAt',
-  entity: 'entity.name',
-  quality: 'qualityReports',
-  account: 'account.username'
+  Name: 'name',
+  Intro: 'about',
+  Members: 'participantsCount',
+  Entity: 'entity.name',
+  Quality: 'qualityReports',
+  Status: 'isBlocked',
+  CreatedAt: 'createdAt'
 };
 
 export function GroupsTable({
@@ -107,7 +103,7 @@ export function GroupsTable({
     column: GroupTableColumn
   ) => {
     switch (column) {
-      case 'name':
+      case 'Name':
         return (
           <TableCell>
             <div className="flex items-center gap-1">
@@ -117,26 +113,25 @@ export function GroupsTable({
               />
               <TruncatedCell
                 content={chat.name ?? ''}
-                maxWidth="max-w-[200px]"
+                maxWidth="max-w-[100px]"
               />
             </div>
           </TableCell>
         );
-      case 'accounts':
+      case 'Intro':
         return (
           <TableCell>
-            {chat.accounts && chat.accounts.length > 0 ? (
-              <AccountsPopover accounts={chat.accounts} />
-            ) : (
-              <span className="text-muted-foreground">-</span>
-            )}
+            <TruncatedCell
+              content={chat.about ?? ''}
+              maxWidth="max-w-[200px]"
+            />
           </TableCell>
         );
-      case 'participants':
+      case 'Members':
         return <TableCell>{chat.participantsCount}</TableCell>;
-      case 'entity':
+      case 'Entity':
         return <TableCell>{chat.entity?.name}</TableCell>;
-      case 'quality':
+      case 'Quality':
         const { score, variant, label } = getQualityBadgeProps(
           chat.qualityReports
         );
@@ -150,7 +145,7 @@ export function GroupsTable({
             </div>
           </TableCell>
         );
-      case 'status':
+      case 'Status':
         return (
           <TableCell>
             <Badge
@@ -161,18 +156,8 @@ export function GroupsTable({
             </Badge>
           </TableCell>
         );
-      case 'createdAt':
+      case 'Created At':
         return <TableCell>{formatDateTime(chat.createdAt)}</TableCell>;
-      case 'accounts':
-        return (
-          <TableCell>
-            {chat.accounts && chat.accounts.length > 0 ? (
-              <AccountsPopover accounts={chat.accounts} />
-            ) : (
-              <span className="text-muted-foreground">-</span>
-            )}
-          </TableCell>
-        );
       default:
         return null;
     }
