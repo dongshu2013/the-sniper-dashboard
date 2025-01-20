@@ -122,12 +122,16 @@ export function LinksTable({
       case 'chatName':
         return (
           <TableCell className="font-medium">
-            <a
-              href={`/dashboard/groups/${link.chatId}`}
-              className="text-blue-500 hover:text-blue-700 hover:underline cursor-pointer"
-            >
-              {link.chatName}
-            </a>
+            {currentTab === 'processed' ? (
+              <a
+                href={`/dashboard/groups/${link.chatId}`}
+                className="text-blue-500 hover:text-blue-700 hover:underline cursor-pointer"
+              >
+                {link.chatName}
+              </a>
+            ) : (
+              <span>{link.chatName}</span>
+            )}
           </TableCell>
         );
       case 'status':

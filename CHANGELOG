@@ -26,17 +26,20 @@
 ## TODO
 
 - [ ] dashboard links
-  - [ ] opt(means optimize): only click chatName in processed
+  - [x] opt(means optimize): only click chatName in processed
   - [ ] opt: filter status
 - [ ] dashboard groups
-  - [ ] block by account_chat.status
-  - [ ] card view
-  - [ ] recommend view
+  - [ ] opt: table view
+  - [ ] opt: grid view
+  - [ ] opt: detail view
   - [ ] opt: entity show icon of the meme
+  - [ ] check: block by account_chat.status
+  - [ ] check: recommend view
 - [ ] dashboard accounts
   - [ ] show added groups
   - [ ] opt: add account
 - [ ] component table
+  - [ ] sort global data by column
   - [ ] opt: hint no rows
   - [ ] opt: sort arrow show when sorted
 - [ ] bugs
