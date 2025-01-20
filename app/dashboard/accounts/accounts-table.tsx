@@ -109,7 +109,7 @@ export function AccountsTable({
   const filteredAccounts = handleFilter(localAccounts, filterConfig);
 
   return (
-    <Card>
+    <Card className="border-0">
       <CardHeader>
         <CardTitle>Telegram Accounts</CardTitle>
       </CardHeader>

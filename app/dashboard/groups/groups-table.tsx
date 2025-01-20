@@ -182,7 +182,7 @@ export function GroupsTable({
   const filteredChats = handleFilter(localChats, filterConfig);
 
   return (
-    <Card>
+    <Card className="border-0">
       <CardHeader>
         <CardTitle>Telegram Groups</CardTitle>
         {showCheckboxes && (

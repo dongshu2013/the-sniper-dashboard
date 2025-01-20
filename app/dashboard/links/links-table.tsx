@@ -177,7 +177,7 @@ export function LinksTable({
   const filteredLinks = handleFilter(localLinks, filterConfig);
 
   return (
-    <Card>
+    <Card className="border-0">
       <CardHeader>
         <CardTitle>Telegram Links</CardTitle>
         {showCheckboxes && (
