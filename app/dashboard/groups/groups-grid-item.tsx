@@ -8,6 +8,8 @@ import { ChatWithAccounts } from '@/lib/db';
 import { GroupAvatar } from '@/components/ui/avatar';
 import { formatDateTime, getQualityBadgeProps } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
+import { MemecoinIcon } from '@/components/icons/memecoin-icon';
+import { AiIcon } from '@/components/icons/ai-icon';
 
 interface GroupsGridProps {
   chat: ChatWithAccounts;
@@ -25,13 +27,21 @@ export function GroupsGrid({
   const router = useRouter();
   const { score, variant, label } = getQualityBadgeProps(chat.qualityReports);
 
+  const handleClick = () => {
+    router.push(`/dashboard/groups/${chat.chatId}`);
+  };
+
   return (
-    <Card className="flex flex-col p-4 h-full">
+    <Card
+      className="flex flex-col p-4 h-full hover:shadow-md transition-shadow cursor-pointer bg-card"
+      onClick={handleClick}
+    >
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-3">
           <GroupAvatar
             photo={chat.photo as { path?: string }}
             name={chat.name || ''}
+            size={48}
           />
           <div>
             <h3 className="font-semibold leading-none">{chat.name}</h3>
@@ -40,39 +50,43 @@ export function GroupsGrid({
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          {!chat.isBlocked && (
-            <div className="flex items-center gap-1">
-              <span className="text-sm tabular-nums">
-                {isNaN(score) ? '0' : score.toFixed(1)}
+      </div>
+
+      <div className="mt-4 text-sm text-muted-foreground line-clamp-2">
+        {chat.about || 'No description available'}
+      </div>
+
+      {/* AI Analysis Section */}
+      <div className="relative mt-4 rounded-xl border border-border">
+        {/* AI Icon at top center */}
+        <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-background px-2">
+          <AiIcon className="h-4 w-7" />
+        </div>
+
+        {/* Content container */}
+        <div className="grid grid-cols-2 divide-x divide-border">
+          {/* Entity section */}
+          <div className="py-2 px-4 flex flex-col items-center justify-center">
+            <div className="text-sm text-muted-foreground mb-1">Entity</div>
+            <div className="flex items-center gap-2">
+              <MemecoinIcon className="h-5 w-5" />
+              <span className="font-medium">
+                {chat.entity?.name || 'Unknown'}
+              </span>
+            </div>
+          </div>
+
+          {/* Quality section */}
+          <div className="py-3 px-4 flex flex-col items-center justify-center">
+            <div className="text-sm text-muted-foreground mb-1">Quality</div>
+            <div className="flex items-center gap-2">
+              <span className="text-[#FFB800] font-semibold text-lg">
+                {score.toFixed(1)}
               </span>
               <Badge variant={variant}>{label}</Badge>
             </div>
-          )}
-          {chat.isBlocked && <Badge variant="destructive">Blocked</Badge>}
+          </div>
         </div>
-      </div>
-
-      <div className="mt-4 text-sm text-muted-foreground">
-        Created {formatDateTime(chat.createdAt)}
-      </div>
-
-      {chat.entity && (
-        <div className="mt-2">
-          <Badge variant="outline">{chat.entity.name}</Badge>
-        </div>
-      )}
-
-      <div className="mt-auto pt-4 flex items-center justify-between">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => router.push(`/dashboard/groups/${chat.chatId}`)}
-          className="flex items-center gap-2"
-        >
-          <Eye className="h-4 w-4" />
-          View Details
-        </Button>
       </div>
     </Card>
   );
