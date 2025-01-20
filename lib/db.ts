@@ -398,7 +398,14 @@ export async function getChatMetadataWithAccounts(
       about: chatMetadata.about,
       participantsCount: chatMetadata.participantsCount,
       'entity.name': sql`${chatMetadata.entity}->>'name'`,
-      qualityReports: sql`COALESCE((${chatMetadata.qualityReports}->0->>'score')::numeric, 0)`,
+      // TODO fix: if lose score, result is 0
+      qualityReports: sql`(
+        SELECT COALESCE(
+          AVG((value->>'score')::numeric),
+          0
+        )
+        FROM jsonb_array_elements(${chatMetadata.qualityReports})
+      )`,
       isBlocked: chatMetadata.isBlocked,
       createdAt: chatMetadata.createdAt
     };
@@ -420,7 +427,7 @@ export async function getChatMetadataWithAccounts(
 
   // Default or no sort column case
   const chatsWithAccounts = await query
-    .orderBy(desc(chatMetadata.createdAt))
+    .orderBy(asc(chatMetadata.createdAt))
     .limit(pageSize)
     .offset(offset);
   return {
