@@ -53,7 +53,7 @@ export function GroupsGrid({
       </div>
 
       <div className="mt-2.5 text-xs text-muted-foreground line-clamp-1">
-        {chat.about || 'No description available'}
+        {chat.about || 'No info'}
       </div>
 
       {/* AI Analysis Section */}
