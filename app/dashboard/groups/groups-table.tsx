@@ -29,10 +29,12 @@ import { formatDateTime } from '@/lib/utils';
 import { TruncatedCell } from '@/components/ui/truncated-cell';
 import { Eye } from 'lucide-react';
 import { GroupAvatar } from '@/components/ui/avatar';
-import { SortDirection } from '@/components/ui/sortable-table-header';
 import { useTableSort } from '@/lib/hooks/use-table-sort';
 import { useTableFilter } from '@/lib/hooks/use-table-filter';
-import { FilterableTableHeader } from '@/components/ui/filterable-table-header';
+import {
+  FilterableTableHeader,
+  SortDirection
+} from '@/components/ui/filterable-table-header';
 import { getQualityBadgeProps } from '@/lib/utils';
 import { AiIcon } from '@/components/icons/ai-icon';
 import { MemecoinIcon } from '@/components/icons/memecoin-icon';

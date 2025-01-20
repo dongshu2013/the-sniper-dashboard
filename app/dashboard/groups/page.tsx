@@ -6,7 +6,7 @@ import { TabWrapper } from '@/components/shared/tab-wrapper';
 import { Search } from './search';
 import { ViewSwitcher } from './view-switcher';
 import { GroupsGridView } from './groups-grid-view';
-import { SortDirection } from '@/components/ui/sortable-table-header';
+import { SortDirection } from '@/components/ui/filterable-table-header';
 
 export default async function GroupsPage(props: {
   searchParams: Promise<{

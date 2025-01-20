@@ -26,12 +26,11 @@ import { updateLinkStatus } from './actions';
 import { TgLinkStatus, LinkTableColumn, LINK_TAB_COLUMNS } from '@/lib/types';
 import { Pagination } from '@/components/ui/pagination';
 import { formatDateTime } from '@/lib/utils';
-import {
-  SortableTableHeader,
-  SortDirection
-} from '@/components/ui/sortable-table-header';
 import { useTableSort } from '@/lib/hooks/use-table-sort';
-import { FilterableTableHeader } from '@/components/ui/filterable-table-header';
+import {
+  FilterableTableHeader,
+  SortDirection
+} from '@/components/ui/filterable-table-header';
 import { useTableFilter } from '@/lib/hooks/use-table-filter';
 
 interface LinksTableProps {

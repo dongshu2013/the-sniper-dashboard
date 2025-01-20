@@ -27,7 +27,7 @@ import {
 import { z } from 'zod';
 import { TgLinkStatus, Entity, QualityReport } from './types';
 import { customAlphabet } from 'nanoid';
-import { SortDirection } from '@/components/ui/sortable-table-header';
+import { SortDirection } from '@/components/ui/filterable-table-header';
 
 const client = postgres(process.env.POSTGRES_URL!);
 export const db = drizzle(client);
