@@ -155,7 +155,7 @@ export function GroupsTable({
           <TableCell>
             <div className="flex items-center gap-2">
               <span className="text-sm tabular-nums">
-                {isNaN(score) ? '0' : score.toFixed(1)}
+                {isNaN(score) ? '0.0' : score.toFixed(1)}
               </span>
               <Badge variant={variant}>{label}</Badge>
             </div>

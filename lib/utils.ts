@@ -26,8 +26,8 @@ interface QualityReport {
 export function getQualityBadgeProps(reports: QualityReport[] | null) {
   if (!reports || reports.length === 0) {
     return {
-      score: 0,
-      variant: 'outline' as const,
+      score: 0.0,
+      variant: 'nodata' as const,
       label: 'No Data'
     };
   }
@@ -35,29 +35,23 @@ export function getQualityBadgeProps(reports: QualityReport[] | null) {
   const avgScore =
     reports.reduce((sum, report) => sum + report.score, 0) / reports.length;
 
-  if (avgScore >= 8.5) {
+  if (avgScore >= 8) {
     return {
       score: avgScore,
       variant: 'default' as const,
       label: 'Excellent'
     };
-  } else if (avgScore >= 7) {
+  } else if (avgScore >= 6) {
     return {
       score: avgScore,
       variant: 'secondary' as const,
       label: 'Good'
     };
-  } else if (avgScore >= 5) {
-    return {
-      score: avgScore,
-      variant: 'outline' as const,
-      label: 'Fair'
-    };
   } else {
     return {
       score: avgScore,
       variant: 'destructive' as const,
-      label: 'Poor'
+      label: 'Bad'
     };
   }
 }
