@@ -33,57 +33,59 @@ export function GroupsGrid({
 
   return (
     <Card
-      className="flex flex-col p-4 h-full hover:shadow-md transition-shadow cursor-pointer bg-card"
+      className="flex flex-col p-3 h-full hover:shadow-md transition-shadow cursor-pointer bg-card"
       onClick={handleClick}
     >
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-3">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-center gap-2.5">
           <GroupAvatar
             photo={chat.photo as { path?: string }}
             name={chat.name || ''}
-            size={48}
+            size={40}
           />
           <div>
-            <h3 className="font-semibold leading-none">{chat.name}</h3>
-            <p className="text-sm text-muted-foreground mt-1">
+            <h3 className="font-medium leading-none text-sm">{chat.name}</h3>
+            <p className="text-xs text-muted-foreground mt-1">
               {chat.participantsCount} members
             </p>
           </div>
         </div>
       </div>
 
-      <div className="mt-4 text-sm text-muted-foreground line-clamp-2">
+      <div className="mt-2.5 text-xs text-muted-foreground line-clamp-2">
         {chat.about || 'No description available'}
       </div>
 
       {/* AI Analysis Section */}
-      <div className="relative mt-4 rounded-xl border border-border">
+      <div className="relative mt-3 rounded-xl border border-border">
         {/* AI Icon at top center */}
-        <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-background px-2">
-          <AiIcon className="h-4 w-7" />
+        <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 bg-background px-2">
+          <AiIcon className="h-3 w-6" />
         </div>
 
         {/* Content container */}
-        <div className="grid grid-cols-2 divide-x divide-border">
+        <div className="mt-2 grid grid-cols-2 divide-x divide-border">
           {/* Entity section */}
-          <div className="py-2 px-4 flex flex-col items-center justify-center">
-            <div className="text-sm text-muted-foreground mb-1">Entity</div>
-            <div className="flex items-center gap-2">
-              <MemecoinIcon className="h-5 w-5" />
-              <span className="font-medium">
+          <div className="py-2 px-3 flex flex-col items-center justify-center">
+            <div className="text-xs text-muted-foreground mb-1">Entity</div>
+            <div className="flex items-center gap-1.5">
+              <MemecoinIcon className="h-4 w-4" />
+              <span className="font-medium text-xs">
                 {chat.entity?.name || 'Unknown'}
               </span>
             </div>
           </div>
 
           {/* Quality section */}
-          <div className="py-3 px-4 flex flex-col items-center justify-center">
-            <div className="text-sm text-muted-foreground mb-1">Quality</div>
-            <div className="flex items-center gap-2">
-              <span className="text-[#FFB800] font-semibold text-lg">
+          <div className="py-2 px-3 flex flex-col items-center justify-center">
+            <div className="text-xs text-muted-foreground mb-1">Quality</div>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[#FFB800] font-semibold text-sm">
                 {score.toFixed(1)}
               </span>
-              <Badge variant={variant}>{label}</Badge>
+              <Badge variant={variant} className="text-xs px-1.5 py-0.5 h-auto">
+                {label}
+              </Badge>
             </div>
           </div>
         </div>
