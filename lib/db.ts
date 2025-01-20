@@ -397,8 +397,8 @@ export async function getChatMetadataWithAccounts(
       name: chatMetadata.name,
       about: chatMetadata.about,
       participantsCount: chatMetadata.participantsCount,
-      'entity.name': chatMetadata.entity,
-      qualityReports: chatMetadata.qualityReports,
+      'entity.name': sql`${chatMetadata.entity}->>'name'`,
+      qualityReports: sql`COALESCE((${chatMetadata.qualityReports}->0->>'score')::numeric, 0)`,
       isBlocked: chatMetadata.isBlocked,
       createdAt: chatMetadata.createdAt
     };
