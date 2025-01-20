@@ -6,6 +6,7 @@ import { TabWrapper } from '@/components/shared/tab-wrapper';
 import { Search } from './search';
 import { ViewSwitcher } from './view-switcher';
 import { GroupsGridView } from './groups-grid-view';
+import { SortDirection } from '@/components/ui/sortable-table-header';
 
 export default async function GroupsPage(props: {
   searchParams: Promise<{
@@ -14,6 +15,8 @@ export default async function GroupsPage(props: {
     tab?: string;
     pageSize?: string;
     view?: string;
+    sortColumn?: string;
+    sortDirection?: string;
   }>;
 }) {
   const searchParams = await props.searchParams;
@@ -22,12 +25,16 @@ export default async function GroupsPage(props: {
   const pageSize = parseInt(searchParams.pageSize ?? '20');
   const currentTab = searchParams.tab ?? 'active';
   const currentView = searchParams.view ?? 'list';
+  const sortColumn = searchParams.sortColumn;
+  const sortDirection = searchParams.sortDirection as SortDirection;
 
   const { chats, totalChats } = await getChatMetadataWithAccounts(
     search,
     offset,
     currentTab === 'blocked',
-    pageSize
+    pageSize,
+    sortColumn,
+    sortDirection
   );
 
   return (

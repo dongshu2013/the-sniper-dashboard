@@ -44,7 +44,7 @@ const COLUMN_MAP: Record<string, string> = {
   Entity: 'entity.name',
   Quality: 'qualityReports',
   Status: 'isBlocked',
-  CreatedAt: 'createdAt'
+  'Created At': 'createdAt'
 };
 
 export function GroupsTable({
@@ -95,9 +95,12 @@ export function GroupsTable({
   };
 
   const handleSortChange = (column: string, direction: SortDirection) => {
+    const params = new URLSearchParams(searchParams.toString());
     const mappedColumn = COLUMN_MAP[column] || column;
-    const sortedData = handleSort(localChats, mappedColumn, direction);
-    setLocalChats(sortedData);
+    params.set('sortColumn', mappedColumn);
+    params.set('sortDirection', direction || '');
+    params.set('offset', '0');
+    router.push(`/dashboard/groups?${params.toString()}`);
   };
 
   const renderTableCell = (
