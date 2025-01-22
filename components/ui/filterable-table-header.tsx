@@ -9,8 +9,10 @@ import {
 } from './dropdown-menu';
 import { Input } from './input';
 import { Button } from './button';
-import { Filter, ChevronsUpDown, X } from 'lucide-react';
+import { Filter, ChevronsUpDown, X, ArrowUp, ArrowDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+export type SortDirection = 'asc' | 'desc' | null;
 
 export type FilterConfig = {
   column: string;
@@ -19,7 +21,7 @@ export type FilterConfig = {
 
 interface FilterableTableHeaderProps {
   column: string;
-  label: string;
+  label: string | React.ReactNode;
   filterValue: string;
   onFilterChange: (column: string, value: string) => void;
   sortDirection?: 'asc' | 'desc' | null;
@@ -49,13 +51,17 @@ export function FilterableTableHeader({
             {filterValue && (
               <Filter className="ml-2 h-4 w-4 text-muted-foreground" />
             )}
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            {sortDirection === 'asc' && <ArrowUp className="ml-2 h-4 w-4" />}
+            {sortDirection === 'desc' && <ArrowDown className="ml-2 h-4 w-4" />}
+            {!sortDirection && (
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            )}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="w-[200px]">
           <div className="flex items-center gap-2 p-2">
             <Input
-              placeholder={`Filter ${label.toLowerCase()}...`}
+              placeholder={`Filter ${typeof label === 'string' ? label.toLowerCase() : column.toLowerCase()}...`}
               value={filterValue}
               onChange={(e) => onFilterChange(column, e.target.value)}
               className="h-8"
@@ -78,18 +84,21 @@ export function FilterableTableHeader({
                 onClick={() => onSort(column, 'asc')}
                 className={cn(sortDirection === 'asc' && 'bg-accent')}
               >
+                <ArrowUp className="mr-2 h-4 w-4" />
                 Sort Ascending
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => onSort(column, 'desc')}
                 className={cn(sortDirection === 'desc' && 'bg-accent')}
               >
+                <ArrowDown className="mr-2 h-4 w-4" />
                 Sort Descending
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => onSort(column, null)}
-                className={cn(!sortDirection && 'bg-accent')}
+                className={cn(sortDirection === null && 'bg-accent')}
               >
+                <ChevronsUpDown className="mr-2 h-4 w-4" />
                 Remove Sort
               </DropdownMenuItem>
             </>

@@ -26,12 +26,11 @@ import { updateLinkStatus } from './actions';
 import { TgLinkStatus, LinkTableColumn, LINK_TAB_COLUMNS } from '@/lib/types';
 import { Pagination } from '@/components/ui/pagination';
 import { formatDateTime } from '@/lib/utils';
-import {
-  SortableTableHeader,
-  SortDirection
-} from '@/components/ui/sortable-table-header';
 import { useTableSort } from '@/lib/hooks/use-table-sort';
-import { FilterableTableHeader } from '@/components/ui/filterable-table-header';
+import {
+  FilterableTableHeader,
+  SortDirection
+} from '@/components/ui/filterable-table-header';
 import { useTableFilter } from '@/lib/hooks/use-table-filter';
 
 interface LinksTableProps {
@@ -52,6 +51,25 @@ const COLUMN_MAP: Record<string, string> = {
   markName: 'markName',
   createdAt: 'createdAt',
   processedAt: 'processedAt'
+};
+
+const getBadgeVariant = (status: string | null) => {
+  if (!status) return 'outline' as const;
+  switch (status) {
+    case TgLinkStatus.PROCESSED:
+      return 'secondary' as const; // Success status - green
+    case TgLinkStatus.ERROR:
+      return 'destructive' as const; // Error status - red
+    case TgLinkStatus.IGNORED:
+      return 'outline' as const; // Ignored status - gray outline
+    case TgLinkStatus.PROCESSING:
+      return 'default' as const; // Processing status - blue
+    case TgLinkStatus.PENDING_PROCESSING:
+    case TgLinkStatus.PENDING_PRE_PROCESSING:
+      return 'outline' as const; // Pending status - gray outline
+    default:
+      return 'outline' as const;
+  }
 };
 
 export function LinksTable({
@@ -122,18 +140,25 @@ export function LinksTable({
       case 'chatName':
         return (
           <TableCell className="font-medium">
-            <a
-              href={`/dashboard/groups/${link.chatId}`}
-              className="text-blue-500 hover:text-blue-700 hover:underline cursor-pointer"
-            >
-              {link.chatName}
-            </a>
+            {currentTab === 'processed' ? (
+              <a
+                href={`/dashboard/groups/${link.chatId}`}
+                className="text-blue-500 hover:text-blue-700 hover:underline cursor-pointer"
+              >
+                {link.chatName}
+              </a>
+            ) : (
+              <span>{link.chatName}</span>
+            )}
           </TableCell>
         );
       case 'status':
         return (
           <TableCell>
-            <Badge variant="outline" className="capitalize">
+            <Badge
+              variant={getBadgeVariant(link.status)}
+              className="capitalize"
+            >
               {link.status}
             </Badge>
           </TableCell>
@@ -152,7 +177,7 @@ export function LinksTable({
   const filteredLinks = handleFilter(localLinks, filterConfig);
 
   return (
-    <Card>
+    <Card className="border-0">
       <CardHeader>
         <CardTitle>Telegram Links</CardTitle>
         {showCheckboxes && (

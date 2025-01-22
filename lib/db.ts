@@ -9,9 +9,10 @@ import {
   timestamp,
   pgEnum,
   serial,
-  varchar,
   jsonb,
-  boolean
+  boolean,
+  varchar,
+  unique
 } from 'drizzle-orm/pg-core';
 import {
   count,
@@ -22,12 +23,12 @@ import {
   and,
   desc,
   sql,
-  SQL,
   asc
 } from 'drizzle-orm';
 import { z } from 'zod';
 import { TgLinkStatus, Entity, QualityReport } from './types';
 import { customAlphabet } from 'nanoid';
+import { SortDirection } from '@/components/ui/filterable-table-header';
 
 const client = postgres(process.env.POSTGRES_URL!);
 export const db = drizzle(client);
@@ -333,8 +334,8 @@ export async function getChatMetadataWithAccounts(
   offset: number,
   isBlocked?: boolean,
   pageSize: number = 20,
-  orderBy: keyof ChatMetadata = 'createdAt',
-  orderByDirection: string = 'desc'
+  sortColumn?: string,
+  sortDirection?: SortDirection
 ): Promise<{
   chats: ChatWithAccounts[];
   totalChats: number;
@@ -356,27 +357,27 @@ export async function getChatMetadataWithAccounts(
 
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
-  const orderByClause =
-    orderBy === 'qualityReports'
-      ? orderByDirection === 'asc'
-        ? asc(
-            sql`(SELECT ROUND(AVG((report->>'score')::numeric)) FROM jsonb_array_elements(quality_reports) AS report WHERE report->>'score' IS NOT NULL)`
-          )
-        : desc(
-            sql`(SELECT ROUND(AVG((report->>'score')::numeric)) FROM jsonb_array_elements(quality_reports) AS report WHERE report->>'score' IS NOT NULL)`
-          )
-      : orderBy
-        ? orderByDirection === 'asc'
-          ? asc(chatMetadata[orderBy])
-          : desc(chatMetadata[orderBy])
-        : asc(chatMetadata.createdAt);
+  // const orderByClause =
+  //   orderBy === 'qualityReports'
+  //     ? orderByDirection === 'asc'
+  //       ? asc(
+  //           sql`(SELECT ROUND(AVG((report->>'score')::numeric)) FROM jsonb_array_elements(quality_reports) AS report WHERE report->>'score' IS NOT NULL)`
+  //         )
+  //       : desc(
+  //           sql`(SELECT ROUND(AVG((report->>'score')::numeric)) FROM jsonb_array_elements(quality_reports) AS report WHERE report->>'score' IS NOT NULL)`
+  //         )
+  //     : orderBy
+  //       ? orderByDirection === 'asc'
+  //         ? asc(chatMetadata[orderBy])
+  //         : desc(chatMetadata[orderBy])
+  //       : asc(chatMetadata.createdAt);
 
   const totalChats = await db
     .select({ count: count() })
     .from(chatMetadata)
     .where(whereClause);
 
-  const chatsWithAccounts = await db
+  let query = db
     .select({
       id: chatMetadata.id,
       chatId: chatMetadata.chatId,
@@ -405,11 +406,46 @@ export async function getChatMetadataWithAccounts(
     .leftJoin(accountChat, eq(chatMetadata.chatId, accountChat.chatId))
     .leftJoin(accounts, eq(accountChat.accountId, accounts.tgId))
     .where(whereClause)
-    .groupBy(chatMetadata.id)
-    .orderBy(orderByClause)
+    .groupBy(chatMetadata.id);
+
+  if (sortColumn && sortDirection) {
+    const sortColumnMap: Record<string, any> = {
+      name: chatMetadata.name,
+      about: chatMetadata.about,
+      participantsCount: chatMetadata.participantsCount,
+      'entity.name': sql`${chatMetadata.entity}->>'name'`,
+      // TODO fix: if lose score, result is 0
+      qualityReports: sql`(
+        SELECT COALESCE(
+          AVG((value->>'score')::numeric),
+          0
+        )
+        FROM jsonb_array_elements(${chatMetadata.qualityReports})
+      )`,
+      isBlocked: chatMetadata.isBlocked,
+      createdAt: chatMetadata.createdAt
+    };
+
+    const column = sortColumnMap[sortColumn];
+    if (column) {
+      const orderByConfig =
+        sortDirection === 'asc' ? asc(column) : desc(column);
+      const chatsWithAccounts = await query
+        .orderBy(orderByConfig)
+        .limit(pageSize)
+        .offset(offset);
+      return {
+        chats: chatsWithAccounts as ChatWithAccounts[],
+        totalChats: totalChats[0].count
+      };
+    }
+  }
+
+  // Default or no sort column case
+  const chatsWithAccounts = await query
+    .orderBy(asc(chatMetadata.createdAt))
     .limit(pageSize)
     .offset(offset);
-
   return {
     chats: chatsWithAccounts as ChatWithAccounts[],
     totalChats: totalChats[0].count

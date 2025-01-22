@@ -21,7 +21,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ChatMetadata, ChatWithAccounts } from '@/lib/db';
+import { ChatWithAccounts } from '@/lib/db';
 import { updateBlockStatus } from './actions';
 import { GroupTableColumn } from '@/lib/types';
 import { Pagination } from '@/components/ui/pagination';
@@ -29,24 +29,24 @@ import { formatDateTime } from '@/lib/utils';
 import { TruncatedCell } from '@/components/ui/truncated-cell';
 import { Eye } from 'lucide-react';
 import { GroupAvatar } from '@/components/ui/avatar';
-import {
-  SortableTableHeader,
-  SortDirection
-} from '@/components/ui/sortable-table-header';
 import { useTableSort } from '@/lib/hooks/use-table-sort';
 import { useTableFilter } from '@/lib/hooks/use-table-filter';
-import { FilterableTableHeader } from '@/components/ui/filterable-table-header';
+import {
+  FilterableTableHeader,
+  SortDirection
+} from '@/components/ui/filterable-table-header';
 import { getQualityBadgeProps } from '@/lib/utils';
-import { AccountsPopover } from '@/components/ui/accounts-popover';
+import { AiIcon } from '@/components/icons/ai-icon';
+import { MemecoinIcon } from '@/components/icons/memecoin-icon';
 
 const COLUMN_MAP: Record<string, string> = {
-  participants: 'participantsCount',
-  name: 'name',
-  username: 'username',
-  createdAt: 'createdAt',
-  entity: 'entity.name',
-  quality: 'qualityReports',
-  account: 'account.username'
+  Name: 'name',
+  Intro: 'about',
+  Members: 'participantsCount',
+  Entity: 'entity.name',
+  Quality: 'qualityReports',
+  Status: 'isBlocked',
+  'Created At': 'createdAt'
 };
 
 export function GroupsTable({
@@ -97,13 +97,12 @@ export function GroupsTable({
   };
 
   const handleSortChange = (column: string, direction: SortDirection) => {
-    console.log('handleSortChange', column, direction);
+    const params = new URLSearchParams(searchParams.toString());
     const mappedColumn = COLUMN_MAP[column] || column;
-    // const sortedData = handleSort(localChats, mappedColumn, direction);
-    // setLocalChats(sortedData);
-    router.push(
-      `/dashboard/groups?orderBy=${mappedColumn}&direction=${direction}`
-    );
+    params.set('sortColumn', mappedColumn);
+    params.set('sortDirection', direction || '');
+    params.set('offset', '0');
+    router.push(`/dashboard/groups?${params.toString()}`);
   };
 
   const renderTableCell = (
@@ -111,7 +110,7 @@ export function GroupsTable({
     column: GroupTableColumn
   ) => {
     switch (column) {
-      case 'name':
+      case 'Name':
         return (
           <TableCell>
             <div className="flex items-center gap-1">
@@ -121,26 +120,34 @@ export function GroupsTable({
               />
               <TruncatedCell
                 content={chat.name ?? ''}
-                maxWidth="max-w-[200px]"
+                maxWidth="max-w-[100px]"
               />
             </div>
           </TableCell>
         );
-      case 'accounts':
+      case 'Intro':
         return (
           <TableCell>
-            {chat.accounts && chat.accounts.length > 0 ? (
-              <AccountsPopover accounts={chat.accounts} />
-            ) : (
-              <span className="text-muted-foreground">-</span>
-            )}
+            <TruncatedCell
+              content={chat.about ?? ''}
+              maxWidth="max-w-[200px]"
+            />
           </TableCell>
         );
-      case 'participants':
+      case 'Members':
         return <TableCell>{chat.participantsCount}</TableCell>;
-      case 'entity':
-        return <TableCell>{chat.entity?.name}</TableCell>;
-      case 'quality':
+      case 'Entity':
+        return (
+          <TableCell>
+            <div className="flex items-center gap-1.5">
+              {chat.entity?.type === 'memecoin' && (
+                <MemecoinIcon className="h-6 w-6" />
+              )}
+              <span>{chat.entity?.name}</span>
+            </div>
+          </TableCell>
+        );
+      case 'Quality':
         const { score, variant, label } = getQualityBadgeProps(
           chat.qualityReports
         );
@@ -148,13 +155,13 @@ export function GroupsTable({
           <TableCell>
             <div className="flex items-center gap-2">
               <span className="text-sm tabular-nums">
-                {isNaN(score) ? '0' : score.toFixed(1)}
+                {isNaN(score) ? '0.0' : score.toFixed(1)}
               </span>
               <Badge variant={variant}>{label}</Badge>
             </div>
           </TableCell>
         );
-      case 'status':
+      case 'Status':
         return (
           <TableCell>
             <Badge
@@ -165,18 +172,8 @@ export function GroupsTable({
             </Badge>
           </TableCell>
         );
-      case 'createdAt':
+      case 'Created At':
         return <TableCell>{formatDateTime(chat.createdAt)}</TableCell>;
-      case 'accounts':
-        return (
-          <TableCell>
-            {chat.accounts && chat.accounts.length > 0 ? (
-              <AccountsPopover accounts={chat.accounts} />
-            ) : (
-              <span className="text-muted-foreground">-</span>
-            )}
-          </TableCell>
-        );
       default:
         return null;
     }
@@ -185,7 +182,7 @@ export function GroupsTable({
   const filteredChats = handleFilter(localChats, filterConfig);
 
   return (
-    <Card>
+    <Card className="border-0">
       <CardHeader>
         <CardTitle>Telegram Groups</CardTitle>
         {showCheckboxes && (
@@ -224,7 +221,16 @@ export function GroupsTable({
                 <FilterableTableHeader
                   key={`header-${column}`}
                   column={column}
-                  label={column.replace(/([A-Z])/g, ' $1').trim()}
+                  label={
+                    column === 'Entity' || column === 'Quality' ? (
+                      <div className="flex items-center gap-1.5">
+                        <AiIcon className="h-6 w-6" />
+                        <span>{column}</span>
+                      </div>
+                    ) : (
+                      column.replace(/([A-Z])/g, ' $1').trim()
+                    )
+                  }
                   filterValue={filterConfig[COLUMN_MAP[column] || column] || ''}
                   onFilterChange={(column, value) => {
                     const mappedColumn = COLUMN_MAP[column] || column;

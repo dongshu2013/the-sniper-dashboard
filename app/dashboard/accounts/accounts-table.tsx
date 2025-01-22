@@ -22,12 +22,11 @@ import { Account } from '@/lib/db';
 import { AccountTableColumn } from '@/lib/types';
 import { Pagination } from '@/components/ui/pagination';
 import { formatDateTime } from '@/lib/utils';
-import {
-  SortableTableHeader,
-  SortDirection
-} from '@/components/ui/sortable-table-header';
 import { useTableSort } from '@/lib/hooks/use-table-sort';
-import { FilterableTableHeader } from '@/components/ui/filterable-table-header';
+import {
+  FilterableTableHeader,
+  SortDirection
+} from '@/components/ui/filterable-table-header';
 import { useTableFilter } from '@/lib/hooks/use-table-filter';
 
 // 列名映射
@@ -110,7 +109,7 @@ export function AccountsTable({
   const filteredAccounts = handleFilter(localAccounts, filterConfig);
 
   return (
-    <Card>
+    <Card className="border-0">
       <CardHeader>
         <CardTitle>Telegram Accounts</CardTitle>
       </CardHeader>

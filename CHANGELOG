@@ -1,0 +1,67 @@
+# 2025-01-18
+
+## Done Features
+
+- dashboard links
+  - processing
+  - mark_name
+- dashboard groups
+  - no show if filed is empty
+  - group photo
+  - filter: report/entiry
+  - entity show friendly
+  - report show friendly
+  - add a column to show which accounts provided the group
+- dashboard accounts
+  - add account
+- component table
+  - sort
+  - search
+  - pagination
+
+## Fixed Bugs
+
+- pagination data not refreshing in groups page
+
+## TODO
+
+- [ ] dashboard links
+  - [x] opt(means optimize): only click chatName in processed
+  - [ ] opt: filter status
+- [ ] dashboard groups
+  - [x] opt: table view
+  - [x] opt: grid view
+  - [ ] opt: detail view
+  - [x] opt: entity show icon of the meme
+  - [ ] check: block by account_chat.status
+  - [ ] check: recommend view
+- [ ] dashboard accounts
+  - [ ] show added groups
+  - [ ] opt: add account
+- [ ] component table
+  - [x] sort global data by column
+  - [ ] search global data by column
+  - [ ] opt: hint no rows
+  - [ ] opt: sort arrow show when sorted
+- [ ] bugs
+  - [ ] table data remove duplicates
+
+
+# 2025-01-21
+
+## TODO 
+
+- [ ] opt: quality evaluation
+  - [ ] based on chat_metadata new filed
+  - [ ] schedual store in quality_score
+- [ ] opt: add ai_about in chat_metadata
+  - [ ] based on chat_metadata name, about, pinned_message...
+- [ ] opt: doxx_twtter 
+  - [ ] schedual and random select one to recommend
+
+# 2025-01-22
+
+- [ ] dashboard v2
+  - [ ] group table: filter account 
+  - [ ] group deatil: show quality score
+

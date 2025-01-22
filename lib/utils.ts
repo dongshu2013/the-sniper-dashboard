@@ -26,8 +26,8 @@ interface QualityReport {
 export function getQualityBadgeProps(reports: QualityReport[] | null) {
   if (!reports || reports.length === 0) {
     return {
-      score: 0,
-      variant: 'outline' as const,
+      score: 0.0,
+      variant: 'nodata' as const,
       label: 'No Data'
     };
   }
