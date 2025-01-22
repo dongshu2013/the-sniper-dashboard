@@ -97,9 +97,13 @@ export function GroupsTable({
   };
 
   const handleSortChange = (column: string, direction: SortDirection) => {
+    console.log('handleSortChange', column, direction);
     const mappedColumn = COLUMN_MAP[column] || column;
-    const sortedData = handleSort(localChats, mappedColumn, direction);
-    setLocalChats(sortedData);
+    // const sortedData = handleSort(localChats, mappedColumn, direction);
+    // setLocalChats(sortedData);
+    router.push(
+      `/dashboard/groups?orderBy=${mappedColumn}&direction=${direction}`
+    );
   };
 
   const renderTableCell = (

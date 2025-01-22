@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import TelegramLoginButton from '@/components/ui/TelegramLoginButton';
 
 export function LoginForm() {
   const router = useRouter();
@@ -71,6 +72,16 @@ export function LoginForm() {
             {isLoading ? 'Signing in...' : 'Sign in'}
           </Button>
         </form>
+        <div className="mt-8 flex items-center justify-center w-full">
+          <div className="border-t border-[#ABAFB3] flex-grow" />
+          <div className="text-[#202020] text-[14px] text-center font-semibold mx-2 text-nowrap">
+            Or sigin with
+          </div>
+          <div className="border-t border-[#ABAFB3] flex-grow" />
+        </div>
+        <div className="justify-center flex p-8">
+          <TelegramLoginButton />
+        </div>
       </CardContent>
     </Card>
   );

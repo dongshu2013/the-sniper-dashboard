@@ -32,8 +32,22 @@ export function getQualityBadgeProps(reports: QualityReport[] | null) {
     };
   }
 
+  // 过滤掉没有 score 字段的报告
+  const validReports = reports.filter(
+    (report) => report.score !== undefined && report.score !== null
+  );
+
+  if (validReports.length === 0) {
+    return {
+      score: 0,
+      variant: 'outline' as const,
+      label: 'No Data'
+    };
+  }
+
   const avgScore =
-    reports.reduce((sum, report) => sum + report.score, 0) / reports.length;
+    validReports.reduce((sum, report) => sum + report.score, 0) /
+    reports.length;
 
   if (avgScore >= 8) {
     return {

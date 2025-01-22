@@ -1,9 +1,10 @@
 import { TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { getChatMetadataWithAccounts } from '@/lib/db';
+import { chatMetadata, getChatMetadataWithAccounts } from '@/lib/db';
 import { GroupsTable } from './groups-table';
 import { GROUP_TAB_COLUMNS } from '@/lib/types';
 import { TabWrapper } from '@/components/shared/tab-wrapper';
 import { Search } from './search';
+import { asc, SQL } from 'drizzle-orm';
 
 export default async function GroupsPage(props: {
   searchParams: Promise<{
@@ -11,6 +12,8 @@ export default async function GroupsPage(props: {
     offset?: string;
     tab?: string;
     pageSize?: string;
+    orderBy?: string;
+    direction?: string;
   }>;
 }) {
   const searchParams = await props.searchParams;
@@ -18,12 +21,16 @@ export default async function GroupsPage(props: {
   const offset = parseInt(searchParams.offset ?? '0');
   const pageSize = parseInt(searchParams.pageSize ?? '20');
   const currentTab = searchParams.tab ?? 'active';
+  const orderBy = searchParams.orderBy ?? 'createdAt';
+  const orderByDirection = searchParams.direction ?? 'asc';
 
   const { chats, totalChats } = await getChatMetadataWithAccounts(
     search,
     offset,
     currentTab === 'blocked',
-    pageSize
+    pageSize,
+    orderBy as 'participantsCount' | 'qualityReports' | 'updatedAt',
+    orderByDirection
   );
 
   return (

@@ -13,7 +13,18 @@ import {
   jsonb,
   boolean
 } from 'drizzle-orm/pg-core';
-import { count, eq, ilike, inArray, or, and, desc, sql } from 'drizzle-orm';
+import {
+  count,
+  eq,
+  ilike,
+  inArray,
+  or,
+  and,
+  desc,
+  sql,
+  SQL,
+  asc
+} from 'drizzle-orm';
 import { z } from 'zod';
 import { TgLinkStatus, Entity, QualityReport } from './types';
 import { customAlphabet } from 'nanoid';
@@ -321,7 +332,9 @@ export async function getChatMetadataWithAccounts(
   search: string,
   offset: number,
   isBlocked?: boolean,
-  pageSize: number = 20
+  pageSize: number = 20,
+  orderBy: keyof ChatMetadata = 'createdAt',
+  orderByDirection: string = 'desc'
 ): Promise<{
   chats: ChatWithAccounts[];
   totalChats: number;
@@ -342,6 +355,21 @@ export async function getChatMetadataWithAccounts(
   }
 
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
+  const orderByClause =
+    orderBy === 'qualityReports'
+      ? orderByDirection === 'asc'
+        ? asc(
+            sql`(SELECT ROUND(AVG((report->>'score')::numeric)) FROM jsonb_array_elements(quality_reports) AS report WHERE report->>'score' IS NOT NULL)`
+          )
+        : desc(
+            sql`(SELECT ROUND(AVG((report->>'score')::numeric)) FROM jsonb_array_elements(quality_reports) AS report WHERE report->>'score' IS NOT NULL)`
+          )
+      : orderBy
+        ? orderByDirection === 'asc'
+          ? asc(chatMetadata[orderBy])
+          : desc(chatMetadata[orderBy])
+        : asc(chatMetadata.createdAt);
 
   const totalChats = await db
     .select({ count: count() })
@@ -378,6 +406,7 @@ export async function getChatMetadataWithAccounts(
     .leftJoin(accounts, eq(accountChat.accountId, accounts.tgId))
     .where(whereClause)
     .groupBy(chatMetadata.id)
+    .orderBy(orderByClause)
     .limit(pageSize)
     .offset(offset);
 
@@ -395,3 +424,5 @@ export const accountChat = pgTable('account_chat', {
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
 });
+
+
