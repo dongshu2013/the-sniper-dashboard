@@ -1,10 +1,11 @@
+'use server';
 import { AuthDataValidator } from '@telegram-auth/server';
 import {
   TelegramUserData,
   urlStrToAuthDataMap
 } from '@telegram-auth/server/utils';
 import { NextRequest } from 'next/server';
-import { createAccount } from './db';
+import { createAndUpdateUsers } from './db';
 
 const getSequlizeUrl = (authData: Record<string, string | number>) => {
   const url = 'https://oauth.telegram.org/auth';
@@ -29,7 +30,6 @@ const getUser = async (
     });
     const serializedUrl = getSequlizeUrl(authData);
     const data = urlStrToAuthDataMap(serializedUrl);
-    console.log('🌹 ~ getUser ~ data:', data);
     return await validator.validate(data);
   } catch (err) {
     console.log('🌹 ~ getUser ~ err:', err);
@@ -47,6 +47,8 @@ export async function telegramLogin({ authData }: any) {
 
   try {
     const telegramUser = await getUser(authData);
+    console.log('......🚀 ～ ', telegramUser);
+    // const saveUser = await createAndUpdateUsers(telegramUser);
     return {
       code: 0,
       data: {
@@ -54,5 +56,7 @@ export async function telegramLogin({ authData }: any) {
         userKeyType: 'tgId'
       }
     };
-  } catch (err) {}
+  } catch (err) {
+    console.log('error', err);
+  }
 }
