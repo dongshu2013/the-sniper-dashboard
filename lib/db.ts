@@ -9,9 +9,10 @@ import {
   timestamp,
   pgEnum,
   serial,
-  varchar,
   jsonb,
-  boolean
+  boolean,
+  varchar,
+  unique
 } from 'drizzle-orm/pg-core';
 import {
   count,
@@ -20,9 +21,9 @@ import {
   inArray,
   or,
   and,
-  asc,
   desc,
-  sql
+  sql,
+  asc
 } from 'drizzle-orm';
 import { z } from 'zod';
 import { TgLinkStatus, Entity, QualityReport } from './types';
@@ -356,6 +357,21 @@ export async function getChatMetadataWithAccounts(
 
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
+  // const orderByClause =
+  //   orderBy === 'qualityReports'
+  //     ? orderByDirection === 'asc'
+  //       ? asc(
+  //           sql`(SELECT ROUND(AVG((report->>'score')::numeric)) FROM jsonb_array_elements(quality_reports) AS report WHERE report->>'score' IS NOT NULL)`
+  //         )
+  //       : desc(
+  //           sql`(SELECT ROUND(AVG((report->>'score')::numeric)) FROM jsonb_array_elements(quality_reports) AS report WHERE report->>'score' IS NOT NULL)`
+  //         )
+  //     : orderBy
+  //       ? orderByDirection === 'asc'
+  //         ? asc(chatMetadata[orderBy])
+  //         : desc(chatMetadata[orderBy])
+  //       : asc(chatMetadata.createdAt);
+
   const totalChats = await db
     .select({ count: count() })
     .from(chatMetadata)
@@ -444,3 +460,75 @@ export const accountChat = pgTable('account_chat', {
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
 });
+
+export const users = pgTable(
+  'users',
+  {
+    id: serial('id').primaryKey(),
+    userKey: varchar('user_key', { length: 255 }).notNull(),
+    userKeyType: varchar('user_key_type').default('tgId'),
+    username: varchar('username', { length: 255 }),
+    phone: varchar('phone', { length: 255 }).notNull(),
+    lastName: varchar('last_name', { length: 255 }),
+    firstName: varchar('first_name', { length: 255 }),
+    createdAt: timestamp('created_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow()
+  },
+  (table) => ({
+    uniqueUserKey: unique('unique_user_key').on(
+      table.userKey,
+      table.userKeyType
+    )
+  })
+);
+
+export type User = typeof users.$inferSelect;
+
+export async function createAndUpdateUsers(params: {
+  userKey: string;
+  userKeyType?: string;
+  username?: string;
+  phone: string;
+  lastName?: string;
+  firstName?: string;
+}) {
+  const {
+    userKey,
+    userKeyType = 'tgId',
+    username,
+    phone,
+    lastName,
+    firstName
+  } = params;
+
+  try {
+    console.log('....params', params);
+    const result = await db
+      .insert(users)
+      .values({
+        userKey,
+        userKeyType,
+        username,
+        phone,
+        lastName,
+        firstName,
+        updatedAt: new Date() // 确保更新时间
+      })
+      .onConflictDoUpdate({
+        target: [users.userKey, users.userKeyType], // 组合唯一索引
+        set: {
+          username,
+          phone,
+          lastName,
+          firstName,
+          updatedAt: new Date()
+        }
+      })
+      .returning();
+
+    return result;
+  } catch (error) {
+    console.error('Error creating/updating user:', error);
+    throw new Error('Failed to create or update user.');
+  }
+}
