@@ -5,7 +5,8 @@ import {
   urlStrToAuthDataMap
 } from '@telegram-auth/server/utils';
 import { NextRequest } from 'next/server';
-import { createAndUpdateUsers } from './schema';
+import { createAndUpdateUsers } from './actions/user';
+import { getJWT } from '@/lib/jwt';
 
 const getSequlizeUrl = (authData: Record<string, string | number>) => {
   const url = 'https://oauth.telegram.org/auth';
@@ -48,10 +49,17 @@ export async function telegramLogin({ authData }: any) {
   try {
     const telegramUser = await getUser(authData);
     console.log('......🚀 ～ ', telegramUser);
-    // const saveUser = await createAndUpdateUsers(telegramUser);
+    const saveUser = await createAndUpdateUsers(telegramUser);
+    const token = await getJWT({
+      userId: saveUser._id,
+      userKey: saveUser.userId,
+      userKeyType: saveUser
+    });
     return {
       code: 0,
       data: {
+        token,
+        userId: saveUser._id,
         userKey: telegramUser.id.toString(),
         userKeyType: 'tgId'
       }

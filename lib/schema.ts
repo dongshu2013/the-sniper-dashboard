@@ -1,5 +1,28 @@
 import 'server-only';
 import { drizzle } from 'drizzle-orm/postgres-js';
+import {
+  pgTable,
+  serial,
+  varchar,
+  text,
+  timestamp,
+  boolean,
+  integer,
+  jsonb,
+  uuid
+} from 'drizzle-orm/pg-core';
+import postgres from 'postgres';
+import {
+  count,
+  eq,
+  ilike,
+  inArray,
+  or,
+  and,
+  desc,
+  sql,
+  asc
+} from 'drizzle-orm';
 
 const client = postgres(process.env.POSTGRES_URL!);
 export const db = drizzle(client);
@@ -53,25 +76,16 @@ export const tgLinks = pgTable('tg_link_status', {
 
 export type TgLink = typeof tgLinks.$inferSelect;
 
-export const users = pgTable(
-  'users',
-  {
-    id: uuid('id').primaryKey().defaultRandom().notNull(),
-    userKey: varchar('user_key', { length: 255 }).notNull().default(''),
-    userKeyType: varchar('user_key_type', { length: 25 })
-      .notNull()
-      .default('tgId'),
-    username: varchar('username', { length: 255 }).notNull().unique(),
-    photo: varchar('photo', { length: 255 }).notNull().default(''),
-    createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow()
-  },
-  (table) => ({
-    uniqueUserKey: unique('unique_user_key').on(
-      table.userKey,
-      table.userKeyType
-    )
-  })
-);
+export const users = pgTable('users', {
+  id: uuid('id').primaryKey().defaultRandom().notNull(),
+  userId: varchar('user_id', { length: 255 }).notNull().unique(),
+  photoUrl: varchar('photo_url', { length: 25 }).notNull().default(''),
+  username: varchar('username', { length: 255 }).notNull().default(''),
+  displayName: varchar('display_name', { length: 255 }).notNull().default(''),
+  isAdmin: boolean('is_admin').notNull().default(false),
+  lastLoginAt: timestamp('last_login_at').defaultNow(),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+});
 
 export type User = typeof users.$inferSelect;

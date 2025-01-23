@@ -3,44 +3,40 @@ import 'server-only';
 import { pgTable, timestamp, varchar, unique } from 'drizzle-orm/pg-core';
 import { db, users } from '../schema';
 
-export async function createAndUpdateUsers(params: {
-  userKey: string;
-  userKeyType?: string;
+interface UserType {
+  id: string;
   username?: string;
-  phone: string;
-  lastName?: string;
-  firstName?: string;
-}) {
-  const {
-    userKey,
-    userKeyType = 'tgId',
-    username,
-    phone,
-    lastName,
-    firstName
-  } = params;
+  first_name?: string;
+  photo_url: string;
+}
 
+export async function createAndUpdateUsers({
+  id,
+  username,
+  photo_url,
+  first_name
+}: UserType) {
   try {
-    console.log('....params', params);
     const result = await db
       .insert(users)
       .values({
-        userKey,
-        userKeyType,
+        userId: id,
         username,
-        phone,
-        lastName,
-        firstName,
-        updatedAt: new Date() // 确保更新时间
+        photoUrl: photo_url,
+        displayName: first_name,
+        isAdmin: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        lastLoginAt: new Date()
       })
       .onConflictDoUpdate({
-        target: [users.userKey, users.userKeyType], // 组合唯一索引
+        target: users.userId, // 组合唯一索引
         set: {
           username,
-          phone,
-          lastName,
-          firstName,
-          updatedAt: new Date()
+          photoUrl: photo_url,
+          displayName: first_name,
+          updatedAt: new Date(),
+          lastLoginAt: new Date()
         }
       })
       .returning();
