@@ -1,7 +1,8 @@
-import 'server-only';
+'use server';
 
 import { pgTable, timestamp, varchar, unique } from 'drizzle-orm/pg-core';
 import { db, users } from '../schema';
+import { getJWT } from '../jwt';
 
 interface UserType {
   id: string;
@@ -57,7 +58,7 @@ type EmailLoginType = {
   passward: string;
 };
 
-export async function emailLogin(params: EmailLoginType) {
+export async function emailLogin({ email }: EmailLoginType) {
   try {
     const emailRes = await createAndUpdateUsers({
       id: email,
