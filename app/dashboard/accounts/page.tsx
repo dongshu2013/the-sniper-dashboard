@@ -1,5 +1,5 @@
 import { TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { getAccounts } from '@/lib/schema';
+import { getAccounts } from '@/lib/actions/account';
 import { AccountsTable } from './accounts-table';
 import { ACCOUNT_TAB_COLUMNS } from '@/lib/types';
 import { TabWrapper } from '@/components/shared/tab-wrapper';

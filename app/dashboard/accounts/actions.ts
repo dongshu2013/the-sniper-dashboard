@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { createAccount as dbCreateAccount } from '@/lib/schema';
+import { createAccount as dbCreateAccount } from '@/lib/actions/account';
 
 export async function createAccount(data: {
   tgId: string;
