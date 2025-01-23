@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { telegramLogin } from '@/lib/telelgram-login';
+import { saveJwt } from '@/components/lib/networkUtils';
 
 const TelegramLoginButton: React.FC = () => {
   const [isClient, setIsClient] = useState(false);
@@ -15,7 +16,7 @@ const TelegramLoginButton: React.FC = () => {
   }, []);
 
   const handleLogin = async () => {
-    if (!isClient) return; // 确保只在客户端执行
+    if (!isClient) return;
 
     const botId = process.env.NEXT_PUBLIC_BOT_ID;
 
@@ -58,6 +59,7 @@ const TelegramLoginButton: React.FC = () => {
 
         if (res?.code === 0) {
           localStorage.setItem('isLoggedIn', 'true');
+          saveJwt(res?.data?.token);
           router.push('/dashboard/overview');
         } else {
           toast.error('Login failed');

@@ -1,5 +1,5 @@
 import { TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { chatMetadata, getChatMetadataWithAccounts } from '@/lib/db';
+import { chatMetadata, getChatMetadataWithAccounts } from '@/lib/schema';
 import { GroupsTable } from './groups-table';
 import { GROUP_TAB_COLUMNS } from '@/lib/types';
 import { TabWrapper } from '@/components/shared/tab-wrapper';

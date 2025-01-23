@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { ChatWithAccounts } from '@/lib/db';
+import { ChatWithAccounts } from '@/lib/schema';
 import { GroupsGrid } from './groups-grid-item';
 import { Pagination } from '@/components/ui/pagination';
 import { useRouter, useSearchParams } from 'next/navigation';
