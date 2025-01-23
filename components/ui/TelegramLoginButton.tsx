@@ -58,8 +58,7 @@ const TelegramLoginButton: React.FC = () => {
         console.log('🚀 ~ handleAuthCallback ~ accessToken:', res);
 
         if (res?.code === 0) {
-          localStorage.setItem('isLoggedIn', 'true');
-          saveJwt(res?.data?.token);
+          await saveJwt(res?.data?.token);
           router.push('/dashboard/overview');
         } else {
           toast.error('Login failed');

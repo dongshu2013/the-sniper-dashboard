@@ -13,6 +13,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import TelegramLoginButton from '@/components/ui/TelegramLoginButton';
+import { emailLogin } from '@/lib/actions/user';
+import { saveJwt } from '@/components/lib/networkUtils';
 
 export function LoginForm() {
   const router = useRouter();
@@ -33,10 +35,20 @@ export function LoginForm() {
         email === process.env.NEXT_PUBLIC_ADMIN_EMAIL &&
         password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD
       ) {
-        localStorage.setItem('isLoggedIn', 'true');
-        router.push('/dashboard/overview');
+        const res = await emailLogin({
+          email,
+          password
+        });
+        if (res.code === 0) {
+          await saveJwt(res?.data?.token);
+          router.push('/dashboard/overview');
+        } else {
+          toast.error('Login failed!');
+        }
       } else {
-        setError('Invalid email or password');
+        toast.error(
+          'Invalid email or password(Only admin can login with email).'
+        );
       }
     } finally {
       setIsLoading(false);

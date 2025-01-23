@@ -8,12 +8,14 @@ export interface JWTSub {
   userId: string;
   userKey: string;
   userKeyType: UserKeyType;
+  isAdmin: boolean;
 }
 
 export const getJWT = async (user: {
   userId: string;
   userKey: string;
   userKeyType: UserKeyType;
+  isAdmin: boolean;
 }) => {
   const pemKey = process.env.JWT_PRIVATE_KEY || '';
   const key = createPrivateKey(pemKey);
