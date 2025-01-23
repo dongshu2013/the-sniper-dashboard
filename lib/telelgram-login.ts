@@ -5,7 +5,7 @@ import {
   urlStrToAuthDataMap
 } from '@telegram-auth/server/utils';
 import { NextRequest } from 'next/server';
-import { createAndUpdateUsers } from './db';
+import { createAndUpdateUsers } from './schema';
 
 const getSequlizeUrl = (authData: Record<string, string | number>) => {
   const url = 'https://oauth.telegram.org/auth';

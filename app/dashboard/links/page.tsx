@@ -1,5 +1,5 @@
 import { TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { getTgLinks } from '@/lib/db';
+import { getTgLinks } from '@/lib/schema';
 import { LinksTable } from './links-table';
 import { LINK_TAB_COLUMNS, TgLinkStatus } from '@/lib/types';
 import { TabWrapper } from '@/components/shared/tab-wrapper';
