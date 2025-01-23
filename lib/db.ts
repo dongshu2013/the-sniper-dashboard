@@ -461,26 +461,17 @@ export const accountChat = pgTable('account_chat', {
   updatedAt: timestamp('updated_at').defaultNow()
 });
 
-export const users = pgTable(
-  'users',
-  {
-    id: serial('id').primaryKey(),
-    userKey: varchar('user_key', { length: 255 }).notNull(),
-    userKeyType: varchar('user_key_type').default('tgId'),
-    username: varchar('username', { length: 255 }),
-    phone: varchar('phone', { length: 255 }).notNull(),
-    lastName: varchar('last_name', { length: 255 }),
-    firstName: varchar('first_name', { length: 255 }),
-    createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow()
-  },
-  (table) => ({
-    uniqueUserKey: unique('unique_user_key').on(
-      table.userKey,
-      table.userKeyType
-    )
-  })
-);
+export const users = pgTable('users', {
+  id: serial('id').primaryKey(),
+  userId: varchar('user_id', { length: 255 }).notNull(),
+  username: varchar('username', { length: 255 }),
+  photoUrl: varchar('photo_url', { length: 255 }).notNull(),
+  displayName: varchar('display_name', { length: 255 }),
+  isAdmin: varchar('is_admin', { length: 255 }),
+  lastLoginAt: timestamp('last_login_at').defaultNow(),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+});
 
 export type User = typeof users.$inferSelect;
 
