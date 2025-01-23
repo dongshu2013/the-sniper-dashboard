@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { updateTgLinkStatus, importTgLinks } from '@/lib/schema';
+import { updateTgLinkStatus, importTgLinks } from '@/lib/actions/tgLink';
 
 export async function updateLinkStatus(ids: number[], status: string) {
   await updateTgLinkStatus(ids, status);

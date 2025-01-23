@@ -1,4 +1,4 @@
-import { getChatMetadataById } from '@/lib/schema';
+import { getChatMetadataById } from '@/lib/actions/chat';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatDateTime } from '@/lib/utils';

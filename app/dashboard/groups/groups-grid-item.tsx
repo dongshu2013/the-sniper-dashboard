@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Eye } from 'lucide-react';
-import { ChatWithAccounts } from '@/lib/schema';
+import { ChatWithAccounts } from '@/lib/actions/chat';
 import { GroupAvatar } from '@/components/ui/avatar';
 import { formatDateTime, getQualityBadgeProps } from '@/lib/utils';
 import { useRouter } from 'next/navigation';

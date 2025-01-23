@@ -12,7 +12,7 @@ import { count, ilike, inArray, or, and } from 'drizzle-orm';
 import { z } from 'zod';
 import { TgLinkStatus, Entity, QualityReport } from '../types';
 import { customAlphabet } from 'nanoid';
-import { db, tgLinks } from '../schema';
+import { db, tgLinks, TgLink } from '../schema';
 
 export const tgLinkStatusEnum = pgEnum(
   'tg_link_status',

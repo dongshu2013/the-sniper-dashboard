@@ -7,7 +7,7 @@ interface UserType {
   id: string;
   username?: string;
   first_name?: string;
-  photo_url: string;
+  photo_url?: string;
 }
 
 export async function createAndUpdateUsers({
@@ -41,7 +41,7 @@ export async function createAndUpdateUsers({
       })
       .returning();
 
-    return result;
+    return result.length > 0 ? result[0] : null; // 确保返回单个用户或 null
   } catch (error) {
     console.error('Error creating/updating user:', error);
     throw new Error('Failed to create or update user.');

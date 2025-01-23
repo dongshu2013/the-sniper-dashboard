@@ -10,8 +10,25 @@ import {
   boolean,
   varchar
 } from 'drizzle-orm/pg-core';
-import { count, eq, ilike, inArray, or, and, sql } from 'drizzle-orm';
-import { db, chatMetadata } from '../schema';
+import {
+  count,
+  eq,
+  ilike,
+  inArray,
+  or,
+  and,
+  sql,
+  asc,
+  desc
+} from 'drizzle-orm';
+import {
+  db,
+  chatMetadata,
+  ChatMetadata,
+  accounts,
+  accountChat
+} from '../schema';
+import { SortDirection } from '@/components/ui/filterable-table-header';
 
 export type ChatWithAccounts = ChatMetadata & {
   accounts: { username: string | null }[];

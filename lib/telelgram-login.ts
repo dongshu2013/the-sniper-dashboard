@@ -49,22 +49,36 @@ export async function telegramLogin({ authData }: any) {
   try {
     const telegramUser = await getUser(authData);
     console.log('......🚀 ～ ', telegramUser);
-    const saveUser = await createAndUpdateUsers(telegramUser);
+    const saveUser = await createAndUpdateUsers({
+      ...telegramUser,
+      id: telegramUser.id.toString()
+    });
+
+    if (!saveUser) {
+      return {
+        code: -1,
+        message: 'request data invalid'
+      };
+    }
     const token = await getJWT({
-      userId: saveUser._id,
+      userId: saveUser.id,
       userKey: saveUser.userId,
-      userKeyType: saveUser
+      userKeyType: 'tgId'
     });
     return {
       code: 0,
       data: {
         token,
-        userId: saveUser._id,
+        userId: saveUser.id,
         userKey: telegramUser.id.toString(),
         userKeyType: 'tgId'
       }
     };
   } catch (err) {
     console.log('error', err);
+    return {
+      code: -1,
+      message: 'request data invalid'
+    };
   }
 }

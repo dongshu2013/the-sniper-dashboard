@@ -2,7 +2,7 @@ import 'server-only';
 
 import { pgTable, timestamp, serial, varchar } from 'drizzle-orm/pg-core';
 import { count, eq, ilike, inArray, or, and, desc } from 'drizzle-orm';
-import { db, accounts } from '../schema';
+import { db, accounts, Account, ChatMetadata } from '../schema';
 
 export async function getAccounts(
   search: string,
