@@ -23,6 +23,7 @@ import {
   sql,
   asc
 } from 'drizzle-orm';
+import { Entity, QualityReport } from './types';
 
 const client = postgres(process.env.POSTGRES_URL!);
 export const db = drizzle(client);
@@ -75,6 +76,15 @@ export const tgLinks = pgTable('tg_link_status', {
 });
 
 export type TgLink = typeof tgLinks.$inferSelect;
+
+export const accountChat = pgTable('account_chat', {
+  id: serial('id').primaryKey(),
+  accountId: varchar('account_id', { length: 255 }).notNull(),
+  chatId: varchar('chat_id', { length: 255 }).notNull(),
+  status: varchar('status', { length: 255 }).default('watching'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+});
 
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom().notNull(),
