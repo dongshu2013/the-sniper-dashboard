@@ -61,6 +61,7 @@ export async function telegramLogin({ authData }: any) {
       };
     }
     const token = await getJWT({
+      isAdmin: false,
       userId: saveUser.id,
       userKey: saveUser.userId,
       userKeyType: 'tgId'

@@ -26,30 +26,3 @@ export async function POST(
     return NextResponse.json({ error: 'Operation failed' }, { status: 500 });
   }
 }
-
-export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ action: string }> }
-) {
-  try {
-    const { action } = await params;
-    const { searchParams } = new URL(request.url);
-
-    if (action === 'status') {
-      const phone = searchParams.get('phone');
-      if (!phone) {
-        return NextResponse.json(
-          { error: 'Phone number is required' },
-          { status: 400 }
-        );
-      }
-
-      const status = await redisService.getPhoneStatus(phone);
-      return NextResponse.json({ status: status || 'pending' });
-    }
-
-    return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
-  } catch (error) {
-    return NextResponse.json({ error: 'Operation failed' }, { status: 500 });
-  }
-}

@@ -1,5 +1,5 @@
 import './globals.css';
-import { Toaster } from 'sonner';
+import { Toaster } from 'react-hot-toast';
 
 export default function RootLayout({
   children
@@ -9,8 +9,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-background">
-        {children}
         <Toaster />
+        {children}
       </body>
     </html>
   );

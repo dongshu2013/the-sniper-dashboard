@@ -1,19 +1,43 @@
 import 'server-only';
 
-import { pgTable, timestamp, serial, varchar } from 'drizzle-orm/pg-core';
 import { count, eq, ilike, inArray, or, and, desc } from 'drizzle-orm';
-import { db, accounts, Account, ChatMetadata } from '../schema';
+import { db, accounts, Account, ChatMetadata, userAccounts } from '../schema';
 
-export async function getAccounts(
-  search: string,
-  offset: number,
-  status?: string[],
-  pageSize: number = 20
+export async function getAccounts({
+  search,
+  offset,
+  status,
+  pageSize,
+  userId
+}:
+  {
+    search: string | undefined,
+    offset: number,
+    status: string,
+    pageSize: number
+    userId: string
+  }
 ): Promise<{
   accounts: Account[];
   totalAccounts: number;
 }> {
+
   const conditions = [];
+
+  const userAccountRelations = await db
+    .select({ accountId: userAccounts.accountId })
+    .from(userAccounts)
+    .where(eq(userAccounts.userId, userId));
+
+  const accountIds = userAccountRelations.map((rel) => Number(rel.accountId))
+
+  if (accountIds.length === 0) {
+    return {
+      accounts: [], totalAccounts: 0
+    }
+  }
+
+  conditions.push(inArray(accounts.id, accountIds))
 
   if (search) {
     conditions.push(
@@ -25,9 +49,10 @@ export async function getAccounts(
     );
   }
 
-  if (status && status.length > 0) {
-    conditions.push(inArray(accounts.status, status));
+  if (status && status.trim().length > 0) {
+    conditions.push(eq(accounts.status, status));
   }
+
 
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
@@ -57,13 +82,31 @@ export async function createAccount(data: {
   apiHash: string;
   phone: string;
   fullname?: string;
+  userId: string
 }) {
-  await db.insert(accounts).values({
-    ...data,
+  const [newAccount] = await db
+    .insert(accounts)
+    .values({
+      ...data,
+      status: 'active',
+      lastActiveAt: new Date(),
+      updatedAt: new Date()
+    })
+    .returning({ accountId: accounts.id });
+
+  if (!newAccount) {
+    throw new Error('Failed to create account');
+  }
+
+  await db.insert(userAccounts).values({
+    userId: data.userId.toString(),
+    accountId: newAccount.accountId.toString(),
     status: 'active',
-    lastActiveAt: new Date(),
-    updatedAt: new Date()
+    updatedAt: new Date(),
+    createdAt: new Date()
   });
+
+  return newAccount;
 }
 
 export async function updateAccountStatus(ids: number[], status: string) {

@@ -13,19 +13,7 @@ import {
   decimal
 } from 'drizzle-orm/pg-core';
 import postgres from 'postgres';
-import {
-  count,
-  eq,
-  ilike,
-  inArray,
-  or,
-  and,
-  desc,
-  sql,
-  asc
-} from 'drizzle-orm';
-import { Entity, QualityReport } from './types';
-import { float } from 'drizzle-orm/mysql-core';
+import { Entity } from './types';
 
 const client = postgres(process.env.POSTGRES_URL!);
 export const db = drizzle(client);
@@ -88,6 +76,15 @@ export const accountChat = pgTable('account_chat', {
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
 });
+
+export const userAccounts = pgTable('user_account', {
+  id: serial('id').primaryKey(),
+  userId: varchar('user_id').notNull(),
+  accountId: varchar('account_id').notNull(),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+  status: varchar('status').default('active')
+})
 
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom().notNull(),

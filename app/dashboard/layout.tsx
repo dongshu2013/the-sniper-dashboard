@@ -30,16 +30,8 @@ export default function DashboardLayout({
 }) {
   const router = useRouter();
 
-  if (typeof window !== 'undefined') {
-    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    if (!isLoggedIn) {
-      router.push('/login');
-      return null;
-    }
-  }
-
-  const handleLogout = () => {
-    localStorage.removeItem('isLoggedIn');
+  const handleLogout = async () => {
+    await deleteJwt();
     router.push('/login');
   };
 

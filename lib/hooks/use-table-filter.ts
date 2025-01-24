@@ -10,7 +10,7 @@ export function useTableFilter<T>(initialData: T[]) {
   }, []);
 
   const handleFilter = useCallback((data: T[], filters: FilterConfig) => {
-    return data.filter((item) => {
+    return data?.filter((item) => {
       return Object.entries(filters).every(([key, value]) => {
         if (!value) return true;
 
