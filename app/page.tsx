@@ -4,11 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { getJwt } from '@/components/lib/networkUtils';
 
-export default function DashboardLayout({
-  children
-}: {
-  children: React.ReactNode;
-}) {
+export default function HomePage() {
   const router = useRouter();
   const pathname = usePathname();
   const [isClient, setIsClient] = useState(false);
@@ -29,5 +25,5 @@ export default function DashboardLayout({
     return null;
   }
 
-  return <>{children}</>;
+  return null;
 }

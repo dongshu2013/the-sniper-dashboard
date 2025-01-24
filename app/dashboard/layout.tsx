@@ -22,6 +22,7 @@ import {
 import { NavItem } from './nav-item';
 import { useRouter, usePathname } from 'next/navigation';
 import React from 'react';
+import { deleteJwt } from '@/components/lib/networkUtils';
 
 export default function DashboardLayout({
   children
