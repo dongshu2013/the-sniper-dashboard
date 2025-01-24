@@ -47,8 +47,6 @@ export function EntityCard({ chat }: EntityCardProps) {
 
   const entity = chat.entity as NonNullable<typeof chat.entity>;
 
-  console.log('---entity', entity);
-
   const renderLink = (url: string | undefined) => {
     if (!url) return null;
     return (

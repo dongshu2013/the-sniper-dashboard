@@ -27,7 +27,7 @@ export function LatestMessagesCard({ chatId }: LatestMessagesCardProps) {
           size="sm"
           onClick={() => setIsDialogOpen(true)}
         >
-          View Latest Messages
+          View Latest Messages (10)
         </Button>
       </CardContent>
 
