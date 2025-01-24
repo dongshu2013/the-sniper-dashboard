@@ -65,19 +65,19 @@ export async function emailLogin({ email }: EmailLoginType) {
     });
 
     // 临时注释掉 getJWT 调用，使用模拟 token
-    // const token = await getJWT({
-    //   isAdmin: true,
-    //   userId: emailRes?.id!,
-    //   userKey: emailRes?.userId!,
-    //   userKeyType: 'email'
-    // });
+    const token = await getJWT({
+      isAdmin: true,
+      userId: emailRes?.id!,
+      userKey: emailRes?.userId!,
+      userKeyType: 'email'
+    });
 
-    const mockToken = 'mock_token_' + Date.now();
+    // const mockToken = 'mock_token_' + Date.now();
 
     return {
       code: 0,
       data: {
-        token: mockToken,
+        token: token,
         userId: emailRes?.id,
         userKey: emailRes?.userId,
         userKeyType: 'email'
