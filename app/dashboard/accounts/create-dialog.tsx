@@ -142,30 +142,6 @@ export function CreateAccountDialog() {
                 placeholder="+12223334455"
                 required
               />
-              <Button
-                onClick={handleGetCode}
-                disabled={isLoading || !phoneNumber}
-              >
-                Get Code
-              </Button>
-            </div>
-          </div>
-
-          <div className="grid gap-2">
-            <Label htmlFor="phoneCode">Confirmation Code*</Label>
-            <div className="flex gap-2">
-              <Input
-                id="phoneCode"
-                value={phoneCode}
-                onChange={(e) => setPhoneCode(e.target.value)}
-                required
-              />
-              <Button
-                onClick={handleConfirmCode}
-                disabled={isLoading || !phoneCode}
-              >
-                Confirm
-              </Button>
             </div>
           </div>
 
@@ -186,6 +162,32 @@ export function CreateAccountDialog() {
               onChange={(e) => setApiHash(e.target.value)}
             />
           </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="phoneCode">Confirmation Code*</Label>
+            <div className="flex gap-2">
+              <Input
+                id="phoneCode"
+                value={phoneCode}
+                onChange={(e) => setPhoneCode(e.target.value)}
+                required
+              />
+
+              <Button
+                onClick={handleGetCode}
+                disabled={isLoading || !phoneNumber}
+              >
+                Get Code
+              </Button>
+            </div>
+          </div>
+
+          <Button
+            onClick={handleConfirmCode}
+            disabled={isLoading || !phoneCode}
+          >
+            Confirm
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
