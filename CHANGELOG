@@ -82,11 +82,12 @@
 
 
 - [ ] detailed view: 
-  - [ ] add category
-  - [ ] add quality
+  - [x] add category
+  - [x] add quality
+  - [x] members
+  - [x] ai_about
+  - [x] remove monitor bot
   - [ ] add account
-  - [ ] remove monitor bot
   - [ ] fix entity
   - [ ] add pinned messages
   - [ ] add latest messages
-  - [ ] add members

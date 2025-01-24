@@ -7,6 +7,7 @@ import { ChatMetadata } from '@/lib/types';
 import { GroupAvatar } from '@/components/ui/avatar';
 import { AiIcon } from '@/components/icons/ai-icon';
 import { MemecoinIcon } from '@/components/icons/memecoin-icon';
+import { getQualityBadgeProps } from '@/lib/utils';
 
 type Params = Promise<{ chatId: string }>;
 
@@ -19,6 +20,10 @@ export default async function GroupDetailsPage(props: { params: Params }) {
   }
 
   const typedChat = chat as unknown as ChatMetadata;
+
+  const { score, variant, label } = getQualityBadgeProps(
+    typedChat.qualityScore
+  );
 
   return (
     <div className="space-y-6">
@@ -48,21 +53,16 @@ export default async function GroupDetailsPage(props: { params: Params }) {
 
               <div className="grid grid-cols-3 gap-y-6">
                 <div>
-                  <div className="text-sm text-muted-foreground">Members</div>
-                  <div className="mt-1">
-                    {typedChat.participantsCount || '298'}
-                  </div>
-                </div>
-                <div>
                   <div className="text-sm text-muted-foreground">ID</div>
                   <div className="mt-1">{typedChat.chatId}</div>
                 </div>
                 <div>
-                  <div className="text-sm text-muted-foreground">
-                    Monitor Bot
-                  </div>
-                  {/* TODO account.tg_id */}
-                  <div className="mt-1">{'Mizu003Bot@TG'}</div>
+                  <div className="text-sm text-muted-foreground">Members</div>
+                  <div className="mt-1">{typedChat.participantsCount}</div>
+                </div>
+                <div>
+                  <div className="text-sm text-muted-foreground">Category</div>
+                  <div className="mt-1">{typedChat.category}</div>
                 </div>
                 <div>
                   <div className="text-sm text-muted-foreground">
@@ -80,6 +80,13 @@ export default async function GroupDetailsPage(props: { params: Params }) {
                     {formatDateTime(typedChat.updatedAt)}
                   </div>
                 </div>
+                <div>
+                  <div className="text-sm text-muted-foreground">Quality</div>
+                  <div className="mt-1 flex items-center gap-2">
+                    <span className="tabular-nums">{score}</span>
+                    <Badge variant={variant}>{label}</Badge>
+                  </div>
+                </div>
               </div>
 
               <div className="mt-6">
@@ -87,7 +94,7 @@ export default async function GroupDetailsPage(props: { params: Params }) {
                   Introduce
                 </div>
                 <div className="text-sm bg-muted rounded-md p-3">
-                  {typedChat.about || 'No info'}
+                  {typedChat.about || typedChat.aiAbout || 'No info'}
                 </div>
               </div>
             </div>
