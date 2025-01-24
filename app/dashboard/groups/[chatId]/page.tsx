@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { formatDateTime, getQualityBadgeProps } from '@/lib/utils';
 import { AiIcon } from '@/components/icons/ai-icon';
 import { MemecoinIcon } from '@/components/icons/memecoin-icon';
+import { LatestMessagesCard } from './latest-messages-card';
 
 type Params = Promise<{ chatId: string }>;
 
@@ -102,10 +103,9 @@ export default async function GroupDetailsPage(props: { params: Params }) {
         </CardContent>
       </Card>
 
-      {/* Pinned Messages Card */}
       <PinnedMessagesCard messageIds={typedChat.pinnedMessages} />
 
-      {/* TODO: latest messages */}
+      <LatestMessagesCard chatId={chatId} />
 
       {/* Entity Card */}
       <Card className="border-none">

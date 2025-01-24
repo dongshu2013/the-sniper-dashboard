@@ -89,5 +89,5 @@
   - [x] remove monitor bot
   - [ ] add account
   - [ ] fix entity
-  - [ ] add pinned messages
-  - [ ] add latest messages
+  - [x] add pinned messages
+  - [x] add latest messages

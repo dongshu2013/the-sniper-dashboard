@@ -104,6 +104,7 @@ export type User = typeof users.$inferSelect;
 
 export const chatMessages = pgTable('chat_messages', {
   id: serial('id').primaryKey(),
+  chatId: varchar('chat_id', { length: 255 }).notNull(),
   messageId: varchar('message_id', { length: 255 }).notNull(),
   messageText: text('message_text').notNull(),
   senderId: varchar('sender_id', { length: 255 }).notNull(),
