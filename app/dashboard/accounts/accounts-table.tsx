@@ -1,8 +1,7 @@
 'use client';
 
-import * as React from 'react';
-import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Table,
   TableBody,
@@ -28,6 +27,8 @@ import {
   SortDirection
 } from '@/components/ui/filterable-table-header';
 import { useTableFilter } from '@/lib/hooks/use-table-filter';
+import { getJwt } from '@/components/lib/networkUtils';
+import toast from 'react-hot-toast';
 
 // 列名映射
 const COLUMN_MAP: Record<string, string> = {
@@ -40,38 +41,66 @@ const COLUMN_MAP: Record<string, string> = {
   createdAt: 'createdAt'
 };
 
+export type TabType = 'active' | 'banned' | 'suspended';
+
 interface AccountsTableProps {
-  accounts: Account[];
-  offset: number;
-  totalAccounts: number;
-  pageSize: number;
   columns: AccountTableColumn[];
-  currentTab: 'active' | 'banned' | 'suspended';
+  currentTab: TabType;
 }
 
-export function AccountsTable({
-  accounts,
-  offset,
-  totalAccounts,
-  pageSize = 20,
-  columns,
-  currentTab
-}: AccountsTableProps) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+export function AccountsTable({ columns, currentTab }: AccountsTableProps) {
+  const [accounts, setAccounts] = useState<Account[]>([]);
   const { sortConfig, handleSort } = useTableSort(accounts);
   const { filterConfig, handleFilter, updateFilter } = useTableFilter(accounts);
   const [localAccounts, setLocalAccounts] = useState<Account[]>(accounts);
+  const [totalAccounts, setTotalAccounts] = useState(0);
+  const [pageSize, setPageSize] = useState(20);
+  const [search, setSearch] = useState('');
+  const [curPage, setCurPage] = useState(1); // 当前页码
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setLocalAccounts(accounts);
   }, [accounts]);
 
-  const handlePageChange = (newOffset: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('offset', newOffset.toString());
-    router.push(`/dashboard/accounts?${params.toString()}`);
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      const token = getJwt();
+      const offset = (curPage - 1) * pageSize;
+      const query = new URLSearchParams({
+        search,
+        offset: offset.toString(),
+        pageSize: pageSize.toString(),
+        status: currentTab
+      });
+
+      const res = await fetch(`/api/accounts?${query.toString()}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to fetch accounts');
+      }
+
+      const data = await res.json();
+      console.log('~~~~~🚀', data);
+      setAccounts(data?.data?.accounts);
+      setTotalAccounts(data?.data?.totalAccounts);
+    } catch (error) {
+      toast.error('get account failed');
+    } finally {
+      setLoading(false);
+    }
   };
+
+  useEffect(() => {
+    loadData();
+  }, [pageSize, curPage]);
 
   const handleSortChange = (column: string, direction: SortDirection) => {
     const mappedColumn = COLUMN_MAP[column] || column;
@@ -135,7 +164,7 @@ export function AccountsTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredAccounts.map((account) => (
+            {filteredAccounts?.map((account) => (
               <TableRow key={account.id}>
                 {columns.map((column) => (
                   <React.Fragment key={`${account.id}-${column}`}>
@@ -149,22 +178,20 @@ export function AccountsTable({
       </CardContent>
       <CardFooter className="flex justify-between">
         <div className="text-sm text-muted-foreground">
-          Showing {offset + 1}-{Math.min(offset + pageSize, totalAccounts)} of{' '}
+          Showing {(curPage - 1) * pageSize + 1}-
+          {Math.min((curPage - 1) * pageSize + pageSize, totalAccounts)} of{' '}
           {totalAccounts} accounts
         </div>
         <Pagination
-          currentPage={Math.floor(offset / pageSize) + 1}
+          currentPage={curPage}
           totalPages={Math.ceil(totalAccounts / pageSize)}
           pageSize={pageSize}
           onPageChange={(page) => {
-            const newOffset = (page - 1) * pageSize;
-            handlePageChange(newOffset);
+            setCurPage(page);
           }}
           onPageSizeChange={(newPageSize) => {
-            const params = new URLSearchParams(searchParams.toString());
-            params.set('pageSize', newPageSize.toString());
-            params.set('offset', '0');
-            router.push(`/dashboard/accounts?${params.toString()}`);
+            setPageSize(newPageSize);
+            setCurPage(0);
           }}
         />
       </CardFooter>

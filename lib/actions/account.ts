@@ -1,14 +1,20 @@
 import 'server-only';
 
-import { pgTable, timestamp, serial, varchar } from 'drizzle-orm/pg-core';
 import { count, eq, ilike, inArray, or, and, desc } from 'drizzle-orm';
 import { db, accounts, Account, ChatMetadata, userAccounts } from '../schema';
 
-export async function getAccounts(
-  search: string,
-  offset: number,
-  status?: string[],
-  pageSize: number = 20
+export async function getAccounts({
+  search,
+  offset,
+  status,
+  pageSize
+}:
+  {
+    search: string | undefined,
+    offset: number,
+    status: string,
+    pageSize: number
+  }
 ): Promise<{
   accounts: Account[];
   totalAccounts: number;
@@ -25,9 +31,10 @@ export async function getAccounts(
     );
   }
 
-  if (status && status.length > 0) {
-    conditions.push(inArray(accounts.status, status));
+  if (status && status.trim().length > 0) {
+    conditions.push(eq(accounts.status, status));
   }
+
 
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 

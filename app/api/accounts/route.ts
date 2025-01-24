@@ -1,8 +1,8 @@
-import { createAccount } from "@/lib/actions/account";
+import { createAccount, getAccounts } from "@/lib/actions/account";
 import { verifyJWT } from "@/lib/jwt";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
+export async function POST(
   request: Request,
   { params }: { params: Promise<{ action: string }> }
 ) {
@@ -37,6 +37,51 @@ export async function GET(
 
     return NextResponse.json({ code: 0, message: "create account success!", data: account });
   } catch (error) {
-    return NextResponse.json({ error: 'Operation failed' }, { status: 500 });
+    return NextResponse.json({ error: 'create account failed' }, { status: 500 });
   }
 }
+
+export async function GET(request: NextRequest) {
+  try {
+    const token =
+      request.headers.get("Authorization")?.replace("Bearer ", "") || "";
+    const jwtSub = await verifyJWT(token);
+
+    if (!jwtSub) {
+      return NextResponse.json(
+        {
+          code: 401,
+          message: "Authorization header missing",
+        },
+        { status: 401 }
+      );
+    }
+    const searchParams = request.nextUrl.searchParams;
+    const search = searchParams.get('search') || ''; // 确保字符串默认值
+    const offset = parseInt(searchParams.get('offset') || '0', 10); // 确保数字默认值
+    const status = searchParams.get('status') || ''; // 确保字符串默认值
+    const pageSize = parseInt(searchParams.get('pageSize') || '20', 10); // 确保数字默认值
+
+    const { accounts, totalAccounts } = await getAccounts({
+      search,
+      offset,
+      status,
+      pageSize
+    })
+
+    return NextResponse.json({
+      code: 0,
+      data: {
+        accounts,
+        totalAccounts
+      }
+    })
+
+  } catch (error) {
+    NextResponse.json({
+      error: error,
+    }, {
+      status: 500
+    })
+  }
+} 
