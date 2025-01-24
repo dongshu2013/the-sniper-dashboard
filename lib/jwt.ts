@@ -1,6 +1,6 @@
-import { createPrivateKey, generateKeyPairSync } from 'crypto';
+import { createPrivateKey } from 'crypto';
 import dayjs from 'dayjs';
-import { jwtVerify, SignJWT, createLocalJWKSet } from 'jose';
+import { jwtVerify, SignJWT } from 'jose';
 
 export type UserKeyType = 'email' | 'tgId';
 
@@ -23,7 +23,8 @@ export const getJWT = async (user: {
   const jwtSub = {
     userId: user.userId,
     userKey: user.userKey,
-    userKeyType: user.userKeyType
+    userKeyType: user.userKeyType,
+    isAdmin: user.isAdmin
   };
 
   const jwt = await new SignJWT({
@@ -50,7 +51,7 @@ export const verifyJWT = async (jwt: string): Promise<JWTSub | undefined> => {
 
     const jwtSub = JSON.parse(verifyResult?.payload?.sub || '');
     return jwtSub;
-  } catch {}
+  } catch { }
 
   return undefined;
 };

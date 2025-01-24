@@ -4,7 +4,6 @@ import { LinksTable } from './links-table';
 import { LINK_TAB_COLUMNS, TgLinkStatus } from '@/lib/types';
 import { TabWrapper } from '@/components/shared/tab-wrapper';
 import { ImportLinksDialog } from './import-dialog';
-import { Search } from './search';
 
 export default async function LinksPage(props: {
   searchParams: Promise<{

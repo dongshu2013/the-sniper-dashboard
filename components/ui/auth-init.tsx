@@ -10,15 +10,17 @@ export default function HomePage() {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
-    const jwt = getJwt();
+    (async () => {
+      setIsClient(true);
+      const jwt = getJwt();
 
-    if (jwt && (pathname === '/login' || pathname === '/')) {
-      router.replace('/dashboard');
-    }
-    if (!jwt && pathname !== '/login') {
-      router.replace('/login');
-    }
+      if (jwt && (pathname === '/login' || pathname === '/')) {
+        router.replace('/dashboard');
+      }
+      if (!jwt && pathname !== '/login') {
+        router.replace('/login');
+      }
+    })();
   }, [router]);
 
   if (!isClient) {
