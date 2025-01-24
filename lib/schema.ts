@@ -9,7 +9,8 @@ import {
   boolean,
   integer,
   jsonb,
-  uuid
+  uuid,
+  decimal
 } from 'drizzle-orm/pg-core';
 import postgres from 'postgres';
 import {
@@ -24,6 +25,7 @@ import {
   asc
 } from 'drizzle-orm';
 import { Entity, QualityReport } from './types';
+import { float } from 'drizzle-orm/mysql-core';
 
 const client = postgres(process.env.POSTGRES_URL!);
 export const db = drizzle(client);
@@ -52,9 +54,9 @@ export const chatMetadata = pgTable('chat_metadata', {
   username: varchar('username', { length: 255 }).default(''),
   participantsCount: integer('participants_count').default(0),
   entity: jsonb('entity').$type<Entity | null>(),
-  qualityReports: jsonb('quality_reports')
-    .$type<QualityReport[]>()
-    .default(sql`'[]'::jsonb`),
+  qualityScore: decimal('quality_score', { precision: 4, scale: 2 })
+    .$type<number>()
+    .default(0),
   isBlocked: boolean('is_blocked').default(false),
   photo: jsonb('photo').default('{}'),
   createdAt: timestamp('created_at').defaultNow(),

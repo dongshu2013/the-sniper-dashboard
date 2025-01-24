@@ -51,12 +51,12 @@
 
 ## TODO 
 
-- [ ] opt: quality evaluation
+- [x] opt: quality evaluation
   - [ ] based on chat_metadata new filed
   - [ ] schedual store in quality_score
-- [ ] opt: add ai_about in chat_metadata
+- [x] opt: add ai_about in chat_metadata
   - [ ] based on chat_metadata name, about, pinned_message...
-- [ ] opt: doxx_twtter 
+- [x] opt: doxx_twtter 
   - [ ] schedual and random select one to recommend
 
 # 2025-01-22
@@ -65,13 +65,22 @@
   - [ ] group table: filter account 
   - [ ] group deatil: show quality score
 
-# 2025-01-23
+# 2025-01-23, 2025-01-24
 
 - [ ] tg login
   - [ ] backend db
-- [ ] add account 
+- [x] add account 
   - [ ] get code UI 
   - [ ] redis.lpush(request)
   - [ ] redis.set(phone_code)
   - [ ] redis.get(phone_code_status), status: success, error, cancel.
 
+- [ ] table: category, 
+  - [x] fix quality_score
+  - [ ] fix entity
+
+
+- [ ] detailed view: add category, add quality, add account, remove monitor bot, fix entity, add pinned messages, add latest messages
+
+
+- [ ] detailed view: members

@@ -23,8 +23,8 @@ interface QualityReport {
   processed_at: number;
 }
 
-export function getQualityBadgeProps(reports: QualityReport[] | null) {
-  if (!reports || reports.length === 0) {
+export function getQualityBadgeProps(score: number | null) {
+  if (score === null) {
     return {
       score: 0.0,
       variant: 'nodata' as const,
@@ -32,12 +32,7 @@ export function getQualityBadgeProps(reports: QualityReport[] | null) {
     };
   }
 
-  // 过滤掉没有 score 字段的报告
-  const validReports = reports.filter(
-    (report) => report.score !== undefined && report.score !== null
-  );
-
-  if (validReports.length === 0) {
+  if (score === 0) {
     return {
       score: 0,
       variant: 'outline' as const,
@@ -45,25 +40,21 @@ export function getQualityBadgeProps(reports: QualityReport[] | null) {
     };
   }
 
-  const avgScore =
-    validReports.reduce((sum, report) => sum + report.score, 0) /
-    reports.length;
-
-  if (avgScore >= 8) {
+  if (score >= 8) {
     return {
-      score: avgScore,
+      score: score,
       variant: 'default' as const,
       label: 'Excellent'
     };
-  } else if (avgScore >= 6) {
+  } else if (score >= 6) {
     return {
-      score: avgScore,
+      score: score,
       variant: 'secondary' as const,
       label: 'Good'
     };
   } else {
     return {
-      score: avgScore,
+      score: score,
       variant: 'destructive' as const,
       label: 'Bad'
     };

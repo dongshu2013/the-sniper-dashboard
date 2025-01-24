@@ -25,7 +25,7 @@ export function GroupsGrid({
   isChecked = false
 }: GroupsGridProps) {
   const router = useRouter();
-  const { score, variant, label } = getQualityBadgeProps(chat.qualityReports);
+  const { score, variant, label } = getQualityBadgeProps(chat.qualityScore);
 
   const handleClick = () => {
     router.push(`/dashboard/groups/${chat.chatId}`);
@@ -81,7 +81,7 @@ export function GroupsGrid({
             <div className="text-xs text-muted-foreground mb-1">Quality</div>
             <div className="flex items-center gap-1.5">
               <span className="text-[#FFB800] font-semibold text-sm">
-                {isNaN(score) ? '0.0' : score.toFixed(1)}
+                {score}
               </span>
               <Badge variant={variant} className="text-xs px-1.5 py-0.5 h-auto">
                 {label}
