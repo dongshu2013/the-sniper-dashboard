@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Tabs } from '@/components/ui/tabs';
+import { Suspense } from 'react';
 
 export function TabWrapper({
   children,
@@ -29,5 +30,9 @@ export function TabWrapper({
     router.push(`${basePath}?${params.toString()}`);
   };
 
-  return <Tabs value={currentTab}>{children}</Tabs>;
+  return (
+    <Suspense fallback={<div>loading...</div>}>
+      <Tabs value={currentTab}>{children}</Tabs>;
+    </Suspense>
+  );
 }

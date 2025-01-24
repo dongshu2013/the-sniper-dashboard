@@ -1,6 +1,5 @@
 'use server';
 
-import { pgTable, timestamp, varchar, unique } from 'drizzle-orm/pg-core';
 import { db, users } from '../schema';
 import { getJWT } from '../jwt';
 
@@ -27,7 +26,6 @@ export async function createAndUpdateUsers({
         username,
         photoUrl: photo_url,
         displayName: first_name,
-        isAdmin: false,
         createdAt: new Date(),
         updatedAt: new Date(),
         lastLoginAt: new Date(),
@@ -55,7 +53,7 @@ export async function createAndUpdateUsers({
 
 type EmailLoginType = {
   email: string;
-  passward: string;
+  password: string;
 };
 
 export async function emailLogin({ email }: EmailLoginType) {
@@ -68,16 +66,16 @@ export async function emailLogin({ email }: EmailLoginType) {
 
     const token = await getJWT({
       isAdmin: true,
-      userId: emailRes.id,
-      userKey: emailRes.userId,
+      userId: emailRes?.id!,
+      userKey: emailRes?.userId!,
       userKeyType: 'email'
     });
     return {
       code: 0,
       data: {
         token,
-        userId: emailRes.id,
-        userKey: emailRes.userId,
+        userId: emailRes?.id,
+        userKey: emailRes?.userId,
         userKeyType: 'email'
       }
     };
