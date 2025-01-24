@@ -157,7 +157,7 @@ export async function getChatMetadataWithAccounts(
       username: chatMetadata.username,
       participantsCount: chatMetadata.participantsCount,
       entity: chatMetadata.entity,
-      qualityReports: chatMetadata.qualityReports,
+      qualityScore: chatMetadata.qualityScore,
       isBlocked: chatMetadata.isBlocked,
       photo: chatMetadata.photo,
       createdAt: chatMetadata.createdAt,
@@ -185,14 +185,7 @@ export async function getChatMetadataWithAccounts(
       about: chatMetadata.about,
       participantsCount: chatMetadata.participantsCount,
       'entity.name': sql`${chatMetadata.entity}->>'name'`,
-      // TODO fix: if lose score, result is 0
-      qualityReports: sql`(
-        SELECT COALESCE(
-          AVG((value->>'score')::numeric),
-          0
-        )
-        FROM jsonb_array_elements(${chatMetadata.qualityReports})
-      )`,
+      qualityScore: chatMetadata.qualityScore,
       isBlocked: chatMetadata.isBlocked,
       createdAt: chatMetadata.createdAt
     };

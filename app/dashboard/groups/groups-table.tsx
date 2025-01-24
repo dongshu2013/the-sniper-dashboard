@@ -44,7 +44,7 @@ const COLUMN_MAP: Record<string, string> = {
   Intro: 'about',
   Members: 'participantsCount',
   Entity: 'entity.name',
-  Quality: 'qualityReports',
+  Quality: 'qualityScore',
   Status: 'isBlocked',
   'Created At': 'createdAt'
 };
@@ -149,14 +149,12 @@ export function GroupsTable({
         );
       case 'Quality':
         const { score, variant, label } = getQualityBadgeProps(
-          chat.qualityReports
+          chat.qualityScore
         );
         return (
           <TableCell>
             <div className="flex items-center gap-2">
-              <span className="text-sm tabular-nums">
-                {isNaN(score) ? '0.0' : score.toFixed(1)}
-              </span>
+              <span className="text-sm tabular-nums">{score}</span>
               <Badge variant={variant}>{label}</Badge>
             </div>
           </TableCell>
