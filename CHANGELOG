@@ -88,6 +88,6 @@
   - [x] ai_about
   - [x] remove monitor bot
   - [ ] add account
-  - [ ] fix entity
+  - [x] fix entity
   - [x] add pinned messages
   - [x] add latest messages

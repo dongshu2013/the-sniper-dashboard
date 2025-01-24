@@ -9,6 +9,7 @@ import { formatDateTime, getQualityBadgeProps } from '@/lib/utils';
 import { AiIcon } from '@/components/icons/ai-icon';
 import { MemecoinIcon } from '@/components/icons/memecoin-icon';
 import { LatestMessagesCard } from './latest-messages-card';
+import { EntityCard } from './entity-card';
 
 type Params = Promise<{ chatId: string }>;
 
@@ -108,49 +109,7 @@ export default async function GroupDetailsPage(props: { params: Params }) {
       <LatestMessagesCard chatId={chatId} />
 
       {/* Entity Card */}
-      <Card className="border-none">
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <CardTitle>Entity</CardTitle>
-            <AiIcon className="h-4 w-7" />
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <div className="text-sm text-muted-foreground">Name</div>
-                <div className="mt-1">{typedChat.entity?.name}</div>
-              </div>
-              <div>
-                <div className="text-sm text-muted-foreground">Type</div>
-                <div className="flex items-center gap-1.5">
-                  <MemecoinIcon className="h-4 w-4" />
-                  <div className="mt-1">{typedChat.entity?.type}</div>
-                </div>
-              </div>
-              <div>
-                <div className="text-sm text-muted-foreground">Chain</div>
-                <div className="mt-1">{typedChat.entity?.chain}</div>
-              </div>
-              <div>
-                <div className="text-sm text-muted-foreground">Address</div>
-                <div className="mt-1 font-mono text-sm">
-                  {typedChat.entity?.address}
-                </div>
-              </div>
-            </div>
-            {typedChat.entity?.website && (
-              <div>
-                <div className="text-sm text-muted-foreground">Website</div>
-                <div className="mt-1 break-all">
-                  {typedChat.entity?.website}
-                </div>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+      <EntityCard chat={typedChat} />
     </div>
   );
 }
