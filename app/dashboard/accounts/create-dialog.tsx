@@ -13,9 +13,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PlusCircle } from 'lucide-react';
-import { toast } from 'sonner';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import { getJwt } from '@/components/lib/networkUtils';
+import toast from 'react-hot-toast';
 
 export function CreateAccountDialog() {
   const [open, setOpen] = useState(false);
@@ -128,7 +128,9 @@ export function CreateAccountDialog() {
       });
       const data = await response.json();
 
-      if (data.status === 'success') {
+      console.log('<div styleName={🌽}></div>', data);
+
+      if (data.code === 0) {
         toast.success('Account created successfully');
         setOpen(false);
         router.refresh();
@@ -243,10 +245,7 @@ export function CreateAccountDialog() {
             </div>
           </div> */}
 
-          <Button
-            onClick={handleConfirmCode}
-            disabled={isLoading || !phoneCode}
-          >
+          <Button onClick={handleConfirmCode} disabled={isLoading}>
             Confirm
           </Button>
         </div>

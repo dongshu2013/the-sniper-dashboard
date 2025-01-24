@@ -24,7 +24,7 @@ export async function POST(
     const body = await request.json();
     const { phone, tgId, username, fullname, apiHash, apiId } = body;
 
-    if (!phone || !tgId || username || !fullname) {
+    if (!phone || !tgId || !username || !fullname) {
       return NextResponse.json(
         { error: 'params is required' },
         { status: 400 }
@@ -37,7 +37,8 @@ export async function POST(
 
     return NextResponse.json({ code: 0, message: "create account success!", data: account });
   } catch (error) {
-    return NextResponse.json({ error: 'create account failed' }, { status: 500 });
+    console.log('create account with error', error)
+    return NextResponse.json({ error: error }, { status: 500 });
   }
 }
 
