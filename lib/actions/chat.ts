@@ -31,7 +31,7 @@ import {
 import { SortDirection } from '@/components/ui/filterable-table-header';
 
 export type ChatWithAccounts = ChatMetadata & {
-  accountTgIds: { tgId: string | null }[];
+  accountTgIds: string[];
 };
 
 export async function getChatMetadata(
@@ -120,14 +120,10 @@ export async function getChatMetadataWithAccountsByChatId(
       photo: chatMetadata.photo,
       createdAt: chatMetadata.createdAt,
       updatedAt: chatMetadata.updatedAt,
-      accountTgIds: sql<{ tgId: string | null }[]>`
+      accountTgIds: sql<string[]>`
         COALESCE(
-          json_agg(
-            json_build_object(
-              'tgId', ${accounts.tgId}
-            )
-          ) FILTER (WHERE ${accounts.tgId} IS NOT NULL),
-          '[]'
+          array_agg(${accounts.tgId}) FILTER (WHERE ${accounts.tgId} IS NOT NULL),
+          ARRAY[]::text[]
         )
       `
     })
@@ -208,14 +204,10 @@ export async function getChatMetadataWithAccounts(
       photo: chatMetadata.photo,
       createdAt: chatMetadata.createdAt,
       updatedAt: chatMetadata.updatedAt,
-      accountTgIds: sql<{ tgId: string | null }[]>`
+      accountTgIds: sql<string[]>`
         COALESCE(
-          json_agg(
-            json_build_object(
-              'tgId', ${accounts.tgId}
-            )
-          ) FILTER (WHERE ${accounts.tgId} IS NOT NULL),
-          '[]'
+          array_agg(${accounts.tgId}) FILTER (WHERE ${accounts.tgId} IS NOT NULL),
+          ARRAY[]::text[]
         )
       `
     })

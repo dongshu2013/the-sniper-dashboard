@@ -19,10 +19,9 @@ interface AccountDialogProps {
 }
 
 async function fetchAccounts(accountTgIds: string[]) {
-  const response = await fetch(`/api/accounts?ids=${accountTgIds.join(',')}`);
+  const idsString = Array.isArray(accountTgIds) ? accountTgIds.join(',') : '';
+  const response = await fetch(`/api/accounts/batch?ids=${idsString}`);
   const data = await response.json();
-  // console.log('---accountTgIds', accountTgIds);
-  // console.log('---data', data);
   return data.accounts;
 }
 
@@ -64,8 +63,30 @@ export function AccountsDialog({
           ) : accounts && accounts.length > 0 ? (
             <div className="space-y-6">
               {accounts.map((account) => (
-                <div key={account.tgId}>
-                  {account.tgId} - {account.username} - {account.phoneNumber}
+                <div
+                  key={account.tgId}
+                  className="flex flex-col space-y-1 p-4 rounded-lg border"
+                >
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <span className="text-sm text-muted-foreground">ID:</span>
+                      <span className="ml-2">{account.tgId}</span>
+                    </div>
+                    <div>
+                      <span className="text-sm text-muted-foreground">
+                        Username:
+                      </span>
+                      <span className="ml-2">{account.username || 'N/A'}</span>
+                    </div>
+                    <div>
+                      <span className="text-sm text-muted-foreground">
+                        Phone:
+                      </span>
+                      <span className="ml-2">
+                        {account.phoneNumber || 'N/A'}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
