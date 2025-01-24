@@ -41,6 +41,8 @@ export const chatMetadata = pgTable('chat_metadata', {
   about: text('about').default(''),
   username: varchar('username', { length: 255 }).default(''),
   participantsCount: integer('participants_count').default(0),
+  pinnedMessages: jsonb('pinned_messages').default('[]'),
+  initialMessages: jsonb('initial_messages').default('[]'),
   category: varchar('category', { length: 255 }),
   entity: jsonb('entity').$type<Entity | null>(),
   qualityScore: decimal('quality_score', { precision: 4, scale: 2 })
@@ -99,3 +101,13 @@ export const users = pgTable('users', {
 });
 
 export type User = typeof users.$inferSelect;
+
+export const chatMessages = pgTable('chat_messages', {
+  id: serial('id').primaryKey(),
+  messageId: varchar('message_id', { length: 255 }).notNull(),
+  messageText: text('message_text').notNull(),
+  senderId: varchar('sender_id', { length: 255 }).notNull(),
+  messageTimestamp: timestamp('message_timestamp').notNull()
+});
+
+export type ChatMessage = typeof chatMessages.$inferSelect;

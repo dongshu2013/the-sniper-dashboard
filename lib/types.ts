@@ -31,6 +31,16 @@ export interface Entity {
   website?: string;
 }
 
+export interface ChatMessage {
+  messageId: string;
+  chatId: string;
+  messageText: string;
+  senderId?: string;
+  replyTo?: string;
+  topicId?: string;
+  messageTimestamp: number;
+}
+
 export interface QualityReport {
   score: number;
   reason: string;
@@ -45,6 +55,8 @@ export type ChatMetadata = {
   aiAbout: string;
   username: string;
   participantsCount: number;
+  pinnedMessages: string[];
+  initialMessages: string[];
   category: string;
   entity: Entity | null;
   qualityReports: QualityReport[];

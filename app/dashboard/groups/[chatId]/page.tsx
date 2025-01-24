@@ -1,13 +1,13 @@
 import { getChatMetadataById } from '@/lib/actions/chat';
+import { PinnedMessagesCard } from './pinned-messages-card';
 import { notFound } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { formatDateTime } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
 import { ChatMetadata } from '@/lib/types';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { GroupAvatar } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { formatDateTime, getQualityBadgeProps } from '@/lib/utils';
 import { AiIcon } from '@/components/icons/ai-icon';
 import { MemecoinIcon } from '@/components/icons/memecoin-icon';
-import { getQualityBadgeProps } from '@/lib/utils';
 
 type Params = Promise<{ chatId: string }>;
 
@@ -101,6 +101,11 @@ export default async function GroupDetailsPage(props: { params: Params }) {
           </div>
         </CardContent>
       </Card>
+
+      {/* Pinned Messages Card */}
+      <PinnedMessagesCard messageIds={typedChat.pinnedMessages} />
+
+      {/* TODO: latest messages */}
 
       {/* Entity Card */}
       <Card className="border-none">
