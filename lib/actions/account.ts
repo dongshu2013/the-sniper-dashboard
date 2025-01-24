@@ -31,6 +31,7 @@ export async function getAccounts({
 
   const accountIds = userAccountRelations.map((rel) => Number(rel.accountId))
 
+  console.log("🍷🍷", accountIds)
   if (accountIds.length === 0) {
     return {
       accounts: [], totalAccounts: 0
@@ -103,7 +104,7 @@ export async function createAccount(data: {
     accountId: newAccount.accountId.toString(),
     status: 'active',
     updatedAt: new Date(),
-    createdAt: new Date()
+    createdAt: new Date(),
   });
 
   return newAccount;
