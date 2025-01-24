@@ -54,7 +54,6 @@ export default async function GroupsPage(props: {
         </div>
         <div className="flex items-center gap-4">
           <CategorySelect />
-          <Search />
         </div>
       </div>
 
