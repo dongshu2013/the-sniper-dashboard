@@ -65,3 +65,13 @@
   - [ ] group table: filter account 
   - [ ] group deatil: show quality score
 
+# 2025-01-23
+
+- [ ] tg login
+  - [ ] backend db
+- [ ] add account 
+  - [ ] get code UI 
+  - [ ] redis.lpush(request)
+  - [ ] redis.set(phone_code)
+  - [ ] redis.get(phone_code_status), status: success, error, cancel.
+
