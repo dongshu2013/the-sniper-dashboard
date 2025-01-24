@@ -77,10 +77,16 @@
 
 - [ ] table: category, 
   - [x] fix quality_score
+  - [x] add category multi-select
   - [ ] fix entity
 
 
-- [ ] detailed view: add category, add quality, add account, remove monitor bot, fix entity, add pinned messages, add latest messages
-
-
-- [ ] detailed view: members
+- [ ] detailed view: 
+  - [ ] add category
+  - [ ] add quality
+  - [ ] add account
+  - [ ] remove monitor bot
+  - [ ] fix entity
+  - [ ] add pinned messages
+  - [ ] add latest messages
+  - [ ] add members
