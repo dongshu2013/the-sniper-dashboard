@@ -89,6 +89,9 @@ dependencies:
   jose:
     specifier: ^5.9.6
     version: 5.9.6
+  libphonenumber-js:
+    specifier: ^1.11.18
+    version: 1.11.18
   lucide-react:
     specifier: ^0.400.0
     version: 0.400.0(react@19.0.0)
@@ -3518,6 +3521,10 @@ packages:
 
   /js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
+    dev: false
+
+  /libphonenumber-js@1.11.18:
+    resolution: {integrity: sha512-okMm/MCoFrm1vByeVFLBdkFIXLSHy/AIK2AEGgY3eoicfWZeOZqv3GfhtQgICkzs/tqorAMm3a4GBg5qNCrqzg==}
     dev: false
 
   /lilconfig@3.1.3:

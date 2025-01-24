@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PlusCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { isValidPhoneNumber } from 'libphonenumber-js';
 
 export function CreateAccountDialog() {
   const [open, setOpen] = useState(false);
@@ -33,13 +34,20 @@ export function CreateAccountDialog() {
   }, [countdown]);
 
   // Function to validate phone number format
-  const isValidPhoneNumber = (phone: string) => {
-    const phoneRegex = /^\+[1-9]\d{1,14}$/;
-    return phoneRegex.test(phone);
+  const normalizePhone = (phone: string): string | null => {
+    try {
+      if (!isValidPhoneNumber(phone)) {
+        return null;
+      }
+      return phone; // Since input is already in E.164 format (+XX...)
+    } catch (error) {
+      return null;
+    }
   };
 
   const handleGetCode = async () => {
-    if (!isValidPhoneNumber(phoneNumber)) {
+    const normalizedPhone = normalizePhone(phoneNumber);
+    if (!normalizedPhone) {
       toast.error(
         'Please enter a valid phone number with country code (e.g. +12223334455)'
       );
@@ -48,20 +56,19 @@ export function CreateAccountDialog() {
 
     setIsLoading(true);
     try {
-      // Step 1: Push new account request to Redis
       await fetch('/api/accounts/request-code', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          phone: phoneNumber,
+          phone: normalizedPhone,
           apiId: apiId || undefined,
           apiHash: apiHash || undefined
         })
       });
 
-      toast.success('Confirmation code sent to your phone');
+      toast.success('Confirmation code sent to your Telegram');
       setCountdown(60);
     } catch (error) {
       toast.error('Failed to send confirmation code');
