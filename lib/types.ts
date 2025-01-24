@@ -65,6 +65,7 @@ export type ChatMetadata = {
   createdAt: Date;
   updatedAt: Date;
   photo: { path?: string };
+  accounts: { username: string | null }[];
 };
 
 export type GroupTableColumn =

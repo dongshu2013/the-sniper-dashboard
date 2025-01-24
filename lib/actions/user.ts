@@ -64,16 +64,20 @@ export async function emailLogin({ email }: EmailLoginType) {
       isAdmin: true
     });
 
-    const token = await getJWT({
-      isAdmin: true,
-      userId: emailRes?.id!,
-      userKey: emailRes?.userId!,
-      userKeyType: 'email'
-    });
+    // 临时注释掉 getJWT 调用，使用模拟 token
+    // const token = await getJWT({
+    //   isAdmin: true,
+    //   userId: emailRes?.id!,
+    //   userKey: emailRes?.userId!,
+    //   userKeyType: 'email'
+    // });
+
+    const mockToken = 'mock_token_' + Date.now();
+
     return {
       code: 0,
       data: {
-        token,
+        token: mockToken,
         userId: emailRes?.id,
         userKey: emailRes?.userId,
         userKeyType: 'email'

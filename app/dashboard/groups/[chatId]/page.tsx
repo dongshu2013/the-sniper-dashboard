@@ -1,4 +1,7 @@
-import { getChatMetadataById } from '@/lib/actions/chat';
+import {
+  getChatMetadataById,
+  getChatMetadataWithAccountsByChatId
+} from '@/lib/actions/chat';
 import { PinnedMessagesCard } from './pinned-messages-card';
 import { notFound } from 'next/navigation';
 import { ChatMetadata } from '@/lib/types';
@@ -10,18 +13,21 @@ import { AiIcon } from '@/components/icons/ai-icon';
 import { MemecoinIcon } from '@/components/icons/memecoin-icon';
 import { LatestMessagesCard } from './latest-messages-card';
 import { EntityCard } from './entity-card';
+import { AccountsCard } from './accounts-card';
 
 type Params = Promise<{ chatId: string }>;
 
 export default async function GroupDetailsPage(props: { params: Params }) {
   const { chatId } = await props.params;
-  const chat = await getChatMetadataById(chatId);
+  const chat = await getChatMetadataWithAccountsByChatId(chatId);
 
   if (!chat) {
     notFound();
   }
 
   const typedChat = chat as unknown as ChatMetadata;
+
+  console.log('---typedChat', typedChat);
 
   const { score, variant, label } = getQualityBadgeProps(
     typedChat.qualityScore
@@ -104,11 +110,12 @@ export default async function GroupDetailsPage(props: { params: Params }) {
         </CardContent>
       </Card>
 
+      <AccountsCard accounts={typedChat.accounts} />
+
       <PinnedMessagesCard messageIds={typedChat.pinnedMessages} />
 
       <LatestMessagesCard chatId={chatId} />
 
-      {/* Entity Card */}
       <EntityCard chat={typedChat} />
     </div>
   );

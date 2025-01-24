@@ -100,6 +100,47 @@ export async function getChatMetadataById(
   return result[0] || null;
 }
 
+export async function getChatMetadataWithAccountsByChatId(
+  chatId: string
+): Promise<ChatWithAccounts | null> {
+  const result = await db
+    .select({
+      id: chatMetadata.id,
+      chatId: chatMetadata.chatId,
+      name: chatMetadata.name,
+      about: chatMetadata.about,
+      username: chatMetadata.username,
+      participantsCount: chatMetadata.participantsCount,
+      pinnedMessages: chatMetadata.pinnedMessages,
+      initialMessages: chatMetadata.initialMessages,
+      category: chatMetadata.category,
+      entity: chatMetadata.entity,
+      qualityScore: chatMetadata.qualityScore,
+      isBlocked: chatMetadata.isBlocked,
+      photo: chatMetadata.photo,
+      createdAt: chatMetadata.createdAt,
+      updatedAt: chatMetadata.updatedAt,
+      accounts: sql<{ username: string | null }[]>`
+        COALESCE(
+          json_agg(
+            json_build_object(
+              'username', ${accounts.username}
+            )
+          ) FILTER (WHERE ${accounts.username} IS NOT NULL),
+          '[]'
+        )
+      `
+    })
+    .from(chatMetadata)
+    .leftJoin(accountChat, eq(chatMetadata.chatId, accountChat.chatId))
+    .leftJoin(accounts, eq(accountChat.accountId, accounts.tgId))
+    .where(eq(chatMetadata.chatId, chatId))
+    .groupBy(chatMetadata.id)
+    .limit(1);
+
+  return result[0] || null;
+}
+
 export async function getChatMetadataWithAccounts(
   search: string,
   offset: number,
