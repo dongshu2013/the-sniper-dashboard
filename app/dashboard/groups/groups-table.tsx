@@ -44,7 +44,7 @@ const COLUMN_MAP: Record<string, string> = {
   Intro: 'about',
   Members: 'participantsCount',
   Entity: 'entity.name',
-  Quality: 'qualityReports',
+  Quality: 'qualityScore',
   Status: 'isBlocked',
   'Created At': 'createdAt'
 };
