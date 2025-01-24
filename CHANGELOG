@@ -78,7 +78,7 @@
 - [ ] table: category, 
   - [x] fix quality_score
   - [x] add category multi-select
-  - [ ] fix entity
+  - [x] fix entity
 
 
 - [ ] detailed view: 
@@ -87,7 +87,7 @@
   - [x] members
   - [x] ai_about
   - [x] remove monitor bot
-  - [ ] add account
+  - [x] add account
   - [x] fix entity
   - [x] add pinned messages
   - [x] add latest messages
