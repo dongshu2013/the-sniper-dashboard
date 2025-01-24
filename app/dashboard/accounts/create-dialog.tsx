@@ -22,7 +22,15 @@ export function CreateAccountDialog() {
   const [phoneCode, setPhoneCode] = useState('');
   const [apiId, setApiId] = useState('');
   const [apiHash, setApiHash] = useState('');
+  const [countdown, setCountdown] = useState(0);
   const router = useRouter();
+
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [countdown]);
 
   // Function to validate phone number format
   const isValidPhoneNumber = (phone: string) => {
@@ -54,6 +62,7 @@ export function CreateAccountDialog() {
       });
 
       toast.success('Confirmation code sent to your phone');
+      setCountdown(60);
     } catch (error) {
       toast.error('Failed to send confirmation code');
     } finally {
@@ -175,9 +184,9 @@ export function CreateAccountDialog() {
 
               <Button
                 onClick={handleGetCode}
-                disabled={isLoading || !phoneNumber}
+                disabled={isLoading || !phoneNumber || countdown > 0}
               >
-                Get Code
+                {countdown > 0 ? `Wait ${countdown}s` : 'Get Code'}
               </Button>
             </div>
           </div>
