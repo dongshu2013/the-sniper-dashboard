@@ -106,7 +106,8 @@ export async function getChatMetadataWithAccounts(
   isBlocked?: boolean,
   pageSize: number = 20,
   sortColumn?: string,
-  sortDirection?: SortDirection
+  sortDirection?: SortDirection,
+  categories?: string[]
 ): Promise<{
   chats: ChatWithAccounts[];
   totalChats: number;
@@ -120,6 +121,10 @@ export async function getChatMetadataWithAccounts(
         ilike(chatMetadata.username, `%${search}%`)
       )
     );
+  }
+
+  if (categories && categories.length > 0) {
+    conditions.push(inArray(chatMetadata.category, categories));
   }
 
   if (isBlocked !== undefined) {
