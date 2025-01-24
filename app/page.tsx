@@ -1,19 +1,33 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+import { getJwt } from '@/components/lib/networkUtils';
 
-export default function HomePage() {
+export default function DashboardLayout({
+  children
+}: {
+  children: React.ReactNode;
+}) {
   const router = useRouter();
+  const pathname = usePathname();
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    const isLoggedIn = getJWT();
-    if (isLoggedIn) {
-      router.push('/dashboard/overview');
-    } else {
-      router.push('/login');
+    setIsClient(true);
+    const jwt = getJwt();
+
+    if (jwt && (pathname === '/login' || pathname === '/')) {
+      router.replace('/dashboard');
+    }
+    if (!jwt && pathname !== '/login') {
+      router.replace('/login');
     }
   }, [router]);
 
-  return null;
+  if (!isClient) {
+    return null;
+  }
+
+  return <>{children}</>;
 }

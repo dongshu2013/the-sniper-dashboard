@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -14,12 +14,22 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import TelegramLoginButton from '@/components/ui/TelegramLoginButton';
 import { emailLogin } from '@/lib/actions/user';
-import { saveJwt } from '@/components/lib/networkUtils';
+import { saveJwt, getJwt } from '@/components/lib/networkUtils';
 
 export function LoginForm() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const jwt = getJwt();
+    console.log('🚀🚀', jwt, pathname);
+
+    if (jwt && pathname === '/login') {
+      router.push('/dashboard/overview');
+    }
+  }, [usePathname]);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -40,6 +50,7 @@ export function LoginForm() {
           password
         });
         if (res.code === 0) {
+          console.log('🌽🌽', res);
           await saveJwt(res?.data?.token);
           router.push('/dashboard/overview');
         } else {
