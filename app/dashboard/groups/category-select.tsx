@@ -2,16 +2,24 @@
 
 import * as React from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { X } from 'lucide-react';
+import { X, Check, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator
+} from '@/components/ui/command';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
 
 const CATEGORIES = [
   'PORTAL_GROUP',
@@ -28,6 +36,7 @@ export function CategorySelect() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [selected, setSelected] = React.useState<string[]>([]);
+  const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {
     const categoriesParam = searchParams.get('categories');
@@ -50,8 +59,6 @@ export function CategorySelect() {
   };
 
   const handleSelect = (value: string) => {
-    if (!value) return;
-
     setSelected((current) => {
       const newSelected = current.includes(value)
         ? current.filter((item) => item !== value)
@@ -62,54 +69,78 @@ export function CategorySelect() {
     });
   };
 
-  const removeCategory = (categoryToRemove: string) => {
-    setSelected((current) => {
-      const newSelected = current.filter(
-        (category) => category !== categoryToRemove
-      );
-      updateUrlParams(newSelected);
-      return newSelected;
-    });
-  };
-
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex flex-wrap gap-1">
-        {selected.map((category) => (
-          <Badge
-            key={category}
-            variant="secondary"
-            className="flex items-center gap-1"
-          >
-            {category}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-auto p-0 px-0.5 hover:bg-transparent"
-              onClick={() => removeCategory(category)}
-            >
-              <X className="h-3 w-3" />
-              <span className="sr-only">Remove {category}</span>
-            </Button>
-          </Badge>
-        ))}
-      </div>
-      <Select onValueChange={handleSelect}>
-        <SelectTrigger className="h-8 w-auto min-w-[180px]">
-          <SelectValue placeholder="Add category..." />
-        </SelectTrigger>
-        <SelectContent className="min-w-[180px]">
-          {CATEGORIES.map((category) => (
-            <SelectItem
-              key={category}
-              value={category}
-              disabled={selected.includes(category)}
-            >
-              {category}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className="w-full justify-between"
+        >
+          {selected.length > 0 ? (
+            <div className="flex flex-wrap gap-1">
+              {selected.map((category) => (
+                <Badge
+                  key={category}
+                  variant="secondary"
+                  className="mr-1"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSelect(category);
+                  }}
+                >
+                  {category}
+                  <X className="ml-1 h-3 w-3" />
+                </Badge>
+              ))}
+            </div>
+          ) : (
+            'Add category...'
+          )}
+          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-full p-0">
+        <Command>
+          <CommandInput placeholder="Search categories..." />
+          <CommandList>
+            <CommandEmpty>No category found.</CommandEmpty>
+            <CommandGroup>
+              {CATEGORIES.map((category) => (
+                <CommandItem
+                  key={category}
+                  onSelect={() => handleSelect(category)}
+                >
+                  <Check
+                    className={cn(
+                      'mr-2 h-4 w-4',
+                      selected.includes(category) ? 'opacity-100' : 'opacity-0'
+                    )}
+                  />
+                  {category}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+            {selected.length > 0 && (
+              <>
+                <CommandSeparator />
+                <CommandGroup>
+                  <CommandItem
+                    onSelect={() => {
+                      setSelected([]);
+                      updateUrlParams([]);
+                    }}
+                    className="justify-center text-sm"
+                  >
+                    Clear all
+                  </CommandItem>
+                </CommandGroup>
+              </>
+            )}
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 }
