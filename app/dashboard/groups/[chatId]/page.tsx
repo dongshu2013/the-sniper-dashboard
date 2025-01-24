@@ -27,7 +27,7 @@ export default async function GroupDetailsPage(props: { params: Params }) {
 
   const typedChat = chat as unknown as ChatMetadata;
 
-  console.log('---typedChat', typedChat);
+  // console.log('---typedChat', typedChat);
 
   const { score, variant, label } = getQualityBadgeProps(
     typedChat.qualityScore
@@ -110,7 +110,7 @@ export default async function GroupDetailsPage(props: { params: Params }) {
         </CardContent>
       </Card>
 
-      <AccountsCard accounts={typedChat.accounts} />
+      <AccountsCard accountTgIds={typedChat.accountTgIds} />
 
       <PinnedMessagesCard messageIds={typedChat.pinnedMessages} />
 

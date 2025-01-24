@@ -7,13 +7,13 @@ import { useState } from 'react';
 import { AccountsDialog } from './account-dialog';
 
 interface AccountsCardProps {
-  accounts: { username: string | null }[];
+  accountTgIds: string[];
 }
 
-export function AccountsCard({ accounts }: AccountsCardProps) {
+export function AccountsCard({ accountTgIds }: AccountsCardProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  if (!accounts?.length) {
+  if (!accountTgIds?.length) {
     return (
       <Card className="border-none">
         <CardHeader>
@@ -45,14 +45,14 @@ export function AccountsCard({ accounts }: AccountsCardProps) {
           size="sm"
           onClick={() => setIsDialogOpen(true)}
         >
-          View Accounts ({accounts.length})
+          View Accounts ({accountTgIds.length})
         </Button>
       </CardContent>
 
       <AccountsDialog
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
-        accounts={accounts}
+        accountTgIds={accountTgIds}
       />
     </Card>
   );

@@ -31,7 +31,7 @@ import {
 import { SortDirection } from '@/components/ui/filterable-table-header';
 
 export type ChatWithAccounts = ChatMetadata & {
-  accounts: { username: string | null }[];
+  accountTgIds: { tgId: string | null }[];
 };
 
 export async function getChatMetadata(
@@ -120,13 +120,13 @@ export async function getChatMetadataWithAccountsByChatId(
       photo: chatMetadata.photo,
       createdAt: chatMetadata.createdAt,
       updatedAt: chatMetadata.updatedAt,
-      accounts: sql<{ username: string | null }[]>`
+      accountTgIds: sql<{ tgId: string | null }[]>`
         COALESCE(
           json_agg(
             json_build_object(
-              'username', ${accounts.username}
+              'tgId', ${accounts.tgId}
             )
-          ) FILTER (WHERE ${accounts.username} IS NOT NULL),
+          ) FILTER (WHERE ${accounts.tgId} IS NOT NULL),
           '[]'
         )
       `
@@ -208,13 +208,13 @@ export async function getChatMetadataWithAccounts(
       photo: chatMetadata.photo,
       createdAt: chatMetadata.createdAt,
       updatedAt: chatMetadata.updatedAt,
-      accounts: sql<{ username: string | null }[]>`
+      accountTgIds: sql<{ tgId: string | null }[]>`
         COALESCE(
           json_agg(
             json_build_object(
-              'username', ${accounts.username}
+              'tgId', ${accounts.tgId}
             )
-          ) FILTER (WHERE ${accounts.username} IS NOT NULL),
+          ) FILTER (WHERE ${accounts.tgId} IS NOT NULL),
           '[]'
         )
       `
