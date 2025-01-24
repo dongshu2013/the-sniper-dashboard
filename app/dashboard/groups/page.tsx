@@ -7,6 +7,7 @@ import { Search } from './search';
 import { ViewSwitcher } from './view-switcher';
 import { GroupsGridView } from './groups-grid-view';
 import { SortDirection } from '@/components/ui/filterable-table-header';
+import { CategorySelect } from './category-select';
 
 export default async function GroupsPage(props: {
   searchParams: Promise<{
@@ -17,6 +18,7 @@ export default async function GroupsPage(props: {
     view?: string;
     sortColumn?: string;
     sortDirection?: string;
+    categories?: string;
   }>;
 }) {
   const searchParams = await props.searchParams;
@@ -27,6 +29,7 @@ export default async function GroupsPage(props: {
   const currentView = searchParams.view ?? 'list';
   const sortColumn = searchParams.sortColumn;
   const sortDirection = searchParams.sortDirection as SortDirection;
+  const categories = searchParams.categories?.split(',').filter(Boolean) || [];
 
   const { chats, totalChats } = await getChatMetadataWithAccounts(
     search,
@@ -34,7 +37,8 @@ export default async function GroupsPage(props: {
     currentTab === 'blocked',
     pageSize,
     sortColumn,
-    sortDirection
+    sortDirection,
+    categories
   );
 
   return (
@@ -48,7 +52,9 @@ export default async function GroupsPage(props: {
             <TabsTrigger value="blocked">Blocked</TabsTrigger>
           </TabsList>
         </div>
-        <Search />
+        <div className="flex items-center gap-4">
+          <CategorySelect />
+        </div>
       </div>
 
       <TabsContent value="active" className="mt-4">

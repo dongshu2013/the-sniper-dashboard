@@ -28,7 +28,6 @@ export default function AccountsPage() {
           </TabsTrigger>
         </TabsList>
         <div className="flex items-center gap-4">
-          <Search />
           <CreateAccountDialog />
         </div>
       </div>

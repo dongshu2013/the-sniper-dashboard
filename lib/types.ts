@@ -42,10 +42,13 @@ export type ChatMetadata = {
   chatId: string;
   name: string;
   about: string;
+  aiAbout: string;
   username: string;
   participantsCount: number;
+  category: string;
   entity: Entity | null;
   qualityReports: QualityReport[];
+  qualityScore: number;
   isBlocked: boolean;
   createdAt: Date;
   updatedAt: Date;

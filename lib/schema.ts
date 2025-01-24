@@ -41,6 +41,7 @@ export const chatMetadata = pgTable('chat_metadata', {
   about: text('about').default(''),
   username: varchar('username', { length: 255 }).default(''),
   participantsCount: integer('participants_count').default(0),
+  category: varchar('category', { length: 255 }),
   entity: jsonb('entity').$type<Entity | null>(),
   qualityScore: decimal('quality_score', { precision: 4, scale: 2 })
     .$type<number>()
