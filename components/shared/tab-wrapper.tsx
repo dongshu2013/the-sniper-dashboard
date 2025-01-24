@@ -17,7 +17,6 @@ export function TabWrapper({
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentTab = searchParams.get('tab') ?? defaultTab;
-  const currentView = searchParams.get('view') ?? defaultView;
 
   const handleValueChange = (value: string) => {
     const params = new URLSearchParams(searchParams);
@@ -30,9 +29,5 @@ export function TabWrapper({
     router.push(`${basePath}?${params.toString()}`);
   };
 
-  return (
-    <Tabs value={currentTab} onValueChange={handleValueChange}>
-      {children}
-    </Tabs>
-  );
+  return <Tabs value={currentTab}>{children}</Tabs>;
 }

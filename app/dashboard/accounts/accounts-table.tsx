@@ -1,7 +1,5 @@
 'use client';
-
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import {
   Table,
   TableBody,
@@ -89,8 +87,8 @@ export function AccountsTable({ columns, currentTab }: AccountsTableProps) {
 
       const data = await res.json();
       console.log('~~~~~🚀', data);
-      setAccounts(data?.data?.accounts);
-      setTotalAccounts(data?.data?.totalAccounts);
+      setAccounts(data?.data?.accounts ?? []);
+      setTotalAccounts(data?.data?.totalAccounts ?? 0);
     } catch (error) {
       toast.error('get account failed');
     } finally {
@@ -100,7 +98,7 @@ export function AccountsTable({ columns, currentTab }: AccountsTableProps) {
 
   useEffect(() => {
     loadData();
-  }, [pageSize, curPage]);
+  }, [pageSize, curPage, currentTab]);
 
   const handleSortChange = (column: string, direction: SortDirection) => {
     const mappedColumn = COLUMN_MAP[column] || column;
@@ -191,7 +189,7 @@ export function AccountsTable({ columns, currentTab }: AccountsTableProps) {
           }}
           onPageSizeChange={(newPageSize) => {
             setPageSize(newPageSize);
-            setCurPage(0);
+            setCurPage(1);
           }}
         />
       </CardFooter>

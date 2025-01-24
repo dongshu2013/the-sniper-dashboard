@@ -7,7 +7,7 @@ import { CreateAccountDialog } from './create-dialog';
 import { Search } from './search';
 import { useState } from 'react';
 
-export default async function AccountsPage() {
+export default function AccountsPage() {
   const [currentTab, setCurrentTab] = useState<TabType>('active');
 
   return (

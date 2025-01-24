@@ -66,7 +66,8 @@ export async function GET(request: NextRequest) {
       search,
       offset,
       status,
-      pageSize
+      pageSize,
+      userId: jwtSub.userId
     })
 
     return NextResponse.json({

@@ -7,19 +7,37 @@ export async function getAccounts({
   search,
   offset,
   status,
-  pageSize
+  pageSize,
+  userId
 }:
   {
     search: string | undefined,
     offset: number,
     status: string,
     pageSize: number
+    userId: string
   }
 ): Promise<{
   accounts: Account[];
   totalAccounts: number;
 }> {
+
   const conditions = [];
+
+  const userAccountRelations = await db
+    .select({ accountId: userAccounts.accountId })
+    .from(userAccounts)
+    .where(eq(userAccounts.userId, userId));
+
+  const accountIds = userAccountRelations.map((rel) => Number(rel.accountId))
+
+  if (accountIds.length === 0) {
+    return {
+      accounts: [], totalAccounts: 0
+    }
+  }
+
+  conditions.push(inArray(accounts.id, accountIds))
 
   if (search) {
     conditions.push(
