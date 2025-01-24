@@ -3,7 +3,7 @@ import { redisService } from '@/lib/services/redis';
 
 export async function POST(
   request: Request,
-  { params }: { params: { action: string } }
+  { params }: { params: Promise<{ action: string }> }
 ) {
   try {
     const { action } = await params;
@@ -29,7 +29,7 @@ export async function POST(
 
 export async function GET(
   request: Request,
-  { params }: { params: { action: string } }
+  { params }: { params: Promise<{ action: string }> }
 ) {
   try {
     const { action } = await params;
