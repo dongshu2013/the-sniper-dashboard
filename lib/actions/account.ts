@@ -2,7 +2,7 @@ import 'server-only';
 
 import { pgTable, timestamp, serial, varchar } from 'drizzle-orm/pg-core';
 import { count, eq, ilike, inArray, or, and, desc } from 'drizzle-orm';
-import { db, accounts, Account, ChatMetadata } from '../schema';
+import { db, accounts, Account, ChatMetadata, userAccounts } from '../schema';
 
 export async function getAccounts(
   search: string,
@@ -57,13 +57,31 @@ export async function createAccount(data: {
   apiHash: string;
   phone: string;
   fullname?: string;
+  userId: string
 }) {
-  await db.insert(accounts).values({
-    ...data,
+  const [newAccount] = await db
+    .insert(accounts)
+    .values({
+      ...data,
+      status: 'active',
+      lastActiveAt: new Date(),
+      updatedAt: new Date()
+    })
+    .returning({ accountId: accounts.id });
+
+  if (!newAccount) {
+    throw new Error('Failed to create account');
+  }
+
+  await db.insert(userAccounts).values({
+    userId: data.userId.toString(),
+    accountId: newAccount.accountId.toString(),
     status: 'active',
-    lastActiveAt: new Date(),
-    updatedAt: new Date()
+    updatedAt: new Date(),
+    createdAt: new Date()
   });
+
+  return newAccount;
 }
 
 export async function updateAccountStatus(ids: number[], status: string) {

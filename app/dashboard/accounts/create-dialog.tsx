@@ -15,6 +15,7 @@ import { Label } from '@/components/ui/label';
 import { PlusCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { isValidPhoneNumber } from 'libphonenumber-js';
+import { getJwt } from '@/components/lib/networkUtils';
 
 export function CreateAccountDialog() {
   const [open, setOpen] = useState(false);
@@ -25,6 +26,9 @@ export function CreateAccountDialog() {
   const [apiHash, setApiHash] = useState('');
   const [countdown, setCountdown] = useState(0);
   const router = useRouter();
+  const [username, setUsername] = useState('');
+  const [tgId, setTgId] = useState('');
+  const [fullname, setFullname] = useState('');
 
   useEffect(() => {
     if (countdown > 0) {
@@ -45,87 +49,92 @@ export function CreateAccountDialog() {
     }
   };
 
-  const handleGetCode = async () => {
-    const normalizedPhone = normalizePhone(phoneNumber);
-    if (!normalizedPhone) {
-      toast.error(
-        'Please enter a valid phone number with country code (e.g. +12223334455)'
-      );
-      return;
-    }
+  // const handleGetCode = async () => {
+  //   const normalizedPhone = normalizePhone(phoneNumber);
+  //   if (!normalizedPhone) {
+  //     toast.error(
+  //       'Please enter a valid phone number with country code (e.g. +12223334455)'
+  //     );
+  //     return;
+  //   }
 
-    setIsLoading(true);
-    try {
-      await fetch('/api/accounts/request-code', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          phone: normalizedPhone,
-          apiId: apiId || undefined,
-          apiHash: apiHash || undefined
-        })
-      });
+  //   setIsLoading(true);
+  //   try {
+  //     await fetch('/api/accounts/request-code', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json'
+  //       },
+  //       body: JSON.stringify({
+  //         phone: normalizedPhone,
+  //         apiId: apiId || undefined,
+  //         apiHash: apiHash || undefined
+  //       })
+  //     });
 
-      toast.success('Confirmation code sent to your Telegram');
-      setCountdown(60);
-    } catch (error) {
-      toast.error('Failed to send confirmation code');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //     toast.success('Confirmation code sent to your Telegram');
+  //     setCountdown(60);
+  //   } catch (error) {
+  //     toast.error('Failed to send confirmation code');
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const handleConfirmCode = async () => {
-    if (!phoneCode) {
-      toast.error('Please enter the confirmation code');
-      return;
-    }
+    // if (!phoneCode) {
+    //   toast.error('Please enter the confirmation code');
+    //   return;
+    // }
 
     setIsLoading(true);
     try {
       // Step 2: Set phone code in Redis
-      await fetch('/api/accounts/confirm-code', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          phone: phoneNumber,
-          code: phoneCode
-        })
-      });
+      // await fetch('/api/accounts/confirm-code', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json'
+      //   },
+      //   body: JSON.stringify({
+      //     phone: phoneNumber,
+      //     code: phoneCode
+      //   })
+      // });
 
       // Step 3: Poll for status with 60s timeout
-      const startTime = Date.now();
-      const timeout = 60000; // 60 seconds
+      // const startTime = Date.now();
+      // const timeout = 60000; // 60 seconds
 
-      const checkStatus = async () => {
-        if (Date.now() - startTime > timeout) {
-          toast.error('Operation timed out');
-          setIsLoading(false);
-          return;
-        }
+      // if (Date.now() - startTime > timeout) {
+      //   toast.error('Operation timed out');
+      //   setIsLoading(false);
+      //   return;
+      // }
+      const token = getJwt();
+      const response = await fetch(`/api/accounts`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          username,
+          tgId,
+          phone: phoneNumber,
+          fullname,
+          apiHash,
+          apiId
+        })
+      });
+      const data = await response.json();
 
-        const response = await fetch(
-          `/api/accounts/status?phone=${encodeURIComponent(phoneNumber)}`
-        );
-        const data = await response.json();
-
-        if (data.status === 'success') {
-          toast.success('Account created successfully');
-          setOpen(false);
-          router.refresh();
-        } else if (data.status === 'error') {
-          toast.error('Failed to create account');
-        } else if (data.status === 'pending') {
-          // Continue polling
-          setTimeout(checkStatus, 1000);
-        }
-      };
-
-      checkStatus();
+      if (data.status === 'success') {
+        toast.success('Account created successfully');
+        setOpen(false);
+        router.refresh();
+      } else {
+        toast.error('Failed to create account');
+      }
     } catch (error) {
       toast.error('Failed to confirm code');
     } finally {
@@ -148,6 +157,42 @@ export function CreateAccountDialog() {
           <DialogTitle>Add New Account</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4">
+          <div className="grid gap-2">
+            <Label htmlFor="phoneNumber">username*</Label>
+            <div className="flex gap-2">
+              <Input
+                id="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder=""
+                required
+              />
+            </div>
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="tgId">tgId*</Label>
+            <div className="flex gap-2">
+              <Input
+                id="tgId"
+                value={tgId}
+                onChange={(e) => setTgId(e.target.value)}
+                placeholder=""
+                required
+              />
+            </div>
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="fullname">fullname*</Label>
+            <div className="flex gap-2">
+              <Input
+                id="fullname"
+                value={fullname}
+                onChange={(e) => setFullname(e.target.value)}
+                placeholder=""
+                required
+              />
+            </div>
+          </div>
           <div className="grid gap-2">
             <Label htmlFor="phoneNumber">Phone Number*</Label>
             <div className="flex gap-2">
@@ -179,7 +224,7 @@ export function CreateAccountDialog() {
             />
           </div>
 
-          <div className="grid gap-2">
+          {/* <div className="grid gap-2">
             <Label htmlFor="phoneCode">Confirmation Code*</Label>
             <div className="flex gap-2">
               <Input
@@ -196,7 +241,7 @@ export function CreateAccountDialog() {
                 {countdown > 0 ? `Wait ${countdown}s` : 'Get Code'}
               </Button>
             </div>
-          </div>
+          </div> */}
 
           <Button
             onClick={handleConfirmCode}
