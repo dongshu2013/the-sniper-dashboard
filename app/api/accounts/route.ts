@@ -1,6 +1,6 @@
-import { createAccount, getAccounts } from "@/lib/actions/account";
-import { verifyJWT } from "@/lib/jwt";
-import { NextRequest, NextResponse } from "next/server";
+import { createAccount, getAccounts } from '@/lib/actions/account';
+import { verifyJWT } from '@/lib/jwt';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(
   request: Request,
@@ -8,14 +8,14 @@ export async function POST(
 ) {
   try {
     const token =
-      request.headers.get("Authorization")?.replace("Bearer ", "") || "";
+      request.headers.get('Authorization')?.replace('Bearer ', '') || '';
     const jwtSub = await verifyJWT(token);
 
     if (!jwtSub) {
       return NextResponse.json(
         {
           code: 401,
-          message: "Authorization header missing",
+          message: 'Authorization header missing'
         },
         { status: 401 }
       );
@@ -26,33 +26,43 @@ export async function POST(
 
     if (!phone || !tgId || !username || !fullname) {
       return NextResponse.json(
-        { error: 'params is required' },
+        { message: 'params is required' },
         { status: 400 }
       );
     }
 
     const account = await createAccount({
-      phone, tgId, username, fullname, apiHash, apiId, userId: jwtSub?.userId
-    })
+      phone,
+      tgId,
+      username,
+      fullname,
+      apiHash,
+      apiId,
+      userId: jwtSub?.userId
+    });
 
-    return NextResponse.json({ code: 0, message: "create account success!", data: account });
+    return NextResponse.json({
+      code: 0,
+      message: 'create account success!',
+      data: account
+    });
   } catch (error) {
-    console.log('create account with error', error)
-    return NextResponse.json({ error: error }, { status: 500 });
+    console.log('create account with error', error);
+    return NextResponse.json({ message: error }, { status: 500 });
   }
 }
 
 export async function GET(request: NextRequest) {
   try {
     const token =
-      request.headers.get("Authorization")?.replace("Bearer ", "") || "";
+      request.headers.get('Authorization')?.replace('Bearer ', '') || '';
     const jwtSub = await verifyJWT(token);
 
     if (!jwtSub) {
       return NextResponse.json(
         {
           code: 401,
-          message: "Authorization header missing",
+          message: 'Authorization header missing'
         },
         { status: 401 }
       );
@@ -69,7 +79,7 @@ export async function GET(request: NextRequest) {
       status,
       pageSize,
       userId: jwtSub.userId
-    })
+    });
 
     return NextResponse.json({
       code: 0,
@@ -77,13 +87,15 @@ export async function GET(request: NextRequest) {
         accounts,
         totalAccounts
       }
-    })
-
+    });
   } catch (error) {
-    NextResponse.json({
-      error: error,
-    }, {
-      status: 500
-    })
+    NextResponse.json(
+      {
+        message: error
+      },
+      {
+        status: 500
+      }
+    );
   }
-} 
+}
