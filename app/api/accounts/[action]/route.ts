@@ -52,8 +52,11 @@ export async function POST(
         return NextResponse.json({ success: true });
 
       case 'confirm-code':
-        const { phone, code } = body;
+        const { phone, code, password } = body;
         await redisService.setPhoneCode(phone, code);
+        if (password) {
+          await redisService.setPassword(phone, password);
+        }
         return NextResponse.json({ success: true });
 
       default:
@@ -93,7 +96,6 @@ export async function GET(
         );
       }
       const jsonStatus = await redisService.getPhoneStatus(phone);
-      console.log('🍒🍒🍒 jsonStatus', jsonStatus);
 
       const { status, account_id } = JSON.parse(jsonStatus || '{}');
       if (status === 'success') {

@@ -29,7 +29,7 @@ export function CreateAccountDialog() {
   const [countdown, setCountdown] = useState(0);
   const router = useRouter();
   const token = getJwt();
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
 
   useEffect(() => {
@@ -110,7 +110,8 @@ export function CreateAccountDialog() {
         },
         body: JSON.stringify({
           phone: phoneNumber,
-          code: phoneCode
+          code: phoneCode,
+          password
         })
       });
       if (!response.ok) {
@@ -236,11 +237,11 @@ export function CreateAccountDialog() {
           </div>
           {status === '2fa' && (
             <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">Password*</Label>
               <Input
                 id="password"
                 type="password"
-                value={password}
+                value={password || ''}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
               />
