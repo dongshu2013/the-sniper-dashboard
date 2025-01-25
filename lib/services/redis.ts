@@ -1,6 +1,9 @@
 import Redis from 'ioredis';
 
-const redis = new Redis(process.env.REDIS_URL!);
+
+const redis = new Redis(process.env.REDIS_URL!, {
+  family: 4,  // 试试 IPv4，若不行改成 6
+});
 
 const SERVICE_PREFIX = 'the_sinper_bot';
 
