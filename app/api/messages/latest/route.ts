@@ -14,9 +14,7 @@ export async function GET(request: Request) {
   const messages = await db
     .select({
       id: chatMessages.id,
-      messageId: chatMessages.messageId,
       messageText: chatMessages.messageText,
-      senderId: chatMessages.senderId,
       messageTimestamp: chatMessages.messageTimestamp
     })
     .from(chatMessages)
