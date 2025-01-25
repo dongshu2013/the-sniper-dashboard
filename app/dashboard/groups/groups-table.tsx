@@ -43,6 +43,7 @@ const COLUMN_MAP: Record<string, string> = {
   Name: 'name',
   Intro: 'about',
   Members: 'participantsCount',
+  Category: 'category',
   Entity: 'entity.name',
   Quality: 'qualityScore',
   Status: 'isBlocked',
@@ -136,6 +137,8 @@ export function GroupsTable({
         );
       case 'Members':
         return <TableCell>{chat.participantsCount}</TableCell>;
+      case 'Category':
+        return <TableCell>{chat.category}</TableCell>;
       case 'Entity':
         return (
           <TableCell>
