@@ -86,7 +86,7 @@ export const userAccounts = pgTable('user_account', {
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
   status: varchar('status').default('active')
-})
+});
 
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom().notNull(),
@@ -108,7 +108,7 @@ export const chatMessages = pgTable('chat_messages', {
   messageId: varchar('message_id', { length: 255 }).notNull(),
   messageText: text('message_text').notNull(),
   senderId: varchar('sender_id', { length: 255 }).notNull(),
-  messageTimestamp: timestamp('message_timestamp').notNull()
+  messageTimestamp: integer('message_timestamp').notNull()
 });
 
 export type ChatMessage = typeof chatMessages.$inferSelect;
