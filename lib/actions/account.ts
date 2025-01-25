@@ -9,19 +9,16 @@ export async function getAccounts({
   status,
   pageSize,
   userId
-}:
-  {
-    search: string | undefined,
-    offset: number,
-    status: string,
-    pageSize: number
-    userId: string
-  }
-): Promise<{
+}: {
+  search: string | undefined;
+  offset: number;
+  status: string;
+  pageSize: number;
+  userId: string;
+}): Promise<{
   accounts: Account[];
   totalAccounts: number;
 }> {
-
   const conditions = [];
 
   const userAccountRelations = await db
@@ -29,16 +26,17 @@ export async function getAccounts({
     .from(userAccounts)
     .where(eq(userAccounts.userId, userId));
 
-  const accountIds = userAccountRelations.map((rel) => Number(rel.accountId))
+  const accountIds = userAccountRelations.map((rel) => Number(rel.accountId));
 
-  console.log("🍷🍷", accountIds)
+  console.log('🍷🍷', accountIds);
   if (accountIds.length === 0) {
     return {
-      accounts: [], totalAccounts: 0
-    }
+      accounts: [],
+      totalAccounts: 0
+    };
   }
 
-  conditions.push(inArray(accounts.id, accountIds))
+  conditions.push(inArray(accounts.id, accountIds));
 
   if (search) {
     conditions.push(
@@ -53,7 +51,6 @@ export async function getAccounts({
   if (status && status.trim().length > 0) {
     conditions.push(eq(accounts.status, status));
   }
-
 
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
@@ -83,7 +80,7 @@ export async function createAccount(data: {
   apiHash: string;
   phone: string;
   fullname?: string;
-  userId: string
+  userId: string;
 }) {
   const [newAccount] = await db
     .insert(accounts)
@@ -104,7 +101,7 @@ export async function createAccount(data: {
     accountId: newAccount.accountId.toString(),
     status: 'active',
     updatedAt: new Date(),
-    createdAt: new Date(),
+    createdAt: new Date()
   });
 
   return newAccount;
@@ -143,3 +140,19 @@ export async function updateAccountLastActive(id: number) {
 export type ChatWithAccounts = ChatMetadata & {
   accounts: { username: string | null }[];
 };
+
+export async function saveUserAccounts({
+  userId,
+  accountId
+}: {
+  userId: string;
+  accountId: number;
+}) {
+  await db.insert(userAccounts).values({
+    userId: userId.toString(),
+    accountId: accountId.toString(),
+    status: 'active',
+    updatedAt: new Date(),
+    createdAt: new Date()
+  });
+}

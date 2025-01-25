@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Table,
   TableBody,
@@ -61,7 +61,7 @@ export function AccountsTable({ columns, currentTab }: AccountsTableProps) {
     setLocalAccounts(accounts);
   }, [accounts]);
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       setLoading(true);
       const token = getJwt();
@@ -94,7 +94,7 @@ export function AccountsTable({ columns, currentTab }: AccountsTableProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [curPage, pageSize, currentTab, search]);
 
   useEffect(() => {
     loadData();

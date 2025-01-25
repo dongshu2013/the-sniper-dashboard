@@ -27,12 +27,11 @@ export function LoginForm() {
 
   useEffect(() => {
     const jwt = getJwt();
-    console.log('🚀🚀', jwt, pathname);
 
     if (jwt && pathname === '/login') {
       router.push('/dashboard/overview');
     }
-  }, [usePathname]);
+  }, [pathname]);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();

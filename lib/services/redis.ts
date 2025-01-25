@@ -1,8 +1,7 @@
 import Redis from 'ioredis';
 
-
 const redis = new Redis(process.env.REDIS_URL!, {
-  family: 6,  // 试试 IPv4，若不行改成 6
+  family: 6 // 试试 IPv4，若不行改成 6
 });
 
 const SERVICE_PREFIX = 'the_sinper_bot';
@@ -25,8 +24,10 @@ export const redisService = {
   async setPhoneCode(phone: string, code: string) {
     return redis.set(phone_code_key(phone), code, 'EX', 600); // 10 min expiration
   },
+  
 
   async getPhoneStatus(phone: string) {
-    return redis.get(phone_status_key(phone));
+    const status = await redis.get(phone_status_key(phone));
+    return status;
   }
 };

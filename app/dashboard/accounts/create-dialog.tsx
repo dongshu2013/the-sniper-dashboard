@@ -15,6 +15,7 @@ import { Label } from '@/components/ui/label';
 import { PlusCircle } from 'lucide-react';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import toast from 'react-hot-toast';
+import { getJwt } from '@/components/lib/networkUtils';
 
 export function CreateAccountDialog() {
   const [open, setOpen] = useState(false);
@@ -25,6 +26,7 @@ export function CreateAccountDialog() {
   const [apiHash, setApiHash] = useState('');
   const [countdown, setCountdown] = useState(0);
   const router = useRouter();
+  const token = getJwt();
 
   useEffect(() => {
     if (countdown > 0) {
@@ -56,10 +58,11 @@ export function CreateAccountDialog() {
 
     setIsLoading(true);
     try {
-      await fetch('/api/accounts/request-code', {
+      const response = await fetch('/api/accounts/request-code', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
           phone: normalizedPhone,
@@ -67,6 +70,15 @@ export function CreateAccountDialog() {
           apiHash: apiHash || undefined
         })
       });
+      if (!response.ok) {
+        toast.error('Failed to send confirmation code');
+        return;
+      }
+      const data = await response.json();
+      if (data.code === 1) {
+        toast.error('Code already sent');
+        return;
+      }
 
       toast.success('Confirmation code sent to your Telegram');
       setCountdown(60);
@@ -89,7 +101,8 @@ export function CreateAccountDialog() {
       await fetch('/api/accounts/confirm-code', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
           phone: phoneNumber,
@@ -99,22 +112,7 @@ export function CreateAccountDialog() {
 
       // Step 3: Poll for status with 60s timeout
       const startTime = Date.now();
-      const timeout = 60000; // 60 seconds
-
-      // const token = getJwt();
-      // const response = await fetch(`/api/accounts`, {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     Authorization: `Bearer ${token}`
-      //   },
-      //   body: JSON.stringify({
-      //     phone: phoneNumber,
-      //     apiHash,
-      //     apiId
-      //   })
-      // });
-      // const data = await response.json();
+      const timeout = 60000 * 15; // 60 seconds
 
       const checkStatus = async () => {
         if (Date.now() - startTime > timeout) {
@@ -123,9 +121,16 @@ export function CreateAccountDialog() {
           return;
         }
         const response = await fetch(
-          `/api/accounts/status?phone=${encodeURIComponent(phoneNumber)}`
+          `/api/accounts/status?phone=${encodeURIComponent(phoneNumber)}`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+            }
+          }
         );
         const data = await response.json();
+        console.log('🚀🚀🚀', data);
         if (data.status === 'success') {
           toast.success('Account created successfully');
           setOpen(false);
@@ -134,7 +139,7 @@ export function CreateAccountDialog() {
           toast.error('Failed to create account');
         } else if (data.status === 'pending') {
           // Continue polling
-          setTimeout(checkStatus, 1000);
+          setTimeout(checkStatus, 6000);
         }
       };
       checkStatus();
