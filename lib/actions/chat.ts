@@ -144,7 +144,8 @@ export async function getChatMetadataWithAccounts(
   pageSize: number = 20,
   sortColumn?: string,
   sortDirection?: SortDirection,
-  categories?: string[]
+  categories?: string[],
+  filters?: Record<string, string>
 ): Promise<{
   chats: ChatWithAccounts[];
   totalChats: number;
@@ -168,22 +169,25 @@ export async function getChatMetadataWithAccounts(
     conditions.push(eq(chatMetadata.isBlocked, isBlocked));
   }
 
-  const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+  if (filters) {
+    Object.entries(filters).forEach(([key, value]) => {
+      if (!value) return;
 
-  // const orderByClause =
-  //   orderBy === 'qualityReports'
-  //     ? orderByDirection === 'asc'
-  //       ? asc(
-  //           sql`(SELECT ROUND(AVG((report->>'score')::numeric)) FROM jsonb_array_elements(quality_reports) AS report WHERE report->>'score' IS NOT NULL)`
-  //         )
-  //       : desc(
-  //           sql`(SELECT ROUND(AVG((report->>'score')::numeric)) FROM jsonb_array_elements(quality_reports) AS report WHERE report->>'score' IS NOT NULL)`
-  //         )
-  //     : orderBy
-  //       ? orderByDirection === 'asc'
-  //         ? asc(chatMetadata[orderBy])
-  //         : desc(chatMetadata[orderBy])
-  //       : asc(chatMetadata.createdAt);
+      if (key.includes('.')) {
+        const [parent, child] = key.split('.');
+        if (parent in chatMetadata) {
+          conditions.push(
+            sql`${chatMetadata[parent as keyof typeof chatMetadata]}->>'${child}' ILIKE ${`%${value}%`}`
+          );
+        }
+      } else if (key in chatMetadata) {
+        const column = chatMetadata[key as keyof typeof chatMetadata];
+        conditions.push(sql`${column}::text ILIKE ${`%${value}%`}`);
+      }
+    });
+  }
+
+  const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
   const totalChats = await db
     .select({ count: count() })
@@ -245,7 +249,6 @@ export async function getChatMetadataWithAccounts(
     }
   }
 
-  // Default or no sort column case
   const chatsWithAccounts = await query
     .orderBy(asc(chatMetadata.createdAt))
     .limit(pageSize)

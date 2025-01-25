@@ -65,24 +65,31 @@ export function GroupsTable({
   showCheckboxes?: boolean;
   columns: GroupTableColumn[];
 }) {
-  const [selectedChats, setSelectedChats] = useState<number[]>([]);
   const router = useRouter();
   const searchParams = useSearchParams();
   const { sortConfig, handleSort, resetSort } = useTableSort(chats);
   const { filterConfig, handleFilter, updateFilter, resetFilter } =
     useTableFilter(chats);
+  const [selectedChats, setSelectedChats] = useState<number[]>([]);
   const [localChats, setLocalChats] = useState<ChatWithAccounts[]>(chats);
-
-  const resetState = useCallback(() => {
-    setSelectedChats([]);
-    resetSort();
-    resetFilter();
-  }, [resetSort, resetFilter]);
 
   useEffect(() => {
     setLocalChats(chats);
-    resetState();
-  }, [chats, offset, resetState]);
+  }, [chats]);
+
+  const handleFilterChange = (column: string, value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    const mappedColumn = COLUMN_MAP[column] || column;
+
+    if (value) {
+      params.set(`filter_${mappedColumn}`, value);
+    } else {
+      params.delete(`filter_${mappedColumn}`);
+    }
+
+    params.set('offset', '0'); // 重置到第一页
+    router.push(`/dashboard/groups?${params.toString()}`);
+  };
 
   const handleBlockStatusChange = async (isBlocked: boolean) => {
     if (selectedChats.length === 0) return;
@@ -232,11 +239,10 @@ export function GroupsTable({
                       column.replace(/([A-Z])/g, ' $1').trim()
                     )
                   }
-                  filterValue={filterConfig[COLUMN_MAP[column] || column] || ''}
-                  onFilterChange={(column, value) => {
-                    const mappedColumn = COLUMN_MAP[column] || column;
-                    updateFilter(mappedColumn, value);
-                  }}
+                  filterValue={
+                    searchParams.get(`filter_${COLUMN_MAP[column]}`) || ''
+                  }
+                  onFilterChange={handleFilterChange}
                   sortDirection={
                     sortConfig.column === (COLUMN_MAP[column] || column)
                       ? sortConfig.direction

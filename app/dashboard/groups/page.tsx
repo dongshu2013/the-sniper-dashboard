@@ -3,13 +3,14 @@ import { getChatMetadataWithAccounts } from '@/lib/actions/chat';
 import { GroupsTable } from './groups-table';
 import { GROUP_TAB_COLUMNS } from '@/lib/types';
 import { TabWrapper } from '@/components/shared/tab-wrapper';
-import { Search } from './search';
 import { ViewSwitcher } from './view-switcher';
 import { GroupsGridView } from './groups-grid-view';
 import { SortDirection } from '@/components/ui/filterable-table-header';
 import { CategorySelect } from './category-select';
 
-export default async function GroupsPage(props: {
+export default async function GroupsPage({
+  searchParams: _searchParams
+}: {
   searchParams: Promise<{
     q?: string;
     offset?: string;
@@ -19,9 +20,35 @@ export default async function GroupsPage(props: {
     sortColumn?: string;
     sortDirection?: string;
     categories?: string;
+    [key: string]: string | undefined;
   }>;
 }) {
-  const searchParams = await props.searchParams;
+  const searchParams = await _searchParams;
+
+  const filters = Object.entries(searchParams).reduce(
+    (acc, [key, value]) => {
+      if (key.startsWith('filter_') && value) {
+        const filterKey = key.replace('filter_', '');
+        acc[filterKey] = value;
+      }
+      return acc;
+    },
+    {} as Record<string, string>
+  );
+
+  const categories = searchParams.categories?.split(',').filter(Boolean) || [];
+
+  const { chats, totalChats } = await getChatMetadataWithAccounts(
+    searchParams.q ?? '',
+    parseInt(searchParams.offset ?? '0'),
+    searchParams.tab === 'blocked',
+    parseInt(searchParams.pageSize ?? '20'),
+    searchParams.sortColumn,
+    searchParams.sortDirection as SortDirection,
+    categories,
+    filters
+  );
+
   const search = searchParams.q ?? '';
   const offset = parseInt(searchParams.offset ?? '0');
   const pageSize = parseInt(searchParams.pageSize ?? '20');
@@ -29,17 +56,6 @@ export default async function GroupsPage(props: {
   const currentView = searchParams.view ?? 'list';
   const sortColumn = searchParams.sortColumn;
   const sortDirection = searchParams.sortDirection as SortDirection;
-  const categories = searchParams.categories?.split(',').filter(Boolean) || [];
-
-  const { chats, totalChats } = await getChatMetadataWithAccounts(
-    search,
-    offset,
-    currentTab === 'blocked',
-    pageSize,
-    sortColumn,
-    sortDirection,
-    categories
-  );
 
   return (
     <TabWrapper basePath="/dashboard/groups" defaultTab="active">
