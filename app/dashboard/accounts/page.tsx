@@ -17,7 +17,7 @@ export default function AccountsPage() {
             <TabsTrigger value="active" onClick={() => setCurrentTab('active')}>
               Active
             </TabsTrigger>
-            <TabsTrigger value="banned" onClick={() => setCurrentTab('active')}>
+            <TabsTrigger value="banned" onClick={() => setCurrentTab('banned')}>
               Banned
             </TabsTrigger>
             <TabsTrigger

@@ -1,6 +1,7 @@
 import { createPrivateKey } from 'crypto';
 import dayjs from 'dayjs';
 import { jwtVerify, SignJWT } from 'jose';
+import { json } from 'stream/consumers';
 
 export type UserKeyType = 'email' | 'tgId';
 
@@ -43,15 +44,11 @@ export const verifyJWT = async (jwt: string): Promise<JWTSub | undefined> => {
   try {
     const pemKey = process.env.JWT_PRIVATE_KEY || '';
     const key = createPrivateKey(pemKey);
-
-    const verifyResult = await jwtVerify(jwt, key).catch((err) => {
-      console.error('JWT verification failed:', err);
-      throw new Error('Invalid JWT');
-    });
-
+    const verifyResult = await jwtVerify(jwt, key);
     const jwtSub = JSON.parse(verifyResult?.payload?.sub || '');
     return jwtSub;
-  } catch { }
-
-  return undefined;
+  } catch (err) {
+    console.log('verifyJWT error', err);
+    throw new Error('Invalid JWT');
+  }
 };
