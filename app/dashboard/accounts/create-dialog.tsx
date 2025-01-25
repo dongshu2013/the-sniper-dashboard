@@ -98,6 +98,10 @@ export function CreateAccountDialog() {
       toast.error('Please enter the confirmation code');
       return;
     }
+    if (status && !password) {
+      toast.error('Please enter the password');
+      return;
+    }
 
     setIsLoading(true);
     try {
