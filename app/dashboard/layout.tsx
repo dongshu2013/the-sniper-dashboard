@@ -21,9 +21,9 @@ import {
 } from '@/components/ui/tooltip';
 import { NavItem } from './nav-item';
 import { useRouter, usePathname } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
-import { deleteJwt, getJwt } from '@/components/lib/networkUtils';
-import { verifyJWT } from '@/lib/jwt';
+import React from 'react';
+import { deleteJwt } from '@/components/lib/networkUtils';
+import { useUserStore } from 'stores/userStore';
 
 export default function DashboardLayout({
   children
@@ -56,19 +56,9 @@ export default function DashboardLayout({
 }
 
 function DesktopNav({ onLogout }: { onLogout: () => void }) {
-  const [isAdmin, setIsAdmin] = useState(false);
+  const user = useUserStore((state) => state.user);
 
-  useEffect(() => {
-    (async () => {
-      const token = await getJwt();
-      if (!token) {
-        return;
-      }
-      const jwtSub = await verifyJWT(token);
-      setIsAdmin(jwtSub?.isAdmin || false);
-    })();
-  }, []);
-
+  console.log('////user', user);
   return (
     <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
       <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
@@ -76,7 +66,7 @@ function DesktopNav({ onLogout }: { onLogout: () => void }) {
           <Home className="h-5 w-5" />
         </NavItem>
 
-        {isAdmin && (
+        {user?.isAdmin && (
           <NavItem href="/dashboard/links" label="Telegram Links">
             <Link2 className="h-5 w-5" />
           </NavItem>

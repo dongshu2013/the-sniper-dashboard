@@ -78,9 +78,12 @@ export async function emailLogin({ email }: EmailLoginType) {
       code: 0,
       data: {
         token: token,
-        userId: emailRes?.id,
-        userKey: emailRes?.userId,
-        userKeyType: 'email'
+        user: {
+          userId: emailRes?.id || '',
+          userKey: emailRes?.userId || '',
+          userKeyType: 'email',
+          isAdmin: true
+        }
       }
     };
   } catch (error) {

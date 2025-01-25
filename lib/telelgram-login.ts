@@ -4,7 +4,6 @@ import {
   TelegramUserData,
   urlStrToAuthDataMap
 } from '@telegram-auth/server/utils';
-import { NextRequest } from 'next/server';
 import { createAndUpdateUsers } from './actions/user';
 import { getJWT } from '@/lib/jwt';
 
@@ -48,7 +47,6 @@ export async function telegramLogin({ authData }: any) {
 
   try {
     const telegramUser = await getUser(authData);
-    console.log('......🚀 ～ ', telegramUser);
     const saveUser = await createAndUpdateUsers({
       ...telegramUser,
       id: telegramUser.id.toString()
@@ -70,9 +68,12 @@ export async function telegramLogin({ authData }: any) {
       code: 0,
       data: {
         token,
-        userId: saveUser.id,
-        userKey: telegramUser.id.toString(),
-        userKeyType: 'tgId'
+        user: {
+          userId: saveUser.id,
+          userKey: telegramUser.id.toString(),
+          userKeyType: 'tgId',
+          isAdmin: saveUser?.isAdmin || false
+        }
       }
     };
   } catch (err) {

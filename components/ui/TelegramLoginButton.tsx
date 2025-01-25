@@ -6,10 +6,12 @@ import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { telegramLogin } from '@/lib/telelgram-login';
 import { saveJwt } from '@/components/lib/networkUtils';
+import { useUserStore } from 'stores/userStore';
 
 const TelegramLoginButton: React.FC = () => {
   const [isClient, setIsClient] = useState(false);
   const router = useRouter();
+  const setUser = useUserStore((state) => state.setUser);
 
   useEffect(() => {
     setIsClient(typeof window !== 'undefined');
@@ -59,6 +61,7 @@ const TelegramLoginButton: React.FC = () => {
 
         if (res?.code === 0) {
           await saveJwt(res?.data?.token);
+          setUser(res.data.user);
           router.push('/dashboard/overview');
         } else {
           toast.error('Login failed');

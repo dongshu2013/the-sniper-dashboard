@@ -16,8 +16,10 @@ import TelegramLoginButton from '@/components/ui/TelegramLoginButton';
 import { emailLogin } from '@/lib/actions/user';
 import { saveJwt, getJwt } from '@/components/lib/networkUtils';
 import toast from 'react-hot-toast';
+import { useUserStore } from 'stores/userStore';
 
 export function LoginForm() {
+  const setUser = useUserStore((state) => state.setUser);
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const pathname = usePathname();
@@ -51,8 +53,8 @@ export function LoginForm() {
           password
         });
         if (res.code === 0) {
-          console.log('🌽🌽', res);
           await saveJwt(res?.data?.token);
+          setUser(res?.data?.user);
           router.push('/dashboard/overview');
         } else {
           toast.error('Login failed!');
