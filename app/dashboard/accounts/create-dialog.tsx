@@ -154,6 +154,7 @@ export function CreateAccountDialog() {
             toast.error('Failed to create account');
           } else if (data.status === '2fa') {
             setStatus('2fa');
+            setTimeout(checkStatus, 6000);
           } else if (data.status === 'pending') {
             // Continue polling
             setTimeout(checkStatus, 6000);
