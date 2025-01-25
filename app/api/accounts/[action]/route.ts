@@ -60,10 +60,13 @@ export async function POST(
         return NextResponse.json({ success: true });
 
       default:
-        return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
+        return NextResponse.json(
+          { message: 'Invalid action' },
+          { status: 400 }
+        );
     }
   } catch (error) {
-    return NextResponse.json({ error: 'Operation failed' }, { status: 500 });
+    return NextResponse.json({ message: 'Operation failed' }, { status: 500 });
   }
 }
 
@@ -96,7 +99,7 @@ export async function GET(
         );
       }
       const jsonStatus = await redisService.getPhoneStatus(phone);
-
+      console.log('🌽🌽🌽 jsonStatus', jsonStatus);
       const { status, account_id } = JSON.parse(jsonStatus || '{}');
       if (status === 'success') {
         await saveUserAccounts({
@@ -105,7 +108,17 @@ export async function GET(
         });
       }
 
-      return NextResponse.json({ status: '2fa' });
+      let message = '';
+      if (status === 'success') {
+        message = 'Account created successfully';
+      } else if (status === '2fa') {
+        message = 'Please enter the password and try again';
+      } else if (status === 'error') {
+        message = 'check after user input the phone and try to get code';
+      } else {
+        message = 'Account is being created';
+      }
+      return NextResponse.json({ status: status, message: message });
     }
     return NextResponse.json({ message: 'Invalid action' }, { status: 400 });
   } catch (error) {

@@ -13,7 +13,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PlusCircle } from 'lucide-react';
-import { isValidPhoneNumber } from 'libphonenumber-js';
+import {
+  formatIncompletePhoneNumber,
+  isValidPhoneNumber
+} from 'libphonenumber-js';
 import toast from 'react-hot-toast';
 import { getJwt } from '@/components/lib/networkUtils';
 import PhoneInput, { formatPhoneNumberIntl } from 'react-phone-number-input';
@@ -45,7 +48,7 @@ export function CreateAccountDialog() {
         return null;
       }
 
-      return formatPhoneNumberIntl(phoneNumber);
+      return formatIncompletePhoneNumber(phoneNumber);
     } catch (error) {
       console.error('🌽🌽🌽 error', error);
       return null;
@@ -80,7 +83,7 @@ export function CreateAccountDialog() {
       }
       const data = await response.json();
       if (data.code === 1) {
-        toast.error('Code already sent');
+        toast.error(data.message);
         return;
       }
 
@@ -153,9 +156,11 @@ export function CreateAccountDialog() {
             clearTimeout(timer);
             router.refresh();
           } else if (data.status === 'error') {
-            toast.error('Failed to create account');
+            toast.error(data.message);
+            clearTimeout(timer);
           } else if (data.status === '2fa') {
             setStatus('2fa');
+            toast.loading(data.message);
             timer = setTimeout(checkStatus, 6000);
           } else if (data.status === 'pending') {
             // Continue polling
