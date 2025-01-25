@@ -28,12 +28,22 @@ export async function POST(
         console.log('🚀🚀🚀body', body);
         // TODO: check if user has already requested code
         const jsonStatus = await redisService.getPhoneStatus(body.phone);
+        console.log('🌽🌽🌽 jsonStatus', jsonStatus);
         const status = JSON.parse(jsonStatus || '{}');
-        if (status.account_id) {
+        if (status && status.status === 'error') {
           return NextResponse.json(
             {
               code: 1,
-              message: 'Code already sent'
+              message: 'check after user input the phone and try to get code'
+            },
+            { status: 400 }
+          );
+        }
+        if (status && status.status === 'success') {
+          return NextResponse.json(
+            {
+              code: 1,
+              message: 'The account is already imported'
             },
             { status: 400 }
           );
@@ -78,18 +88,14 @@ export async function GET(
       const phone = searchParams.get('phone');
       if (!phone) {
         return NextResponse.json(
-          { error: 'Phone number is required' },
+          { message: 'Phone number is required' },
           { status: 400 }
         );
       }
       const jsonStatus = await redisService.getPhoneStatus(phone);
-      console.log('🚀🚀🚀jsonStatus', jsonStatus);
-      if (!jsonStatus) {
-        return NextResponse.json({ status: 'pending' });
-      }
-      const { status, account_id } = JSON.parse(jsonStatus);
+      console.log('🍒🍒🍒 jsonStatus', jsonStatus);
 
-      console.log('🚀🚀🚀', status, account_id);
+      const { status, account_id } = JSON.parse(jsonStatus || '{}');
       if (status === 'success') {
         await saveUserAccounts({
           userId: jwtSub.userId,
@@ -97,11 +103,11 @@ export async function GET(
         });
       }
 
-      return NextResponse.json({ status: status || 'pending' });
+      return NextResponse.json({ status: '2fa' });
     }
-    return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
+    return NextResponse.json({ message: 'Invalid action' }, { status: 400 });
   } catch (error) {
     console.error('🚀🚀🚀', error);
-    return NextResponse.json({ error: 'Operation failed' }, { status: 500 });
+    return NextResponse.json({ message: 'get status failed', status: 500 });
   }
 }

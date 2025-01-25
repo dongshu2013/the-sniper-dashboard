@@ -148,11 +148,37 @@ export async function saveUserAccounts({
   userId: string;
   accountId: number;
 }) {
-  await db.insert(userAccounts).values({
-    userId: userId.toString(),
-    accountId: accountId.toString(),
-    status: 'active',
-    updatedAt: new Date(),
-    createdAt: new Date()
-  });
+  const existingAccount = await db
+    .select()
+    .from(userAccounts)
+    .where(
+      and(
+        eq(userAccounts.userId, userId),
+        eq(userAccounts.accountId, accountId.toString())
+      )
+    )
+    .limit(1);
+
+  if (existingAccount.length > 0) {
+    await db
+      .update(userAccounts)
+      .set({
+        status: 'active',
+        updatedAt: new Date()
+      })
+      .where(
+        and(
+          eq(userAccounts.userId, userId),
+          eq(userAccounts.accountId, accountId.toString())
+        )
+      );
+  } else {
+    await db.insert(userAccounts).values({
+      userId: userId.toString(),
+      accountId: accountId.toString(),
+      status: 'active',
+      updatedAt: new Date(),
+      createdAt: new Date()
+    });
+  }
 }

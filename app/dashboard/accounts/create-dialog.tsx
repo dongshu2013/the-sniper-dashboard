@@ -16,6 +16,8 @@ import { PlusCircle } from 'lucide-react';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import toast from 'react-hot-toast';
 import { getJwt } from '@/components/lib/networkUtils';
+import PhoneInput, { formatPhoneNumberIntl } from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
 
 export function CreateAccountDialog() {
   const [open, setOpen] = useState(false);
@@ -27,6 +29,8 @@ export function CreateAccountDialog() {
   const [countdown, setCountdown] = useState(0);
   const router = useRouter();
   const token = getJwt();
+  const [password, setPassword] = useState('');
+  const [status, setStatus] = useState<string | null>(null);
 
   useEffect(() => {
     if (countdown > 0) {
@@ -35,24 +39,24 @@ export function CreateAccountDialog() {
     }
   }, [countdown]);
 
-  // Function to validate phone number format
-  const normalizePhone = (phone: string): string | null => {
+  const normalizePhone = () => {
     try {
-      if (!isValidPhoneNumber(phone)) {
+      if (!phoneNumber || !isValidPhoneNumber(phoneNumber)) {
         return null;
       }
-      return phone; // Since input is already in E.164 format (+XX...)
+
+      return formatPhoneNumberIntl(phoneNumber);
     } catch (error) {
+      console.error('🌽🌽🌽 error', error);
       return null;
     }
   };
 
   const handleGetCode = async () => {
-    const normalizedPhone = normalizePhone(phoneNumber);
+    const normalizedPhone = normalizePhone();
+    console.log('🌽🌽🌽 handleGetCode', normalizedPhone);
     if (!normalizedPhone) {
-      toast.error(
-        'Please enter a valid phone number with country code (e.g. +12223334455)'
-      );
+      toast.error('Please enter a valid phone number with country code');
       return;
     }
 
@@ -98,7 +102,7 @@ export function CreateAccountDialog() {
     setIsLoading(true);
     try {
       // Step 2: Set phone code in Redis
-      await fetch('/api/accounts/confirm-code', {
+      const response = await fetch('/api/accounts/confirm-code', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -109,6 +113,10 @@ export function CreateAccountDialog() {
           code: phoneCode
         })
       });
+      if (!response.ok) {
+        toast.error('Failed to confirm code');
+        return;
+      }
 
       // Step 3: Poll for status with 60s timeout
       const startTime = Date.now();
@@ -120,26 +128,33 @@ export function CreateAccountDialog() {
           setIsLoading(false);
           return;
         }
-        const response = await fetch(
-          `/api/accounts/status?phone=${encodeURIComponent(phoneNumber)}`,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`
+        try {
+          const response = await fetch(
+            `/api/accounts/status?phone=${encodeURIComponent(phoneNumber)}`,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+              }
             }
+          );
+          const data = await response.json();
+          console.log('🚀🚀🚀', data);
+          if (data.status === 'success') {
+            setStatus('success');
+            toast.success('Account created successfully');
+            setOpen(false);
+            router.refresh();
+          } else if (data.status === 'error') {
+            toast.error('Failed to create account');
+          } else if (data.status === '2fa') {
+            setStatus('2fa');
+          } else if (data.status === 'pending') {
+            // Continue polling
+            setTimeout(checkStatus, 6000);
           }
-        );
-        const data = await response.json();
-        console.log('🚀🚀🚀', data);
-        if (data.status === 'success') {
-          toast.success('Account created successfully');
-          setOpen(false);
-          router.refresh();
-        } else if (data.status === 'error') {
-          toast.error('Failed to create account');
-        } else if (data.status === 'pending') {
-          // Continue polling
-          setTimeout(checkStatus, 6000);
+        } catch (error) {
+          toast.error('Failed to get status');
         }
       };
       checkStatus();
@@ -167,15 +182,20 @@ export function CreateAccountDialog() {
         <div className="grid gap-4">
           <div className="grid gap-2">
             <Label htmlFor="phoneNumber">Phone Number*</Label>
-            <div className="flex gap-2">
-              <Input
-                id="phoneNumber"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                placeholder="+12223334455"
-                required
-              />
-            </div>
+            <PhoneInput
+              value={phoneNumber}
+              defaultCountry={'CN'}
+              autoFormat={true}
+              onChange={(value: any) => setPhoneNumber(value || '')}
+              placeholder="+861234567890"
+              style={{
+                width: '100%',
+                padding: '8px',
+                fontSize: '14px',
+                borderRadius: '4px',
+                border: '1px solid #e0e0e0'
+              }}
+            />
           </div>
 
           <div className="grid gap-2">
@@ -214,6 +234,18 @@ export function CreateAccountDialog() {
               </Button>
             </div>
           </div>
+          {status === '2fa' && (
+            <div className="grid gap-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+              />
+            </div>
+          )}
 
           <Button
             onClick={handleConfirmCode}
