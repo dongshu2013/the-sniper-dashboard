@@ -8,6 +8,7 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 import { formatDateTime } from '@/lib/utils';
+import ReactMarkdown from 'react-markdown';
 
 interface Message {
   id: number;
@@ -72,7 +73,7 @@ export function LatestMessageDialog({
                 <div key={message.id} className="space-y-2">
                   <div className="text-sm text-muted-foreground">Message</div>
                   <div className="text-sm bg-muted rounded-md p-3 break-words">
-                    {message.messageText}
+                    <ReactMarkdown>{message.messageText}</ReactMarkdown>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>

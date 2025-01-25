@@ -95,7 +95,7 @@
 # 2025-01-25
 
 - [ ] dashboard 
-  - [ ] show message use markdown
+  - [x] show message use markdown
   - [ ] show message add message reactions 和 message buttons
   - [ ] show message del sender_id, message_id
   - [x] add category show table

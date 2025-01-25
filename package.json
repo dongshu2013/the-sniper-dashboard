@@ -50,6 +50,7 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-hot-toast": "^2.5.1",
+    "react-markdown": "^9.0.3",
     "react-phone-input-2": "^2.15.1",
     "react-phone-number-input": "^3.4.11",
     "server-only": "^0.0.1",
