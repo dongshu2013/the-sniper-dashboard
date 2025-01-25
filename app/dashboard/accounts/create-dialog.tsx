@@ -143,21 +143,23 @@ export function CreateAccountDialog() {
               }
             }
           );
+          let timer: any;
           const data = await response.json();
           console.log('🚀🚀🚀', data);
           if (data.status === 'success') {
             setStatus('success');
             toast.success('Account created successfully');
             setOpen(false);
+            clearTimeout(timer);
             router.refresh();
           } else if (data.status === 'error') {
             toast.error('Failed to create account');
           } else if (data.status === '2fa') {
             setStatus('2fa');
-            setTimeout(checkStatus, 6000);
+            timer = setTimeout(checkStatus, 6000);
           } else if (data.status === 'pending') {
             // Continue polling
-            setTimeout(checkStatus, 6000);
+            timer = setTimeout(checkStatus, 6000);
           }
         } catch (error) {
           toast.error('Failed to get status');
