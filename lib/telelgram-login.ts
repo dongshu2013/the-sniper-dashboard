@@ -41,7 +41,8 @@ export async function telegramLogin({ authData }: any) {
   if (!authData) {
     return {
       code: -1,
-      message: 'request data invalid'
+      message: 'request data invalid',
+      data: null
     };
   }
 

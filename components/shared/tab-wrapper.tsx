@@ -31,8 +31,8 @@ export function TabWrapper({
   };
 
   return (
-    <Suspense fallback={<div>loading...</div>}>
-      <Tabs value={currentTab}>{children}</Tabs>;
-    </Suspense>
+    <Tabs onValueChange={handleValueChange} value={currentTab}>
+      {children}
+    </Tabs>
   );
 }
