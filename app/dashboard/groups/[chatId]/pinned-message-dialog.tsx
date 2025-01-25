@@ -75,22 +75,6 @@ export function PinnedMessageDialog({
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <div className="text-sm text-muted-foreground">
-                        Message ID
-                      </div>
-                      <div className="mt-1 text-sm font-mono">
-                        {message.messageId}
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground">
-                        Sender ID
-                      </div>
-                      <div className="mt-1 text-sm font-mono">
-                        {message.senderId || 'N/A'}
-                      </div>
-                    </div>
-                    <div>
                       <div className="text-sm text-muted-foreground">Time</div>
                       <div className="mt-1 text-sm">
                         {formatDateTime(
