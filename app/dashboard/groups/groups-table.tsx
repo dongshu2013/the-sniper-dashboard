@@ -38,6 +38,7 @@ import {
 import { getQualityBadgeProps } from '@/lib/utils';
 import { AiIcon } from '@/components/icons/ai-icon';
 import { MemecoinIcon } from '@/components/icons/memecoin-icon';
+import { EditCategory } from './edit-category';
 
 const COLUMN_MAP: Record<string, string> = {
   Name: 'name',
@@ -148,7 +149,14 @@ export function GroupsTable({
       case 'Account':
         return <TableCell>{chat.accountUsername}</TableCell>;
       case 'Category':
-        return <TableCell>{chat.category}</TableCell>;
+        return (
+          <TableCell>
+            <EditCategory
+              chatId={chat.id}
+              currentCategory={chat.category || ''}
+            />
+          </TableCell>
+        );
       case 'Entity':
         return (
           <TableCell>
