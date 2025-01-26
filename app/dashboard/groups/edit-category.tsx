@@ -6,7 +6,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
+  DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -32,17 +33,23 @@ interface EditCategoryProps {
 export function EditCategory({ chatId, currentCategory }: EditCategoryProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [selectedCategory, setSelectedCategory] =
+    React.useState(currentCategory);
   const router = useRouter();
 
-  const handleSelect = async (category: string) => {
-    if (category === currentCategory) {
+  const handleSelect = (category: string) => {
+    setSelectedCategory(category);
+  };
+
+  const handleUpdate = async () => {
+    if (selectedCategory === currentCategory) {
       setIsOpen(false);
       return;
     }
 
     try {
       setIsLoading(true);
-      const result = await updateCategory(chatId, category);
+      const result = await updateCategory(chatId, selectedCategory);
       if (result.success) {
         router.refresh();
       } else {
@@ -73,18 +80,33 @@ export function EditCategory({ chatId, currentCategory }: EditCategoryProps) {
         {CATEGORIES.map((category) => (
           <DropdownMenuItem
             key={category}
-            onClick={() => handleSelect(category)}
+            onSelect={(e) => {
+              // 阻止默认的选择行为，防止下拉菜单关闭
+              e.preventDefault();
+              handleSelect(category);
+            }}
             className={cn(
               'flex items-center justify-between',
-              currentCategory === category && 'bg-accent'
+              selectedCategory === category && 'bg-accent'
             )}
           >
             {category}
-            {currentCategory === category && (
+            {selectedCategory === category && (
               <Check className="h-4 w-4 opacity-50" />
             )}
           </DropdownMenuItem>
         ))}
+        <DropdownMenuSeparator />
+        <div className="p-2">
+          <Button
+            size="sm"
+            className="w-full"
+            disabled={selectedCategory === currentCategory || isLoading}
+            onClick={handleUpdate}
+          >
+            Update Category
+          </Button>
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );
