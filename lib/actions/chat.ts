@@ -32,6 +32,7 @@ import { SortDirection } from '@/components/ui/filterable-table-header';
 
 export type ChatWithAccounts = ChatMetadata & {
   accountTgIds: string[];
+  accountUsername: string | null;
 };
 
 export async function getChatMetadata(
@@ -120,6 +121,7 @@ export async function getChatMetadataWithAccountsByChatId(
       photo: chatMetadata.photo,
       createdAt: chatMetadata.createdAt,
       updatedAt: chatMetadata.updatedAt,
+      accountUsername: sql<string | null>`(array_agg(${accounts.username}))[1]`,
       accountTgIds: sql<string[]>`
         COALESCE(
           array_agg(${accounts.tgId}) FILTER (WHERE ${accounts.tgId} IS NOT NULL),
@@ -145,7 +147,8 @@ export async function getChatMetadataWithAccounts(
   sortColumn?: string,
   sortDirection?: SortDirection,
   categories?: string[],
-  filters?: Record<string, string>
+  filters?: Record<string, string>,
+  accountTgIds?: string[]
 ): Promise<{
   chats: ChatWithAccounts[];
   totalChats: number;
@@ -187,6 +190,16 @@ export async function getChatMetadataWithAccounts(
     });
   }
 
+  if (accountTgIds && accountTgIds.length > 0) {
+    conditions.push(
+      sql`EXISTS (
+        SELECT 1 FROM ${accountChat}
+        WHERE ${accountChat.chatId} = ${chatMetadata.chatId}
+        AND ${accountChat.accountId} IN (${sql.join(accountTgIds, ',')})
+      )`
+    );
+  }
+
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
   const totalChats = await db
@@ -209,6 +222,7 @@ export async function getChatMetadataWithAccounts(
       photo: chatMetadata.photo,
       createdAt: chatMetadata.createdAt,
       updatedAt: chatMetadata.updatedAt,
+      accountUsername: sql<string | null>`(array_agg(${accounts.username}))[1]`,
       accountTgIds: sql<string[]>`
         COALESCE(
           array_agg(${accounts.tgId}) FILTER (WHERE ${accounts.tgId} IS NOT NULL),

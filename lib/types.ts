@@ -72,6 +72,7 @@ export type GroupTableColumn =
   | 'Name'
   | 'Intro'
   | 'Members'
+  | 'Account'
   | 'Category'
   | 'Entity'
   | 'Quality'
@@ -83,6 +84,7 @@ export const GROUP_TAB_COLUMNS: Record<string, GroupTableColumn[]> = {
     'Name',
     'Intro',
     'Members',
+    'Account',
     'Category',
     'Entity',
     'Quality',
@@ -92,6 +94,7 @@ export const GROUP_TAB_COLUMNS: Record<string, GroupTableColumn[]> = {
     'Name',
     'Intro',
     'Members',
+    'Account',
     'Category',
     'Entity',
     'Quality',

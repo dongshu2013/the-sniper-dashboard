@@ -43,6 +43,7 @@ const COLUMN_MAP: Record<string, string> = {
   Name: 'name',
   Intro: 'about',
   Members: 'participantsCount',
+  Account: 'accountUsername',
   Category: 'category',
   Entity: 'entity.name',
   Quality: 'qualityScore',
@@ -138,12 +139,14 @@ export function GroupsTable({
           <TableCell>
             <TruncatedCell
               content={chat.about ?? ''}
-              maxWidth="max-w-[200px]"
+              maxWidth="max-w-[100px]"
             />
           </TableCell>
         );
       case 'Members':
         return <TableCell>{chat.participantsCount}</TableCell>;
+      case 'Account':
+        return <TableCell>{chat.accountUsername}</TableCell>;
       case 'Category':
         return <TableCell>{chat.category}</TableCell>;
       case 'Entity':
@@ -230,7 +233,9 @@ export function GroupsTable({
                   key={`header-${column}`}
                   column={column}
                   label={
-                    column === 'Entity' || column === 'Quality' ? (
+                    column === 'Category' ||
+                    column === 'Entity' ||
+                    column === 'Quality' ? (
                       <div className="flex items-center gap-1.5">
                         <AiIcon className="h-6 w-6" />
                         <span>{column}</span>

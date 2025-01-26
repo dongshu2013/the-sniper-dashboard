@@ -7,6 +7,7 @@ import { ViewSwitcher } from './view-switcher';
 import { GroupsGridView } from './groups-grid-view';
 import { SortDirection } from '@/components/ui/filterable-table-header';
 import { CategorySelect } from './category-select';
+import { AccountSelect } from './account-select';
 
 export default async function GroupsPage({
   searchParams: _searchParams
@@ -20,6 +21,7 @@ export default async function GroupsPage({
     sortColumn?: string;
     sortDirection?: string;
     categories?: string;
+    accountTgIds?: string;
     [key: string]: string | undefined;
   }>;
 }) {
@@ -38,6 +40,10 @@ export default async function GroupsPage({
 
   const categories = searchParams.categories?.split(',').filter(Boolean) || [];
 
+  const accountTgIds = searchParams.accountTgIds
+    ? searchParams.accountTgIds.split(',')
+    : undefined;
+
   const { chats, totalChats } = await getChatMetadataWithAccounts(
     searchParams.q ?? '',
     parseInt(searchParams.offset ?? '0'),
@@ -46,7 +52,8 @@ export default async function GroupsPage({
     searchParams.sortColumn,
     searchParams.sortDirection as SortDirection,
     categories,
-    filters
+    filters,
+    accountTgIds
   );
 
   const search = searchParams.q ?? '';
@@ -70,6 +77,7 @@ export default async function GroupsPage({
         </div>
         <div className="flex items-center gap-4">
           <CategorySelect />
+          <AccountSelect />
         </div>
       </div>
 
