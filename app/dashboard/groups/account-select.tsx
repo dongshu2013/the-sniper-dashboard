@@ -62,7 +62,7 @@ export function AccountSelect() {
 
   // 从 URL 参数同步选中状态
   React.useEffect(() => {
-    const accountsParam = searchParams.get('accounts');
+    const accountsParam = searchParams.get('accountTgIds');
     if (accountsParam) {
       const accountTgIds = accountsParam.split(',').filter(Boolean);
       // 从已加载的账户中找到对应的完整信息
@@ -82,9 +82,9 @@ export function AccountSelect() {
   const updateUrlParams = (newSelected: SelectedAccount[]) => {
     const params = new URLSearchParams(searchParams.toString());
     if (newSelected.length > 0) {
-      params.set('accounts', newSelected.map((acc) => acc.tgId).join(','));
+      params.set('accountTgIds', newSelected.map((acc) => acc.tgId).join(','));
     } else {
-      params.delete('accounts');
+      params.delete('accountTgIds');
     }
     router.push(`/dashboard/groups?${params.toString()}`);
   };

@@ -147,7 +147,8 @@ export async function getChatMetadataWithAccounts(
   sortColumn?: string,
   sortDirection?: SortDirection,
   categories?: string[],
-  filters?: Record<string, string>
+  filters?: Record<string, string>,
+  accountTgIds?: string[]
 ): Promise<{
   chats: ChatWithAccounts[];
   totalChats: number;
@@ -187,6 +188,16 @@ export async function getChatMetadataWithAccounts(
         conditions.push(sql`${column}::text ILIKE ${`%${value}%`}`);
       }
     });
+  }
+
+  if (accountTgIds && accountTgIds.length > 0) {
+    conditions.push(
+      sql`EXISTS (
+        SELECT 1 FROM ${accountChat}
+        WHERE ${accountChat.chatId} = ${chatMetadata.chatId}
+        AND ${accountChat.accountId} IN (${sql.join(accountTgIds, ',')})
+      )`
+    );
   }
 
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
