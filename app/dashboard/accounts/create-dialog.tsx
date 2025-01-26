@@ -77,10 +77,7 @@ export function CreateAccountDialog() {
           apiHash: apiHash || undefined
         })
       });
-      if (!response.ok) {
-        toast.error('Failed to send confirmation code');
-        return;
-      }
+
       const data = await response.json();
       if (data.code === 1) {
         toast.error(data.message);
@@ -101,7 +98,7 @@ export function CreateAccountDialog() {
       toast.error('Please enter the confirmation code');
       return;
     }
-    if (status && !password) {
+    if (status === '2fa' && !password) {
       toast.error('Please enter the password');
       return;
     }

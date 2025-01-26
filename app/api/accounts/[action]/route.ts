@@ -26,27 +26,33 @@ export async function POST(
     switch (action) {
       case 'request-code':
         console.log('🚀🚀🚀body', body);
-        // TODO: check if user has already requested code
         const jsonStatus = await redisService.getPhoneStatus(body.phone);
         console.log('🌽🌽🌽 jsonStatus', jsonStatus);
         const status = JSON.parse(jsonStatus || '{}');
         if (status && status.status === 'error') {
-          return NextResponse.json(
-            {
-              code: 1,
-              message: 'check after user input the phone and try to get code'
-            },
-            { status: 400 }
-          );
+          return NextResponse.json({
+            code: 1,
+            message: 'check after user input the phone and try to get code'
+          });
+        }
+        if (status && status.status === '2fa') {
+          return NextResponse.json({
+            code: 1,
+            message: 'Please enter the password and try again'
+          });
         }
         if (status && status.status === 'success') {
-          return NextResponse.json(
-            {
-              code: 1,
-              message: 'The account is already imported'
-            },
-            { status: 400 }
-          );
+          return NextResponse.json({
+            code: 1,
+            message: 'The account is already imported'
+          });
+        }
+
+        if (status && status.status === 'pending') {
+          return NextResponse.json({
+            code: 1,
+            message: 'The account is creating'
+          });
         }
         await redisService.pushAccountRequest(body);
         return NextResponse.json({ success: true });
