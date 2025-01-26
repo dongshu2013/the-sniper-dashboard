@@ -230,7 +230,9 @@ export function GroupsTable({
                   key={`header-${column}`}
                   column={column}
                   label={
-                    column === 'Entity' || column === 'Quality' ? (
+                    column === 'Category' ||
+                    column === 'Entity' ||
+                    column === 'Quality' ? (
                       <div className="flex items-center gap-1.5">
                         <AiIcon className="h-6 w-6" />
                         <span>{column}</span>

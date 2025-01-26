@@ -101,3 +101,12 @@
   - [x] add category show table
   - [x] fix filter from global data
   - [ ] kol社群这块需要加个1. 各个判断标准和相应得分 2. 给项目方打广告的记录和次数 3. KOL的风格总结
+
+# 2025-01-26
+
+- [ ] dashboard 
+  - [ ] account multi-select 
+  - [x] add category ai icon
+  - [ ] mannual update category
+
+
