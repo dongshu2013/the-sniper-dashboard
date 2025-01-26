@@ -7,6 +7,7 @@ import { ViewSwitcher } from './view-switcher';
 import { GroupsGridView } from './groups-grid-view';
 import { SortDirection } from '@/components/ui/filterable-table-header';
 import { CategorySelect } from './category-select';
+import { AccountSelect } from './account-select';
 
 export default async function GroupsPage({
   searchParams: _searchParams
@@ -70,6 +71,7 @@ export default async function GroupsPage({
         </div>
         <div className="flex items-center gap-4">
           <CategorySelect />
+          <AccountSelect />
         </div>
       </div>
 
