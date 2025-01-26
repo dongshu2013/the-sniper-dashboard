@@ -21,6 +21,8 @@ export async function getAccounts({
 }> {
   const conditions = [];
 
+  console.log('🍷🍷🍷', userId, status);
+
   const userAccountRelations = await db
     .select({ accountId: userAccounts.accountId })
     .from(userAccounts)
@@ -49,7 +51,13 @@ export async function getAccounts({
   }
 
   if (status && status.trim().length > 0) {
-    conditions.push(eq(accounts.status, status));
+    if (status === 'active') {
+      conditions.push(
+        or(eq(accounts.status, 'active'), eq(accounts.status, 'running'))
+      );
+    } else {
+      conditions.push(eq(accounts.status, status));
+    }
   }
 
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
