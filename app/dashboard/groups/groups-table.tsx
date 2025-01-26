@@ -43,6 +43,7 @@ const COLUMN_MAP: Record<string, string> = {
   Name: 'name',
   Intro: 'about',
   Members: 'participantsCount',
+  Account: 'accountUsername',
   Category: 'category',
   Entity: 'entity.name',
   Quality: 'qualityScore',
@@ -138,12 +139,14 @@ export function GroupsTable({
           <TableCell>
             <TruncatedCell
               content={chat.about ?? ''}
-              maxWidth="max-w-[200px]"
+              maxWidth="max-w-[100px]"
             />
           </TableCell>
         );
       case 'Members':
         return <TableCell>{chat.participantsCount}</TableCell>;
+      case 'Account':
+        return <TableCell>{chat.accountUsername}</TableCell>;
       case 'Category':
         return <TableCell>{chat.category}</TableCell>;
       case 'Entity':
