@@ -144,22 +144,22 @@ export function CreateAccountDialog() {
             }
           );
           let timer: any;
-          const data = await response.json();
-          console.log('🚀🚀🚀', data);
-          if (data.status === 'success') {
+          const { status, message } = await response.json();
+          console.log('🚀🚀🚀', status, message);
+          if (status === 'success') {
             setStatus('success');
             toast.success('Account created successfully');
             setOpen(false);
             clearTimeout(timer);
             router.refresh();
-          } else if (data.status === 'error') {
-            toast.error(data.message);
+          } else if (status === 'error') {
+            toast.error(message);
             clearTimeout(timer);
-          } else if (data.status === '2fa') {
+          } else if (status === '2fa') {
             setStatus('2fa');
-            toast.loading(data.message);
+            toast.error(message);
             timer = setTimeout(checkStatus, 6000);
-          } else if (data.status === 'pending') {
+          } else if (status === 'pending') {
             // Continue polling
             timer = setTimeout(checkStatus, 6000);
           }
