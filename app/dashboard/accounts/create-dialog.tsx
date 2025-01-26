@@ -152,15 +152,17 @@ export function CreateAccountDialog() {
             setOpen(false);
             clearTimeout(timer);
             router.refresh();
-          } else if (status === 'error') {
+          }
+          if (status === 'error') {
             toast.error(message);
             clearTimeout(timer);
-          } else if (status === '2fa') {
+          }
+          if (status === '2fa') {
             setStatus('2fa');
             toast.error(message);
             timer = setTimeout(checkStatus, 6000);
-          } else if (status === 'pending') {
-            // Continue polling
+          }
+          if (status === 'pending') {
             timer = setTimeout(checkStatus, 6000);
           }
         } catch (error) {
