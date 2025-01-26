@@ -23,10 +23,15 @@ import { cn } from '@/lib/utils';
 import { Account } from '@/lib/schema';
 import { getJwt } from '@/components/lib/networkUtils';
 
+interface SelectedAccount {
+  tgId: string;
+  username: string;
+}
+
 export function AccountSelect() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [selected, setSelected] = React.useState<string[]>([]);
+  const [selected, setSelected] = React.useState<SelectedAccount[]>([]);
   const [open, setOpen] = React.useState(false);
   const [accounts, setAccounts] = React.useState<Account[]>([]);
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -59,18 +64,25 @@ export function AccountSelect() {
   React.useEffect(() => {
     const accountsParam = searchParams.get('accounts');
     if (accountsParam) {
-      const accountArray = accountsParam.split(',').filter(Boolean);
-      setSelected(accountArray);
+      const accountTgIds = accountsParam.split(',').filter(Boolean);
+      // 从已加载的账户中找到对应的完整信息
+      const selectedAccounts = accounts
+        .filter((account) => accountTgIds.includes(account.tgId))
+        .map((account) => ({
+          tgId: account.tgId,
+          username: account.username || account.tgId
+        }));
+      setSelected(selectedAccounts);
     } else {
       setSelected([]);
     }
-  }, [searchParams]);
+  }, [searchParams, accounts]);
 
   // 更新 URL 参数
-  const updateUrlParams = (newSelected: string[]) => {
+  const updateUrlParams = (newSelected: SelectedAccount[]) => {
     const params = new URLSearchParams(searchParams.toString());
     if (newSelected.length > 0) {
-      params.set('accounts', newSelected.join(','));
+      params.set('accounts', newSelected.map((acc) => acc.tgId).join(','));
     } else {
       params.delete('accounts');
     }
@@ -78,11 +90,15 @@ export function AccountSelect() {
   };
 
   // 处理选择/取消选择
-  const handleSelect = (value: string) => {
+  const handleSelect = (account: Account) => {
     setSelected((current) => {
-      const newSelected = current.includes(value)
-        ? current.filter((item) => item !== value)
-        : [...current, value];
+      const isSelected = current.some((item) => item.tgId === account.tgId);
+      const newSelected = isSelected
+        ? current.filter((item) => item.tgId !== account.tgId)
+        : [
+            ...current,
+            { tgId: account.tgId, username: account.username || account.tgId }
+          ];
 
       updateUrlParams(newSelected);
       return newSelected;
@@ -106,21 +122,26 @@ export function AccountSelect() {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className="w-full justify-between"
         >
           {selected.length > 0 ? (
             <div className="flex flex-wrap gap-1">
               {selected.map((account) => (
                 <Badge
-                  key={account}
+                  key={account.tgId}
                   variant="secondary"
                   className="mr-1"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleSelect(account);
+                    const fullAccount = accounts.find(
+                      (acc) => acc.tgId === account.tgId
+                    );
+                    if (fullAccount) {
+                      handleSelect(fullAccount);
+                    }
                   }}
                 >
-                  {account}
+                  {account.username}
                   <X className="ml-1 h-3 w-3" />
                 </Badge>
               ))}
@@ -131,7 +152,7 @@ export function AccountSelect() {
           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-full p-0">
         <Command>
           <CommandInput
             placeholder="Search accounts..."
@@ -144,12 +165,12 @@ export function AccountSelect() {
               {filteredAccounts.map((account) => (
                 <CommandItem
                   key={account.tgId}
-                  onSelect={() => handleSelect(account.tgId)}
+                  onSelect={() => handleSelect(account)}
                 >
                   <Check
                     className={cn(
                       'mr-2 h-4 w-4',
-                      selected.includes(account.tgId)
+                      selected.some((item) => item.tgId === account.tgId)
                         ? 'opacity-100'
                         : 'opacity-0'
                     )}
