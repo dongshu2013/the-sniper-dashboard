@@ -114,6 +114,7 @@ export type AccountTableColumn =
   | 'phone'
   | 'status'
   | 'fullname'
+  | 'status'
   | 'lastActiveAt'
   | 'createdAt';
 
@@ -123,6 +124,7 @@ export const ACCOUNT_TAB_COLUMNS: Record<string, AccountTableColumn[]> = {
     'tgId',
     'phone',
     'fullname',
+    'status',
     'lastActiveAt',
     'createdAt'
   ],
