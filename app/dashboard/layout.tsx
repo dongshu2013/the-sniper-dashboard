@@ -75,9 +75,11 @@ function DesktopNav({ onLogout }: { onLogout: () => void }) {
           <MessageCircle className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="/dashboard/accounts" label="Accounts">
-          <User className="h-5 w-5" />
-        </NavItem>
+        {user?.isAdmin && (
+          <NavItem href="/dashboard/accounts" label="Accounts">
+            <User className="h-5 w-5" />
+          </NavItem>
+        )}
       </nav>
       <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
         <Tooltip>
