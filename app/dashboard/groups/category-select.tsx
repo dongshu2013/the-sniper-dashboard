@@ -32,7 +32,13 @@ const CATEGORIES = [
   'OTHERS'
 ] as const;
 
-export function CategorySelect() {
+interface CategorySelectProps {
+  basePath?: string;
+}
+
+export function CategorySelect({
+  basePath = '/dashboard/groups'
+}: CategorySelectProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [selected, setSelected] = React.useState<string[]>([]);
@@ -55,7 +61,7 @@ export function CategorySelect() {
     } else {
       params.delete('categories');
     }
-    router.push(`/dashboard/groups?${params.toString()}`);
+    router.push(`${basePath}?${params.toString()}`);
   };
 
   const handleSelect = (value: string) => {

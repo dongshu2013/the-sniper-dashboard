@@ -57,7 +57,7 @@ export default async function HomePage({
           <ViewSwitcher currentView={currentView} basePath="/home" />
         </div>
         <div className="flex items-center gap-4">
-          <CategorySelect />
+          <CategorySelect basePath="/home" />
         </div>
       </div>
 
