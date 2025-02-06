@@ -43,7 +43,9 @@ export default async function HomePage({
     searchParams.sortColumn,
     searchParams.sortDirection as SortDirection,
     categories,
-    filters
+    filters,
+    undefined,
+    false
   );
 
   const offset = parseInt(searchParams.offset ?? '0');
