@@ -101,7 +101,7 @@ export default async function GroupDetailsPage(props: { params: Params }) {
                 <div className="text-sm text-muted-foreground mb-2">
                   Introduce
                 </div>
-                <div className="text-sm bg-muted rounded-md p-3">
+                <div className="text-sm bg-muted rounded-md p-3 whitespace-pre-line break-words">
                   {typedChat.about || typedChat.aiAbout || 'No info'}
                 </div>
               </div>

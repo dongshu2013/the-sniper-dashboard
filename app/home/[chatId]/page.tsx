@@ -90,11 +90,11 @@ export default async function PublicGroupDetailsPage(props: {
               </div>
 
               <div className="mt-6">
-                <div className="text-sm text-muted-foreground mb-2">About</div>
-                <div className="text-sm bg-muted rounded-md p-3">
-                  {typedChat.about ||
-                    typedChat.aiAbout ||
-                    'No description available'}
+                <div className="text-sm text-muted-foreground mb-2">
+                  Introduce
+                </div>
+                <div className="text-sm bg-muted rounded-md p-3 whitespace-pre-line break-words">
+                  {typedChat.about || typedChat.aiAbout || 'No info'}
                 </div>
               </div>
             </div>
