@@ -118,6 +118,7 @@ export async function getChatMetadataWithAccountsByChatId(
       entity: chatMetadata.entity,
       qualityScore: chatMetadata.qualityScore,
       isBlocked: chatMetadata.isBlocked,
+      isPrivate: chatMetadata.isPrivate,
       photo: chatMetadata.photo,
       createdAt: chatMetadata.createdAt,
       updatedAt: chatMetadata.updatedAt,
@@ -148,7 +149,8 @@ export async function getChatMetadataWithAccounts(
   sortDirection?: SortDirection,
   categories?: string[],
   filters?: Record<string, string>,
-  accountTgIds?: string[]
+  accountTgIds?: string[],
+  isPrivate?: boolean
 ): Promise<{
   chats: ChatWithAccounts[];
   totalChats: number;
@@ -170,6 +172,10 @@ export async function getChatMetadataWithAccounts(
 
   if (isBlocked !== undefined) {
     conditions.push(eq(chatMetadata.isBlocked, isBlocked));
+  }
+
+  if (isPrivate !== undefined) {
+    conditions.push(eq(chatMetadata.isPrivate, isPrivate));
   }
 
   if (filters) {

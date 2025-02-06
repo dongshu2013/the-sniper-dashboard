@@ -22,7 +22,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ChatWithAccounts } from '@/lib/actions/chat';
-import { updateBlockStatus } from './actions';
+import { updateBlockStatus, updatePrivateStatus } from './actions';
 import { GroupTableColumn } from '@/lib/types';
 import { Pagination } from '@/components/ui/pagination';
 import { formatDateTime } from '@/lib/utils';
@@ -62,6 +62,10 @@ interface GroupsTableProps {
   hideAccountInfo?: boolean;
   basePath?: string;
   onItemClick?: (chatId: string) => string;
+  privacyAction?: 'make-private' | 'make-public';
+  privacyButtonText?: string;
+  showBlockAction?: boolean;
+  privacyActions?: ('make-private' | 'make-public')[];
 }
 
 export function GroupsTable({
@@ -73,7 +77,11 @@ export function GroupsTable({
   columns,
   hideAccountInfo = false,
   basePath = '/dashboard/groups',
-  onItemClick
+  onItemClick,
+  privacyAction,
+  privacyButtonText,
+  showBlockAction = false,
+  privacyActions = []
 }: GroupsTableProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -97,13 +105,22 @@ export function GroupsTable({
       params.delete(`filter_${mappedColumn}`);
     }
 
-    params.set('offset', '0'); // 重置到第一页
+    params.set('offset', '0');
     router.push(`${basePath}?${params.toString()}`);
   };
 
-  const handleBlockStatusChange = async (isBlocked: boolean) => {
+  const handleBlockSelected = async () => {
     if (selectedChats.length === 0) return;
-    await updateBlockStatus(selectedChats, isBlocked);
+    await updateBlockStatus(selectedChats, true);
+    setSelectedChats([]);
+    router.refresh();
+  };
+
+  const handlePrivacyChange = async (
+    action: 'make-private' | 'make-public'
+  ) => {
+    if (selectedChats.length === 0) return;
+    await updatePrivateStatus(selectedChats, action === 'make-private');
     setSelectedChats([]);
     router.refresh();
   };
@@ -217,14 +234,36 @@ export function GroupsTable({
             <span className="text-sm text-muted-foreground">
               {selectedChats.length} selected
             </span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleBlockStatusChange(true)}
-              disabled={selectedChats.length === 0}
-            >
-              Block Selected
-            </Button>
+            {showBlockAction && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleBlockSelected}
+                disabled={selectedChats.length === 0}
+              >
+                Block Selected
+              </Button>
+            )}
+            {privacyActions.includes('make-public') && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handlePrivacyChange('make-public')}
+                disabled={selectedChats.length === 0}
+              >
+                Make Public
+              </Button>
+            )}
+            {privacyActions.includes('make-private') && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handlePrivacyChange('make-private')}
+                disabled={selectedChats.length === 0}
+              >
+                Make Private
+              </Button>
+            )}
           </div>
         )}
       </CardHeader>

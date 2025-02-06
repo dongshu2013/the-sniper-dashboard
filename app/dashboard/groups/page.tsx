@@ -8,6 +8,7 @@ import { GroupsGridView } from './groups-grid-view';
 import { SortDirection } from '@/components/ui/filterable-table-header';
 import { CategorySelect } from './category-select';
 import { AccountSelect } from './account-select';
+import { updatePrivateStatus } from './actions';
 
 export default async function GroupsPage({
   searchParams: _searchParams
@@ -44,6 +45,13 @@ export default async function GroupsPage({
     ? searchParams.accountTgIds.split(',')
     : undefined;
 
+  const isPrivate =
+    searchParams.tab === 'private'
+      ? true
+      : searchParams.tab === 'public'
+        ? false
+        : undefined;
+
   const { chats, totalChats } = await getChatMetadataWithAccounts(
     searchParams.q ?? '',
     parseInt(searchParams.offset ?? '0'),
@@ -53,7 +61,8 @@ export default async function GroupsPage({
     searchParams.sortDirection as SortDirection,
     categories,
     filters,
-    accountTgIds
+    accountTgIds,
+    isPrivate
   );
 
   const search = searchParams.q ?? '';
@@ -73,6 +82,8 @@ export default async function GroupsPage({
           <TabsList>
             <TabsTrigger value="active">Active</TabsTrigger>
             <TabsTrigger value="blocked">Blocked</TabsTrigger>
+            <TabsTrigger value="private">Private</TabsTrigger>
+            <TabsTrigger value="public">Public</TabsTrigger>
           </TabsList>
         </div>
         <div className="flex items-center gap-4">
@@ -90,6 +101,8 @@ export default async function GroupsPage({
             pageSize={pageSize}
             showCheckboxes={true}
             columns={GROUP_TAB_COLUMNS.active}
+            showBlockAction={true}
+            privacyActions={['make-private', 'make-public']}
           />
         ) : (
           <GroupsGridView
@@ -121,6 +134,30 @@ export default async function GroupsPage({
             showCheckboxes={false}
           />
         )}
+      </TabsContent>
+
+      <TabsContent value="private" className="mt-4">
+        <GroupsTable
+          chats={chats}
+          offset={offset}
+          totalChats={totalChats}
+          pageSize={pageSize}
+          showCheckboxes={true}
+          columns={GROUP_TAB_COLUMNS.private}
+          privacyActions={['make-public']}
+        />
+      </TabsContent>
+
+      <TabsContent value="public" className="mt-4">
+        <GroupsTable
+          chats={chats}
+          offset={offset}
+          totalChats={totalChats}
+          pageSize={pageSize}
+          showCheckboxes={true}
+          columns={GROUP_TAB_COLUMNS.public}
+          privacyActions={['make-private']}
+        />
       </TabsContent>
     </TabWrapper>
   );

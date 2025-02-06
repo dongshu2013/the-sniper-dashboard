@@ -114,7 +114,7 @@
 
  - [ ] dashboard
   - [x] public page(/home): 不用login也能看到的页面，默认显示所有群的信息，不含account信息
-  - [ ] 登陆后，可以看到我们的账号和账号下面所有的群，这个就是我们目前的dashboard，自己的群别人看不到
+  - [x] 登陆后，可以看到我们的账号和账号下面所有的群，这个就是我们目前的dashboard，自己的群别人看不到
   - [ ] 用户可以看到自己的群，并且选择哪些群enable(then: private/public)，哪些群不enable（默认都enable）， enable 完以后我们就开始做分析
   - [ ] 用户可以选择自己的promopt来summary群，我们给一个默认的prompt
 

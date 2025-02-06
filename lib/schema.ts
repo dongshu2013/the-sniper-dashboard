@@ -49,6 +49,7 @@ export const chatMetadata = pgTable('chat_metadata', {
     .$type<number>()
     .default(0),
   isBlocked: boolean('is_blocked').default(false),
+  isPrivate: boolean('is_private').default(false),
   photo: jsonb('photo').default('{}'),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()

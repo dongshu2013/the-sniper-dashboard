@@ -100,6 +100,16 @@ export const GROUP_TAB_COLUMNS: Record<string, GroupTableColumn[]> = {
     'Quality',
     'Created At'
   ],
+  private: [
+    'Name',
+    'Intro',
+    'Members',
+    'Account',
+    'Category',
+    'Entity',
+    'Quality',
+    'Created At'
+  ],
   public: [
     'Name',
     'Intro',
