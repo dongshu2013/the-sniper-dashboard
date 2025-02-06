@@ -9,14 +9,12 @@ import { PinnedMessagesCard } from '../../dashboard/groups/[chatId]/pinned-messa
 import { LatestMessagesCard } from '../../dashboard/groups/[chatId]/latest-messages-card';
 import { ChatMetadata } from '@/lib/types';
 
-interface Params {
-  chatId: string;
-}
+type Params = Promise<{ chatId: string }>;
 
 export default async function PublicGroupDetailsPage(props: {
   params: Params;
 }) {
-  const { chatId } = props.params;
+  const { chatId } = await props.params;
   const chat = await getChatMetadataWithAccountsByChatId(chatId);
 
   if (!chat) {
