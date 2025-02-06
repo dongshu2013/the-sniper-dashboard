@@ -8,6 +8,9 @@ import { EntityCard } from '../../dashboard/groups/[chatId]/entity-card';
 import { PinnedMessagesCard } from '../../dashboard/groups/[chatId]/pinned-messages-card';
 import { LatestMessagesCard } from '../../dashboard/groups/[chatId]/latest-messages-card';
 import { ChatMetadata } from '@/lib/types';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
 
 type Params = Promise<{ chatId: string }>;
 
@@ -29,6 +32,21 @@ export default async function PublicGroupDetailsPage(props: {
 
   return (
     <div className="container mx-auto py-6 space-y-6">
+      {/* Back Button */}
+      <div>
+        <Button
+          variant="ghost"
+          size="sm"
+          asChild
+          className="gap-2 text-muted-foreground hover:text-foreground"
+        >
+          <Link href="/home">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Groups
+          </Link>
+        </Button>
+      </div>
+
       {/* Info Card */}
       <Card className="border-none">
         <CardContent className="py-6">
