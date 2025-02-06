@@ -16,19 +16,29 @@ interface GroupsGridProps {
   showCheckboxes?: boolean;
   onCheckChange?: (checked: boolean) => void;
   isChecked?: boolean;
+  basePath?: string;
+  onItemClick?: (chatId: string) => string;
+  hideAccountInfo?: boolean;
 }
 
 export function GroupsGrid({
   chat,
   showCheckboxes = false,
   onCheckChange,
-  isChecked = false
+  isChecked = false,
+  basePath = '/dashboard/groups',
+  onItemClick,
+  hideAccountInfo = false
 }: GroupsGridProps) {
   const router = useRouter();
   const { score, variant, label } = getQualityBadgeProps(chat.qualityScore);
 
-  const handleClick = () => {
-    router.push(`/dashboard/groups/${chat.chatId}`);
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const path = onItemClick
+      ? onItemClick(chat.chatId)
+      : `${basePath}/${chat.chatId}`;
+    router.push(path);
   };
 
   return (

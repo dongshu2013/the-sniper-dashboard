@@ -4,7 +4,15 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LayoutGrid, List } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export function ViewSwitcher({ currentView }: { currentView: string }) {
+interface ViewSwitcherProps {
+  currentView: string;
+  basePath?: string;
+}
+
+export function ViewSwitcher({
+  currentView,
+  basePath = '/dashboard/groups'
+}: ViewSwitcherProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -14,7 +22,7 @@ export function ViewSwitcher({ currentView }: { currentView: string }) {
       onValueChange={(value) => {
         const params = new URLSearchParams(searchParams.toString());
         params.set('view', value);
-        router.push(`/dashboard/groups?${params.toString()}`);
+        router.push(`${basePath}?${params.toString()}`);
       }}
     >
       <TabsList>

@@ -52,21 +52,29 @@ const COLUMN_MAP: Record<string, string> = {
   'Created At': 'createdAt'
 };
 
-export function GroupsTable({
-  chats,
-  offset,
-  totalChats,
-  pageSize = 20,
-  showCheckboxes = true,
-  columns
-}: {
+interface GroupsTableProps {
   chats: ChatWithAccounts[];
   offset: number;
   totalChats: number;
   pageSize?: number;
   showCheckboxes?: boolean;
   columns: GroupTableColumn[];
-}) {
+  hideAccountInfo?: boolean;
+  basePath?: string;
+  onItemClick?: (chatId: string) => string;
+}
+
+export function GroupsTable({
+  chats,
+  offset,
+  totalChats,
+  pageSize = 20,
+  showCheckboxes = true,
+  columns,
+  hideAccountInfo = false,
+  basePath = '/dashboard/groups',
+  onItemClick
+}: GroupsTableProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { sortConfig, handleSort, resetSort } = useTableSort(chats);
@@ -90,7 +98,7 @@ export function GroupsTable({
     }
 
     params.set('offset', '0'); // 重置到第一页
-    router.push(`/dashboard/groups?${params.toString()}`);
+    router.push(`${basePath}?${params.toString()}`);
   };
 
   const handleBlockStatusChange = async (isBlocked: boolean) => {
@@ -103,7 +111,7 @@ export function GroupsTable({
   const handlePageChange = (newOffset: number) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set('offset', newOffset.toString());
-    router.push(`/dashboard/groups?${params.toString()}`);
+    router.push(`${basePath}?${params.toString()}`);
   };
 
   const handleSortChange = (column: string, direction: SortDirection) => {
@@ -112,7 +120,7 @@ export function GroupsTable({
     params.set('sortColumn', mappedColumn);
     params.set('sortDirection', direction || '');
     params.set('offset', '0');
-    router.push(`/dashboard/groups?${params.toString()}`);
+    router.push(`${basePath}?${params.toString()}`);
   };
 
   const renderTableCell = (
@@ -292,9 +300,12 @@ export function GroupsTable({
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() =>
-                      router.push(`/dashboard/groups/${chat.chatId}`)
-                    }
+                    onClick={() => {
+                      const path = onItemClick
+                        ? onItemClick(chat.chatId)
+                        : `${basePath}/${chat.chatId}`;
+                      router.push(path);
+                    }}
                     className="flex items-center gap-2"
                   >
                     <Eye className="h-4 w-4" />
@@ -322,7 +333,7 @@ export function GroupsTable({
             const params = new URLSearchParams(searchParams.toString());
             params.set('pageSize', newPageSize.toString());
             params.set('offset', '0');
-            router.push(`/dashboard/groups?${params.toString()}`);
+            router.push(`${basePath}?${params.toString()}`);
           }}
         />
       </CardFooter>

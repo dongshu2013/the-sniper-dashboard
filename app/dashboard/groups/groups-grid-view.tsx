@@ -12,6 +12,9 @@ interface GroupsGridViewProps {
   totalChats: number;
   pageSize?: number;
   showCheckboxes?: boolean;
+  hideAccountInfo?: boolean;
+  basePath?: string;
+  onItemClick?: (chatId: string) => string;
 }
 
 export function GroupsGridView({
@@ -19,7 +22,10 @@ export function GroupsGridView({
   offset,
   totalChats,
   pageSize = 20,
-  showCheckboxes = false
+  showCheckboxes = false,
+  hideAccountInfo = false,
+  basePath = '/dashboard/groups',
+  onItemClick
 }: GroupsGridViewProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -27,7 +33,7 @@ export function GroupsGridView({
   const handlePageChange = (newOffset: number) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set('offset', newOffset.toString());
-    router.push(`/dashboard/groups?${params.toString()}`);
+    router.push(`${basePath}?${params.toString()}`);
   };
 
   return (
@@ -39,6 +45,8 @@ export function GroupsGridView({
               key={chat.id}
               chat={chat}
               showCheckboxes={showCheckboxes}
+              basePath={basePath}
+              onItemClick={onItemClick}
             />
           ))}
         </div>
@@ -60,7 +68,7 @@ export function GroupsGridView({
             const params = new URLSearchParams(searchParams.toString());
             params.set('pageSize', newPageSize.toString());
             params.set('offset', '0');
-            router.push(`/dashboard/groups?${params.toString()}`);
+            router.push(`${basePath}?${params.toString()}`);
           }}
         />
       </CardFooter>

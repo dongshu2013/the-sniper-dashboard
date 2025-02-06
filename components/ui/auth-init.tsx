@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { getJwt } from '@/components/lib/networkUtils';
 
-export default function HomePage() {
+export default function AuthInit() {
   const router = useRouter();
   const pathname = usePathname();
   const [isClient, setIsClient] = useState(false);
@@ -17,11 +17,11 @@ export default function HomePage() {
       if (jwt && (pathname === '/login' || pathname === '/')) {
         router.replace('/dashboard');
       }
-      if (!jwt && pathname !== '/login') {
+      if (!jwt && pathname !== '/login' && !pathname.startsWith('/home')) {
         router.replace('/login');
       }
     })();
-  }, [router]);
+  }, [router, pathname]);
 
   if (!isClient) {
     return null;
