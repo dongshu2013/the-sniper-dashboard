@@ -8,6 +8,7 @@ import { useUserStore } from 'stores/userStore';
 import { deleteJwt } from '../lib/networkUtils';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { LoginDialog } from './login-dialog';
 
 export function Navbar() {
   const user = useUserStore((state) => state.user);
@@ -93,9 +94,7 @@ export function Navbar() {
               </Button>
             </div>
           ) : (
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/login">Sign in</Link>
-            </Button>
+            <LoginDialog />
           )}
         </div>
       </div>
