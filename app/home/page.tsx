@@ -5,6 +5,7 @@ import { GroupsGridView } from './groups-grid-view';
 import { GroupsTable } from './groups-table';
 import { SortDirection } from '@/components/ui/filterable-table-header';
 import { CategorySelect } from '../dashboard/groups/category-select';
+import { GeneralSort } from '../dashboard/groups/general-sort';
 
 export default async function HomePage({
   searchParams: _searchParams
@@ -59,6 +60,7 @@ export default async function HomePage({
           <ViewSwitcher currentView={currentView} basePath="/home" />
         </div>
         <div className="flex items-center gap-4">
+          <GeneralSort basePath="/home" />
           <CategorySelect basePath="/home" />
         </div>
       </div>

@@ -128,23 +128,24 @@ export function CategorySelect({
                 </CommandItem>
               ))}
             </CommandGroup>
-            {selected.length > 0 && (
-              <>
-                <CommandSeparator />
-                <CommandGroup>
-                  <CommandItem
-                    onSelect={() => {
-                      setSelected([]);
-                      updateUrlParams([]);
-                    }}
-                    className="justify-center text-sm"
-                  >
-                    Clear all
-                  </CommandItem>
-                </CommandGroup>
-              </>
-            )}
           </CommandList>
+          {selected.length > 0 && (
+            <>
+              <CommandSeparator />
+              <CommandGroup>
+                <CommandItem
+                  onSelect={() => {
+                    setSelected([]);
+                    updateUrlParams([]);
+                  }}
+                  className="justify-start text-sm"
+                >
+                  <X className="mr-2 h-4 w-4" />
+                  Clear all
+                </CommandItem>
+              </CommandGroup>
+            </>
+          )}
         </Command>
       </PopoverContent>
     </Popover>
