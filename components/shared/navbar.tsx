@@ -2,13 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Logo } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { useUserStore } from 'stores/userStore';
 import { deleteJwt } from '../lib/networkUtils';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { LoginDialog } from './login-dialog';
+import { LogoIcon } from '../icons/logo-icon';
 
 export function Navbar() {
   const user = useUserStore((state) => state.user);
@@ -56,7 +56,7 @@ export function Navbar() {
       <div className="container flex h-14 items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center space-x-2">
-            <Logo />
+            <LogoIcon className="w-8 h-8" />
             <span className="font-bold">Curifi</span>
           </Link>
 
