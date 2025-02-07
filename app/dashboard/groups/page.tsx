@@ -9,6 +9,7 @@ import { SortDirection } from '@/components/ui/filterable-table-header';
 import { CategorySelect } from './category-select';
 import { AccountSelect } from './account-select';
 import { updatePrivateStatus } from './actions';
+import { GeneralSort } from './general-sort';
 
 export default async function GroupsPage({
   searchParams: _searchParams
@@ -87,6 +88,7 @@ export default async function GroupsPage({
           </TabsList>
         </div>
         <div className="flex items-center gap-4">
+          <GeneralSort />
           <CategorySelect />
           <AccountSelect />
         </div>
