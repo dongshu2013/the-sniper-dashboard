@@ -122,8 +122,10 @@
 
 - [ ] dashboard
   - [ ] UI: general sort, filter, search 
-  - [ ] UI: navigation bar top
+  - [x] UI: navigation bar top
   - [ ] UI: mobile auto responsive
-  - [ ] UI: login dialog and email+code login
+  - [x] UI: login dialog
+  - [ ] UI: logo and favicon
+  - [ ] email+code login by xiangnuan
   - [ ] user add group: add tg_link
 
