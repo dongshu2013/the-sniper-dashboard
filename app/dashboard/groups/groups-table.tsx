@@ -39,6 +39,7 @@ import { getQualityBadgeProps } from '@/lib/utils';
 import { AiIcon } from '@/components/icons/ai-icon';
 import { MemecoinIcon } from '@/components/icons/memecoin-icon';
 import { EditCategory } from './edit-category';
+import { useUserStore } from 'stores/userStore';
 
 const COLUMN_MAP: Record<string, string> = {
   Name: 'name',
@@ -83,6 +84,7 @@ export function GroupsTable({
   showBlockAction = false,
   privacyActions = []
 }: GroupsTableProps) {
+  const user = useUserStore((state) => state.user);
   const router = useRouter();
   const searchParams = useSearchParams();
   const { sortConfig, handleSort, resetSort } = useTableSort(chats);
@@ -147,8 +149,8 @@ export function GroupsTable({
     switch (column) {
       case 'Name':
         return (
-          <TableCell>
-            <div className="flex items-center gap-1">
+          <TableCell className="text-left">
+            <div className="flex items-center gap-2">
               <GroupAvatar
                 photo={chat.photo as { path?: string }}
                 name={chat.name || ''}
@@ -162,7 +164,7 @@ export function GroupsTable({
         );
       case 'Intro':
         return (
-          <TableCell>
+          <TableCell className="text-left">
             <TruncatedCell
               content={chat.about ?? ''}
               maxWidth="max-w-[100px]"
@@ -170,21 +172,29 @@ export function GroupsTable({
           </TableCell>
         );
       case 'Members':
-        return <TableCell>{chat.participantsCount}</TableCell>;
+        return (
+          <TableCell className="text-left">{chat.participantsCount}</TableCell>
+        );
       case 'Account':
-        return <TableCell>{chat.accountUsername}</TableCell>;
+        return (
+          <TableCell className="text-left">{chat.accountUsername}</TableCell>
+        );
       case 'Category':
         return (
-          <TableCell>
-            <EditCategory
-              chatId={chat.id}
-              currentCategory={chat.category || ''}
-            />
+          <TableCell className="text-left">
+            {user ? (
+              <EditCategory
+                chatId={chat.id}
+                currentCategory={chat.category || ''}
+              />
+            ) : (
+              <span>{chat.category || ''}</span>
+            )}
           </TableCell>
         );
       case 'Entity':
         return (
-          <TableCell>
+          <TableCell className="text-left">
             <div className="flex items-center gap-1.5">
               {chat.entity?.type === 'memecoin' && (
                 <MemecoinIcon className="h-6 w-6" />
@@ -198,7 +208,7 @@ export function GroupsTable({
           chat.qualityScore
         );
         return (
-          <TableCell>
+          <TableCell className="text-left">
             <div className="flex items-center gap-2">
               <span className="text-sm tabular-nums">{score}</span>
               <Badge variant={variant}>{label}</Badge>
@@ -207,7 +217,7 @@ export function GroupsTable({
         );
       case 'Status':
         return (
-          <TableCell>
+          <TableCell className="text-left">
             <Badge
               variant={chat.isBlocked ? 'destructive' : 'outline'}
               className="capitalize"
@@ -217,7 +227,11 @@ export function GroupsTable({
           </TableCell>
         );
       case 'Created At':
-        return <TableCell>{formatDateTime(chat.createdAt)}</TableCell>;
+        return (
+          <TableCell className="text-left">
+            {formatDateTime(chat.createdAt)}
+          </TableCell>
+        );
       default:
         return null;
     }
