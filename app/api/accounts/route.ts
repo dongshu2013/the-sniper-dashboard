@@ -88,13 +88,17 @@ export async function GET(request: NextRequest) {
         totalAccounts
       }
     });
-  } catch (error) {
-    NextResponse.json(
+  } catch (error: any) {
+    return NextResponse.json(
       {
-        message: error
+        code: error.code === 'ERR_JWT_EXPIRED' ? 401 : 500,
+        message:
+          error.code === 'ERR_JWT_EXPIRED'
+            ? 'Token expired'
+            : error.message || 'Internal server error'
       },
       {
-        status: 500
+        status: error.code === 'ERR_JWT_EXPIRED' ? 401 : 500
       }
     );
   }
