@@ -7,7 +7,7 @@ export function AccountIcon({ className }: { className?: string }) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g clip-path="url(#clip0_8844_29981)">
+      <g clipPath="url(#clip0_8844_29981)">
         <path
           d="M8.33333 0H41.6667C47.2222 0 50 2.77778 50 8.33333V41.6667C50 47.2222 47.2222 50 41.6667 50H8.33333C2.77778 50 0 47.2222 0 41.6667V8.33333C0 2.77778 2.77778 0 8.33333 0Z"
           fill="#C7C7C7"

@@ -7,7 +7,7 @@ export function MemecoinIcon({ className }: { className?: string }) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g clip-path="url(#clip0_8979_28806)">
+      <g clipPath="url(#clip0_8979_28806)">
         <path
           d="M8.9999 17.9998C13.9704 17.9998 17.9998 13.9704 17.9998 8.9999C17.9998 4.02939 13.9704 0 8.9999 0C4.02939 0 0 4.02939 0 8.9999C0 13.9704 4.02939 17.9998 8.9999 17.9998Z"
           fill="#FFE440"

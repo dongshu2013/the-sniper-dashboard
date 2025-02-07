@@ -1,6 +1,6 @@
 import Redis from 'ioredis';
 
-const redis = new Redis(process.env.REDIS_URL!);
+export const redis = new Redis(process.env.REDIS_URL!);
 
 const SERVICE_PREFIX = 'the_sinper_bot';
 
