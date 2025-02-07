@@ -12,13 +12,14 @@ import { LogoIcon } from '../icons/logo-icon';
 
 export function Navbar() {
   const user = useUserStore((state) => state.user);
+  const setUser = useUserStore((state) => state.setUser);
   const pathname = usePathname();
-
   const router = useRouter();
 
   const handleLogout = async () => {
     await deleteJwt();
-    router.push('/login');
+    setUser(null as any);
+    router.push('/');
   };
 
   const isLinkActive = (href: string) => {

@@ -15,17 +15,15 @@ export function TruncatedCell({
   maxWidth?: string;
 }) {
   return (
-    <TableCell>
-      <div className={`${maxWidth} truncate`}>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span className="cursor-help">{content}</span>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p className="max-w-xs whitespace-pre-wrap">{content}</p>
-          </TooltipContent>
-        </Tooltip>
-      </div>
-    </TableCell>
+    <div className={`${maxWidth} truncate`}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span className="cursor-help">{content}</span>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p className="max-w-xs whitespace-pre-wrap">{content}</p>
+        </TooltipContent>
+      </Tooltip>
+    </div>
   );
 }
