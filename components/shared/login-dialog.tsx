@@ -161,7 +161,7 @@ export function LoginDialog() {
               id="email"
               name="email"
               type="email"
-              placeholder="admin@gmail.com"
+              placeholder="Enter email"
               required
               onChange={(e) => seAccount(e.target.value)}
             />
@@ -171,7 +171,7 @@ export function LoginDialog() {
             {/* <Input id="password" name="password" type="password" required /> */}
             <div className="flex flex-row gap-2">
               <Input
-                placeholder="Verification Code"
+                placeholder="Enter code"
                 value={code}
                 onChange={(e: any) => setCode(e.target.value)}
               />

@@ -83,13 +83,19 @@ export function LoginForm() {
               id="email"
               name="email"
               type="email"
-              placeholder="admin@gmail.com"
+              placeholder="Enter email"
               required
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" name="password" type="password" required />
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              placeholder="Enter password"
+              required
+            />
           </div>
           <Button className="w-full" disabled={isLoading}>
             {isLoading ? 'Signing in...' : 'Sign in'}
