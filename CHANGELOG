@@ -138,6 +138,7 @@
   - [x] user add group: add tg_link
   - [x] login default home page remove overview page
   - [x] unify layout
+  - [ ] table to grid style
   - [ ] fix mobile view: for group info + messages
   - [ ] remove table sort header
-  - [ ] remove table title
+  - [x] remove table title

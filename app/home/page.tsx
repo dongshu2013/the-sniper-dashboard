@@ -59,7 +59,7 @@ export default async function HomePage({
   return (
     <div>
       <ViewStateHandler basePath="/home" />
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4">
         <div>
           <ImportLinksDialog dialogTitle="Add Group" source="user" />
         </div>

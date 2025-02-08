@@ -178,9 +178,8 @@ export function LinksTable({
 
   return (
     <Card className="border-0">
-      <CardHeader>
-        <CardTitle>Telegram Links</CardTitle>
-        {showCheckboxes && (
+      {showCheckboxes && selectedLinks.length > 0 && (
+        <CardHeader>
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">
               {selectedLinks.length} selected
@@ -202,8 +201,8 @@ export function LinksTable({
                 : 'Mark as Processed'}
             </Button>
           </div>
-        )}
-      </CardHeader>
+        </CardHeader>
+      )}
       <CardContent>
         <Table>
           <TableHeader>

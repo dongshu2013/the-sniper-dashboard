@@ -137,9 +137,6 @@ export function AccountsTable({ columns, currentTab }: AccountsTableProps) {
 
   return (
     <Card className="border-0">
-      <CardHeader>
-        <CardTitle>Telegram Accounts</CardTitle>
-      </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
