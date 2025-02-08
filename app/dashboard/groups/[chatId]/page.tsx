@@ -14,6 +14,9 @@ import { MemecoinIcon } from '@/components/icons/memecoin-icon';
 import { LatestMessagesCard } from './latest-messages-card';
 import { EntityCard } from './entity-card';
 import { AccountsCard } from './accounts-card';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
 
 type Params = Promise<{ chatId: string }>;
 
@@ -34,7 +37,22 @@ export default async function GroupDetailsPage(props: { params: Params }) {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-2 sm:space-y-4">
+      {/* Back Button */}
+      <div>
+        <Button
+          variant="ghost"
+          size="sm"
+          asChild
+          className="gap-2 text-muted-foreground hover:text-foreground"
+        >
+          <Link href="/dashboard/groups">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Groups
+          </Link>
+        </Button>
+      </div>
+
       {/* Info Card */}
       <Card className="border-none">
         <CardContent className="py-6">

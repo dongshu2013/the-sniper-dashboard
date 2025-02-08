@@ -31,7 +31,7 @@ export default async function PublicGroupDetailsPage(props: {
   );
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
+    <div className="space-y-2 sm:space-y-4">
       {/* Back Button */}
       <div>
         <Button
