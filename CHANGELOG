@@ -121,12 +121,17 @@
 # 2025-02-07
 
 - [ ] dashboard
-  - [ ] UI: general sort, filter, search 
+  - [x] UI: general sort, filter, search 
   - [x] UI: navigation bar top
   - [ ] UI: mobile auto responsive
   - [x] UI: login dialog
-  - [ ] UI: logo and favicon
-  - [ ] email+code login by xiangnuan
+  - [x] UI: logo and favicon
+  - [x] email+code login by xiangnuan
   - [ ] user add group: add tg_link
   - [x] fix: table layout 
 
+# 2025-02-08
+
+- [ ] dashboard
+  - [ ] UI: mobile auto responsive
+  - [ ] user add group: add tg_link
