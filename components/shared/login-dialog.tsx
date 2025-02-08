@@ -14,7 +14,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import TelegramLoginButton from '@/components/ui/TelegramLoginButton';
-import { emailLogin } from '@/lib/actions/user';
 import { getJwt, saveJwt } from '@/components/lib/networkUtils';
 import toast from 'react-hot-toast';
 import { useUserStore } from 'stores/userStore';
@@ -198,7 +197,7 @@ export function LoginDialog() {
               </Button>
             </div>
           </div>
-          {error && <p className="text-sm text-red-500">{error}</p>}
+          {/* {error && <p className="text-sm text-red-500">{error}</p>} */}
           <Button onClick={handleLogin} className="w-full" disabled={isLoading}>
             {isLoading ? 'Signing in...' : 'Sign in'}
           </Button>

@@ -14,11 +14,15 @@ export default function AuthInit() {
       setIsClient(true);
       const jwt = getJwt();
 
-      if (jwt && (pathname === '/login' || pathname === '/')) {
+      if (jwt && (pathname === '/admin/login' || pathname === '/')) {
         router.replace('/dashboard');
       }
-      if (!jwt && pathname !== '/login' && !pathname.startsWith('/home')) {
-        router.replace('/login');
+      if (
+        !jwt &&
+        pathname !== '/admin/login' &&
+        !pathname.startsWith('/home')
+      ) {
+        router.replace('/home');
       }
     })();
   }, [router, pathname]);
