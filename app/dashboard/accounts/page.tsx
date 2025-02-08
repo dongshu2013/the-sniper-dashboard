@@ -13,22 +13,31 @@ export default function AccountsPage() {
     <Suspense fallback={<div>Loading...</div>}>
       <TabWrapper basePath="/dashboard/accounts" defaultTab={currentTab}>
         <div className="flex items-center justify-between">
-          <TabsList>
-            <TabsTrigger value="active" onClick={() => setCurrentTab('active')}>
-              Active
-            </TabsTrigger>
-            <TabsTrigger value="banned" onClick={() => setCurrentTab('banned')}>
-              Banned
-            </TabsTrigger>
-            <TabsTrigger
-              value="suspended"
-              onClick={() => setCurrentTab('suspended')}
-            >
-              Suspended
-            </TabsTrigger>
-          </TabsList>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 overflow-x-auto pb-2 sm:pb-0">
+            <TabsList>
+              <TabsTrigger
+                value="active"
+                onClick={() => setCurrentTab('active')}
+              >
+                Active
+              </TabsTrigger>
+              <TabsTrigger
+                value="banned"
+                onClick={() => setCurrentTab('banned')}
+              >
+                Banned
+              </TabsTrigger>
+              <TabsTrigger
+                value="suspended"
+                onClick={() => setCurrentTab('suspended')}
+              >
+                Suspended
+              </TabsTrigger>
+            </TabsList>
             <CreateAccountDialog />
+          </div>
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0">
+            {/* <GeneralSort /> */}
           </div>
         </div>
         <TabsContent value={currentTab} className="mt-4">
