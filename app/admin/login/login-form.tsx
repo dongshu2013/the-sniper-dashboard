@@ -98,7 +98,7 @@ export function LoginForm() {
             />
           </div>
           <Button className="w-full" disabled={isLoading}>
-            {isLoading ? 'Signing in...' : 'Sign in'}
+            {isLoading ? 'Signing In...' : 'Sign In'}
           </Button>
         </form>
         <div className="mt-8 flex items-center justify-center w-full">

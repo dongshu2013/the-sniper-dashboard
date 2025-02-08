@@ -144,7 +144,7 @@ export function LoginDialog() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="ghost" size="sm">
-          Sign in
+          Sign In
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -199,7 +199,7 @@ export function LoginDialog() {
           </div>
           {/* {error && <p className="text-sm text-red-500">{error}</p>} */}
           <Button onClick={handleLogin} className="w-full" disabled={isLoading}>
-            {isLoading ? 'Signing in...' : 'Sign in'}
+            {isLoading ? 'Signing In...' : 'Sign In'}
           </Button>
         </div>
         <div className="mt-8 flex items-center justify-center w-full">
