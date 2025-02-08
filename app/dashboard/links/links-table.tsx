@@ -152,6 +152,8 @@ export function LinksTable({
             )}
           </TableCell>
         );
+      case 'source':
+        return <TableCell>{link.source || 'crawl'}</TableCell>;
       case 'status':
         return (
           <TableCell>

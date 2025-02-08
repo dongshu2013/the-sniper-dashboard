@@ -10,16 +10,24 @@ export enum TgLinkStatus {
 export type LinkTableColumn =
   | 'link'
   | 'chatName'
+  | 'source'
   | 'status'
   | 'createdAt'
   | 'processedAt'
   | 'markName';
 
 export const LINK_TAB_COLUMNS: Record<string, LinkTableColumn[]> = {
-  queued: ['link', 'createdAt'],
-  todo: ['link', 'chatName', 'createdAt'],
-  processing: ['link', 'chatName', 'createdAt', 'markName'],
-  processed: ['link', 'chatName', 'status', 'createdAt', 'processedAt']
+  queued: ['link', 'source', 'createdAt'],
+  todo: ['link', 'chatName', 'source', 'createdAt'],
+  processing: ['link', 'chatName', 'source', 'createdAt', 'markName'],
+  processed: [
+    'link',
+    'chatName',
+    'source',
+    'status',
+    'createdAt',
+    'processedAt'
+  ]
 };
 
 export interface Entity {
