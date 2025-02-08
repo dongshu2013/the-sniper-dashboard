@@ -134,4 +134,8 @@
 
 - [ ] dashboard
   - [x] UI: mobile auto responsive
+  - [x] hide email login
   - [ ] user add group: add tg_link
+  - [ ] login default home page
+  - [ ] home and dashboard layout unify
+  - [ ] fix mobile view: for group info + messages
