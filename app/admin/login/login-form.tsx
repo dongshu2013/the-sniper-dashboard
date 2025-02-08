@@ -45,7 +45,7 @@ export function LoginForm() {
 
     if (
       email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL ||
-      password !== process.env.NEXT_PUBLIC_ADMIN_CODE
+      password !== process.env.NEXT_PUBLIC_ADMIN_PASSWORD
     ) {
       return toast.error('only support admin login');
     }
