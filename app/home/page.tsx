@@ -1,6 +1,5 @@
 import { getChatMetadataWithAccounts } from '@/lib/actions/chat';
 import { GROUP_TAB_COLUMNS } from '@/lib/types';
-import { ViewSwitcher } from '../dashboard/groups/view-switcher';
 import { GroupsGridView } from './groups-grid-view';
 import { GroupsTable } from './groups-table';
 import { SortDirection } from '@/components/ui/filterable-table-header';
@@ -58,9 +57,6 @@ export default async function HomePage({
     <div className="container mx-auto py-6">
       <ViewStateHandler basePath="/home" />
       <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4">
-          <ViewSwitcher currentView={currentView} basePath="/home" />
-        </div>
         <div className="flex items-center gap-4">
           <GeneralSort basePath="/home" />
           <CategorySelect basePath="/home" />

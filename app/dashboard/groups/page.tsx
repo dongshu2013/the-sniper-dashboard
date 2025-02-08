@@ -3,12 +3,10 @@ import { getChatMetadataWithAccounts } from '@/lib/actions/chat';
 import { GroupsTable } from './groups-table';
 import { GROUP_TAB_COLUMNS } from '@/lib/types';
 import { TabWrapper } from '@/components/shared/tab-wrapper';
-import { ViewSwitcher } from './view-switcher';
 import { GroupsGridView } from './groups-grid-view';
 import { SortDirection } from '@/components/ui/filterable-table-header';
 import { CategorySelect } from './category-select';
 import { AccountSelect } from './account-select';
-import { updatePrivateStatus } from './actions';
 import { GeneralSort } from './general-sort';
 import { ViewStateHandler } from './view-state-handler';
 
@@ -80,7 +78,6 @@ export default async function GroupsPage({
       <ViewStateHandler />
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4 overflow-x-auto pb-2 sm:pb-0">
-          <ViewSwitcher currentView={currentView} />
           <TabsList className="flex-shrink-0">
             <TabsTrigger value="active">Active</TabsTrigger>
             <TabsTrigger value="blocked">Blocked</TabsTrigger>
