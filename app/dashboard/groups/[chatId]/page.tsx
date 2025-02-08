@@ -3,12 +3,11 @@ import { notFound } from 'next/navigation';
 import { ChatMetadata } from '@/lib/types';
 import { GroupDetails } from './group-details';
 
-export default async function GroupDetailsPage({
-  params
-}: {
-  params: { chatId: string };
-}) {
-  const chat = await getChatMetadataWithAccountsByChatId(params.chatId);
+type Params = Promise<{ chatId: string }>;
+
+export default async function GroupDetailsPage(props: { params: Params }) {
+  const { chatId } = await props.params;
+  const chat = await getChatMetadataWithAccountsByChatId(chatId);
 
   if (!chat) {
     notFound();
