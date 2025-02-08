@@ -30,6 +30,7 @@ export function LoginDialog() {
   const [countdown, setCountdown] = useState(0);
   const [isSending, setIsSending] = useState(false);
   const token = getJwt();
+  const [showEmailLogin, setShowEmailLogin] = useState(false);
 
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
@@ -150,62 +151,63 @@ export function LoginDialog() {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Login</DialogTitle>
-          <DialogDescription>
-            Enter your credentials to access the dashboard
-          </DialogDescription>
         </DialogHeader>
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="Enter email"
-              required
-              onChange={(e) => seAccount(e.target.value)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Code</Label>
-            {/* <Input id="password" name="password" type="password" required /> */}
-            <div className="flex flex-row gap-2">
+        {showEmailLogin && (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
               <Input
-                placeholder="Enter code"
-                value={code}
-                onChange={(e: any) => setCode(e.target.value)}
+                id="email"
+                name="email"
+                type="email"
+                placeholder="Enter email"
+                required
+                onChange={(e) => seAccount(e.target.value)}
               />
-              <Button
-                disabled={countdown > 0}
-                className={`
-                  ${countdown > 0 ? 'gray text-gray-600' : 'primary text-white'} 
-                  flex-shrink-0 rounded-[7px]
-                   flex justify-center items-center
-                   ${!account ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-                onClick={handleSendCode}
-              >
-                {countdown > 0 ? (
-                  `${countdown}s`
-                ) : isSending ? (
-                  <Spinner
-                    size={20}
-                    sx={{ color: 'white', textAlign: 'center', mr: 3 }}
-                  />
-                ) : (
-                  'Send'
-                )}
-              </Button>
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Code</Label>
+              <div className="flex flex-row gap-2">
+                <Input
+                  placeholder="Enter code"
+                  value={code}
+                  onChange={(e: any) => setCode(e.target.value)}
+                />
+                <Button
+                  disabled={countdown > 0}
+                  className={`
+                    ${countdown > 0 ? 'gray text-gray-600' : 'primary text-white'} 
+                    flex-shrink-0 rounded-[7px]
+                     flex justify-center items-center
+                     ${!account ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                  onClick={handleSendCode}
+                >
+                  {countdown > 0 ? (
+                    `${countdown}s`
+                  ) : isSending ? (
+                    <Spinner
+                      size={20}
+                      sx={{ color: 'white', textAlign: 'center', mr: 3 }}
+                    />
+                  ) : (
+                    'Send'
+                  )}
+                </Button>
+              </div>
+            </div>
+            <Button
+              onClick={handleLogin}
+              className="w-full"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Signing In...' : 'Sign In'}
+            </Button>
           </div>
-          {/* {error && <p className="text-sm text-red-500">{error}</p>} */}
-          <Button onClick={handleLogin} className="w-full" disabled={isLoading}>
-            {isLoading ? 'Signing In...' : 'Sign In'}
-          </Button>
-        </div>
+        )}
         <div className="mt-8 flex items-center justify-center w-full">
           <div className="border-t border-[#ABAFB3] flex-grow" />
           <div className="text-[#202020] text-[14px] text-center font-semibold mx-2 text-nowrap">
-            Or sigin with
+            Sign in with
           </div>
           <div className="border-t border-[#ABAFB3] flex-grow" />
         </div>
