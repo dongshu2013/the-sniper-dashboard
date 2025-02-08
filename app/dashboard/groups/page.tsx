@@ -9,6 +9,9 @@ import { CategorySelect } from './category-select';
 import { AccountSelect } from './account-select';
 import { GeneralSort } from './general-sort';
 import { ViewStateHandler } from './view-state-handler';
+import { Button } from '@/components/ui/button';
+import { PlusCircle } from 'lucide-react';
+import { ImportLinksDialog } from '../links/import-dialog';
 
 export default async function GroupsPage({
   searchParams: _searchParams
@@ -84,6 +87,7 @@ export default async function GroupsPage({
             <TabsTrigger value="private">Private</TabsTrigger>
             <TabsTrigger value="public">Public</TabsTrigger>
           </TabsList>
+          <ImportLinksDialog dialogTitle="Add Group" source="user" />
         </div>
         <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0">
           <GeneralSort />

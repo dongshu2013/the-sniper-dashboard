@@ -14,7 +14,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { importLinks } from './actions';
 import { PlusCircle } from 'lucide-react';
 
-export function ImportLinksDialog() {
+export function ImportLinksDialog({
+  dialogTitle,
+  source
+}: {
+  dialogTitle: string;
+  source: string;
+}) {
   const [open, setOpen] = useState(false);
   const [links, setLinks] = useState('');
   const router = useRouter();
@@ -25,7 +31,7 @@ export function ImportLinksDialog() {
       .map((link) => link.trim())
       .filter(Boolean);
 
-    await importLinks(linkList);
+    await importLinks(linkList, source);
     setLinks('');
     setOpen(false);
     router.refresh();
@@ -37,13 +43,13 @@ export function ImportLinksDialog() {
         <Button size="sm" className="h-8 gap-1">
           <PlusCircle className="h-3.5 w-3.5" />
           <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-            Import Links
+            {dialogTitle}
           </span>
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Import Telegram Links</DialogTitle>
+          <DialogTitle>{dialogTitle}</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4">
           <Textarea

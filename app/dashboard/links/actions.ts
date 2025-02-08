@@ -8,7 +8,7 @@ export async function updateLinkStatus(ids: number[], status: string) {
   revalidatePath('/links');
 }
 
-export async function importLinks(links: string[]) {
-  await importTgLinks(links);
+export async function importLinks(links: string[], source: string) {
+  await importTgLinks(links, source);
   revalidatePath('/links');
 }

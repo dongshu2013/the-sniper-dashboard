@@ -47,7 +47,7 @@ export default async function LinksPage(props: {
           <TabsTrigger value="processed">Processed</TabsTrigger>
         </TabsList>
         <div className="flex items-center gap-4">
-          <ImportLinksDialog />
+          <ImportLinksDialog dialogTitle="Add Links" source="manual" />
         </div>
       </div>
       <TabsContent value="queued" className="mt-4">

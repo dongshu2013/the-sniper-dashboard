@@ -6,6 +6,9 @@ import { SortDirection } from '@/components/ui/filterable-table-header';
 import { CategorySelect } from '../dashboard/groups/category-select';
 import { GeneralSort } from '../dashboard/groups/general-sort';
 import { ViewStateHandler } from '../dashboard/groups/view-state-handler';
+import { Button } from '@/components/ui/button';
+import { PlusCircle } from 'lucide-react';
+import { ImportLinksDialog } from 'app/dashboard/links/import-dialog';
 
 export default async function HomePage({
   searchParams: _searchParams
@@ -57,6 +60,9 @@ export default async function HomePage({
     <div className="container mx-auto py-6">
       <ViewStateHandler basePath="/home" />
       <div className="flex items-center justify-between mb-6">
+        <div>
+          <ImportLinksDialog dialogTitle="Add Group" source="user" />
+        </div>
         <div className="flex items-center gap-4">
           <GeneralSort basePath="/home" />
           <CategorySelect basePath="/home" />
