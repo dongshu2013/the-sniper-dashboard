@@ -105,10 +105,22 @@ export function PinnedMessageDialog({
               {messages.map((message) => (
                 <div key={message.id} className="flex flex-col">
                   <div className="flex items-start gap-2">
-                    <div className="flex-1">
-                      <div className="bg-blue-50 rounded-2xl rounded-bl-none px-4 py-2 inline-block">
-                        <div className="prose prose-sm max-w-none">
-                          <ReactMarkdown>{message.messageText}</ReactMarkdown>
+                    <div className="flex-1 min-w-0">
+                      <div className="bg-blue-50 rounded-2xl rounded-bl-none px-4 py-2 max-w-full break-words">
+                        <div className="prose prose-sm max-w-none overflow-hidden">
+                          <ReactMarkdown
+                            className="break-words"
+                            components={{
+                              pre: ({ node, ...props }) => (
+                                <pre {...props} className="overflow-x-auto" />
+                              ),
+                              code: ({ node, ...props }) => (
+                                <code {...props} className="break-all" />
+                              )
+                            }}
+                          >
+                            {message.messageText}
+                          </ReactMarkdown>
                         </div>
 
                         {renderButtons(message.buttons)}

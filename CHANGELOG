@@ -139,6 +139,6 @@
   - [x] login default home page remove overview page
   - [x] unify layout
   - [x] table to grid style
-  - [ ] fix mobile view: for group info + messages
+  - [x] fix mobile view: for group info + messages
   - [ ] remove table sort header
   - [x] remove table title
