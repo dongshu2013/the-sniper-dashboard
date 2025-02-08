@@ -28,14 +28,15 @@ export async function POST(request: NextRequest) {
     }
 
     await redis.del(`${namespace}:emailCode:${email}`);
+    const isAdmin = false;
     const admin = await createAndUpdateUsers({
       id: email,
       username: email,
-      isAdmin: true
+      isAdmin
     });
 
     const token = await getJWT({
-      isAdmin: true,
+      isAdmin,
       userId: admin?.id!,
       userKey: admin?.userId!,
       userKeyType: 'email'
@@ -49,7 +50,7 @@ export async function POST(request: NextRequest) {
           userId: admin?.id || '',
           userKey: admin?.userId || '',
           userKeyType: 'email',
-          isAdmin: true
+          isAdmin
         }
       }
     });
