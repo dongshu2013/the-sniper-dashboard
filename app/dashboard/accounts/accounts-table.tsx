@@ -136,7 +136,7 @@ export function AccountsTable({ columns, currentTab }: AccountsTableProps) {
   const filteredAccounts = handleFilter(localAccounts, filterConfig);
 
   return (
-    <Card className="border-0">
+    <Card className="border border-gray-200/50 rounded-xl bg-muted/60">
       <CardContent>
         <Table>
           <TableHeader>

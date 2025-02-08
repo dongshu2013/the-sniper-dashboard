@@ -240,7 +240,7 @@ export function GroupsTable({
   const filteredChats = handleFilter(localChats, filterConfig);
 
   return (
-    <Card className="border-0">
+    <Card className="border border-gray-200/50 rounded-xl bg-muted/60">
       {showCheckboxes && selectedChats.length > 0 && (
         <CardHeader>
           <div className="flex items-center gap-2">
