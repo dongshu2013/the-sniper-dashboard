@@ -4,8 +4,6 @@ import { redis } from '@/lib/services/redis';
 import { namespace } from '@/lib/constants';
 import { createAndUpdateUsers } from '@/lib/actions/user';
 
-export const USER_KEY_TYPE = 'email';
-
 export async function POST(request: NextRequest) {
   const requestData = await request.json();
   const { email, code } = requestData;
