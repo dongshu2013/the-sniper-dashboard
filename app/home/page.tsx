@@ -57,7 +57,7 @@ export default async function HomePage({
   const pageSize = parseInt(searchParams.pageSize ?? '20');
 
   return (
-    <div className="container mx-auto py-6">
+    <div>
       <ViewStateHandler basePath="/home" />
       <div className="flex items-center justify-between mb-6">
         <div>

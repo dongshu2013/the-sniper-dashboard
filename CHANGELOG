@@ -137,7 +137,7 @@
   - [x] hide email login
   - [x] user add group: add tg_link
   - [x] login default home page remove overview page
-  - [ ] home and dashboard layout unify
+  - [x] unify layout
   - [ ] fix mobile view: for group info + messages
   - [ ] remove table sort header
   - [ ] remove table title
