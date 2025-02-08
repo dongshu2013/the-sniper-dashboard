@@ -41,23 +41,26 @@ export function Pagination({
   };
 
   return (
-    <div className="flex items-center gap-4">
-      <div className="flex items-center gap-2">
+    <div className="flex flex-col sm:flex-row items-center gap-4">
+      {/* 分页控制 */}
+      <div className="flex items-center gap-2 w-full sm:w-auto order-2 sm:order-1">
         <Button
           variant="outline"
-          size="sm"
+          size="icon"
+          className="h-8 w-8"
           onClick={() => onPageChange(1)}
           disabled={currentPage === 1}
         >
-          First
+          {'<<'}
         </Button>
         <Button
           variant="outline"
-          size="sm"
+          size="icon"
+          className="h-8 w-8"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
         >
-          Previous
+          {'<'}
         </Button>
         <form onSubmit={handlePageSubmit} className="flex items-center gap-2">
           <Input
@@ -66,32 +69,38 @@ export function Pagination({
             max={totalPages}
             value={inputPage}
             onChange={(e) => setInputPage(e.target.value)}
-            className="w-16 h-8"
+            className="w-14 h-8 text-center px-1"
           />
-          <span className="text-sm text-muted-foreground">of {totalPages}</span>
+          <span className="text-sm text-muted-foreground whitespace-nowrap">
+            of {totalPages}
+          </span>
         </form>
         <Button
           variant="outline"
-          size="sm"
+          size="icon"
+          className="h-8 w-8"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
         >
-          Next
+          {'>'}
         </Button>
         <Button
           variant="outline"
-          size="sm"
+          size="icon"
+          className="h-8 w-8"
           onClick={() => onPageChange(totalPages)}
           disabled={currentPage === totalPages}
         >
-          Last
+          {'>>'}
         </Button>
       </div>
+
+      {/* 每页显示数量选择 */}
       <Select
         value={pageSize.toString()}
         onValueChange={(value) => onPageSizeChange(parseInt(value))}
       >
-        <SelectTrigger className="w-[120px] h-8">
+        <SelectTrigger className="h-8 w-[110px] order-1 sm:order-2">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
