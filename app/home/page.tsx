@@ -6,6 +6,7 @@ import { GroupsTable } from './groups-table';
 import { SortDirection } from '@/components/ui/filterable-table-header';
 import { CategorySelect } from '../dashboard/groups/category-select';
 import { GeneralSort } from '../dashboard/groups/general-sort';
+import { ViewStateHandler } from '../dashboard/groups/view-state-handler';
 
 export default async function HomePage({
   searchParams: _searchParams
@@ -22,6 +23,7 @@ export default async function HomePage({
   }>;
 }) {
   const searchParams = await _searchParams;
+  const currentView = searchParams.view ?? 'list'; // 默认值会被 ViewStateHandler 覆盖
 
   const filters = Object.entries(searchParams).reduce(
     (acc, [key, value]) => {
@@ -51,10 +53,10 @@ export default async function HomePage({
 
   const offset = parseInt(searchParams.offset ?? '0');
   const pageSize = parseInt(searchParams.pageSize ?? '20');
-  const currentView = searchParams.view ?? 'list';
 
   return (
     <div className="container mx-auto py-6">
+      <ViewStateHandler basePath="/home" />
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
           <ViewSwitcher currentView={currentView} basePath="/home" />

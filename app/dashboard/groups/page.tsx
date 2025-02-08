@@ -10,6 +10,7 @@ import { CategorySelect } from './category-select';
 import { AccountSelect } from './account-select';
 import { updatePrivateStatus } from './actions';
 import { GeneralSort } from './general-sort';
+import { ViewStateHandler } from './view-state-handler';
 
 export default async function GroupsPage({
   searchParams: _searchParams
@@ -28,6 +29,7 @@ export default async function GroupsPage({
   }>;
 }) {
   const searchParams = await _searchParams;
+  const currentView = searchParams.view ?? 'list'; // 默认值会被 ViewStateHandler 覆盖
 
   const filters = Object.entries(searchParams).reduce(
     (acc, [key, value]) => {
@@ -70,24 +72,23 @@ export default async function GroupsPage({
   const offset = parseInt(searchParams.offset ?? '0');
   const pageSize = parseInt(searchParams.pageSize ?? '20');
   const currentTab = searchParams.tab ?? 'active';
-  const currentView = searchParams.view ?? 'list';
   const sortColumn = searchParams.sortColumn;
   const sortDirection = searchParams.sortDirection as SortDirection;
 
   return (
     <TabWrapper basePath="/dashboard/groups" defaultTab="active">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      <ViewStateHandler />
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-4 overflow-x-auto pb-2 sm:pb-0">
           <ViewSwitcher currentView={currentView} />
-
-          <TabsList>
+          <TabsList className="flex-shrink-0">
             <TabsTrigger value="active">Active</TabsTrigger>
             <TabsTrigger value="blocked">Blocked</TabsTrigger>
             <TabsTrigger value="private">Private</TabsTrigger>
             <TabsTrigger value="public">Public</TabsTrigger>
           </TabsList>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0">
           <GeneralSort />
           <CategorySelect />
           <AccountSelect />
