@@ -133,5 +133,5 @@
 # 2025-02-08
 
 - [ ] dashboard
-  - [ ] UI: mobile auto responsive
+  - [x] UI: mobile auto responsive
   - [ ] user add group: add tg_link

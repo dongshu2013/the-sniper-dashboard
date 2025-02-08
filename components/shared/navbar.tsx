@@ -31,11 +31,6 @@ export function Navbar() {
 
   const navLinks = [
     {
-      href: '/dashboard',
-      label: 'Dashboard',
-      show: true
-    },
-    {
       href: '/dashboard/links',
       label: 'Links',
       show: user?.isAdmin
@@ -55,8 +50,11 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center justify-between">
-        <div className="flex items-center gap-6">
-          <Link href="/" className="flex items-center space-x-2">
+        <div className="flex items-center gap-12">
+          <Link
+            href={user ? '/dashboard' : '/'}
+            className="flex items-center space-x-2"
+          >
             <LogoIcon className="w-8 h-8" />
             <span className="font-bold">Curifi</span>
           </Link>
