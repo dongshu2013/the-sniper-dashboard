@@ -69,7 +69,7 @@ export function EditCategory({ chatId, currentCategory }: EditCategoryProps) {
         <Button
           variant="ghost"
           size="sm"
-          className="flex items-center gap-1 h-8 w-full justify-between"
+          className="flex items-center gap-1 h-8 w-full justify-between px-0"
           disabled={isLoading}
         >
           {currentCategory}
