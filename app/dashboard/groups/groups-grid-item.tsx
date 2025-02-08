@@ -64,7 +64,7 @@ export function GroupsGrid({
         </div>
       </div>
 
-      <div className="mt-2 text-xs text-muted-foreground line-clamp-2">
+      <div className="my-2 text-xs text-muted-foreground line-clamp-2">
         {chat.about || 'No info'}
       </div>
 
