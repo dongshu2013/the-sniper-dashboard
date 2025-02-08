@@ -161,7 +161,7 @@ export function LoginForm() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">Code</Label>
             {/* <Input id="password" name="password" type="password" required /> */}
             <div className="flex flex-row gap-2">
               <Input
