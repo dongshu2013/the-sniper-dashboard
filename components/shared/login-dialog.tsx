@@ -97,7 +97,7 @@ export function LoginDialog() {
       if (data.code === 0) {
         await saveJwt(data?.data?.token);
         setUser(data?.data?.user);
-        router.push('/dashboard/overview');
+        router.push('/home');
       } else {
         return toast.error(data?.message || 'Login failed');
       }
@@ -127,7 +127,7 @@ export function LoginDialog() {
   //         await saveJwt(res?.data?.token);
   //         setUser(res?.data?.user);
   //         setOpen(false); // 关闭对话框
-  //         router.push('/dashboard/overview');
+  //         router.push('/home');
   //       } else {
   //         toast.error('Login failed!');
   //       }

@@ -27,7 +27,7 @@ export function LoginForm() {
 
   useEffect(() => {
     if (token && pathname === '/login') {
-      router.push('/dashboard/overview');
+      router.push('/home');
     }
   }, [pathname]);
 
@@ -58,7 +58,7 @@ export function LoginForm() {
       if (res.code === 0) {
         await saveJwt(res?.data?.token);
         setUser(res?.data?.user);
-        router.push('/dashboard/overview');
+        router.push('/home');
       } else {
         return toast.error('Login failed!');
       }
