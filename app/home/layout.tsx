@@ -9,7 +9,7 @@ export default function HomeLayout({
 }) {
   return (
     <TooltipProvider>
-      <div className="min-h-screen bg-muted/40">{children}</div>
+      <div className="min-h-screen bg-muted/60">{children}</div>
     </TooltipProvider>
   );
 }
