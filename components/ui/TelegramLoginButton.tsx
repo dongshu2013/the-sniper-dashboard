@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { telegramLogin } from '@/lib/telelgram-login';
 import { saveJwt } from '@/components/lib/networkUtils';
 import { useUserStore } from 'stores/userStore';
+import { or } from 'drizzle-orm';
 
 const TelegramLoginButton: React.FC = () => {
   const [isClient, setIsClient] = useState(false);
@@ -22,16 +23,19 @@ const TelegramLoginButton: React.FC = () => {
 
     const botId = process.env.NEXT_PUBLIC_BOT_ID;
 
-    // 检查 botId 是否定义
     if (!botId) {
       console.error('Bot ID is not defined.');
       return;
     }
 
-    // 直接跳转到 Telegram 登录页面
-    const origin = encodeURIComponent(window.location.origin + '/home');
-    const redirectUri = encodeURIComponent('https://www.curifi.xyz/home');
-    const url = `https://oauth.telegram.org/auth?bot_id=${botId}&origin=${origin}&redirect_uri=${redirectUri}`;
+    const origin = process.env.NEXT_PUBLIC_LOGIN_URL;
+    if (!origin) {
+      console.error('Redirect URL is not defined.');
+      return toast.error('Redirect URL is not defined.');
+    }
+
+    const encodeOrigin = encodeURIComponent(origin);
+    const url = `https://oauth.telegram.org/auth?bot_id=${botId}&origin=${encodeOrigin}&redirect_uri=${encodeOrigin}`;
     window.open(url, '_blank');
   };
 
