@@ -26,16 +26,40 @@ export function Navbar() {
   const handleLogout = async () => {
     await deleteJwt();
     if (user?.userKeyType === 'tgId') {
-      const botId = process.env.NEXT_PUBLIC_BOT_ID;
-      const origin = process.env.NEXT_PUBLIC_LOGIN_URL;
+      // 清除本地存储中的 Telegram 相关数据
+      localStorage.removeItem('telegram_auth_result');
+      localStorage.removeItem('telegram_user');
 
-      console.log('botId: ', botId);
-      console.log('origin: ', origin);
+      // 清除所有 telegram.org 域名的 cookies
+      document.cookie.split(';').forEach(function (c) {
+        if (c.includes('telegram') || c.includes('tg')) {
+          document.cookie = c
+            .replace(/^ +/, '')
+            .replace(
+              /=.*/,
+              '=;expires=' + new Date().toUTCString() + ';path=/'
+            );
+        }
+      });
+
+      const botId = process.env.NEXT_PUBLIC_BOT_ID?.split(':')[0]; // 只使用数字部分
+      const origin = process.env.NEXT_PUBLIC_LOGIN_URL;
 
       if (botId && origin) {
         const encodedOrigin = encodeURIComponent(origin);
-        // https://oauth.telegram.org/auth/revoke?bot_id=7663093115:AAFmJhX1KL9OuNzrwRvj6J95kIay1497MWU&origin=https%3A%2F%2Fwww.curifi.xyz%2Fhome
-        window.location.href = `https://oauth.telegram.org/auth/revoke?bot_id=${botId}&origin=${encodedOrigin}`;
+        // 在新窗口中打开 Telegram 登出页面
+        const logoutWindow = window.open(
+          `https://oauth.telegram.org/logout?bot_id=${botId}&origin=${encodedOrigin}`,
+          '_blank'
+        );
+
+        // 3秒后关闭登出窗口并重定向
+        setTimeout(() => {
+          logoutWindow?.close();
+          setUser(null as any);
+          router.push('/');
+        }, 3000);
+        return;
       }
     }
 
