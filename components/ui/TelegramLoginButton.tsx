@@ -83,8 +83,13 @@ const TelegramLoginButton: React.FC = () => {
     try {
       const handleMessage = (event: MessageEvent) => {
         console.log('Received message:', event);
-        if (event.origin !== 'https://oauth.telegram.org') return;
+        if (event.origin !== 'https://oauth.telegram.org') {
+          return toast.error('error origin');
+        }
         console.log('Telegram response:', event.data);
+        if (!JSON.parse(event.data)?.result) {
+          return toast.error('telegram auth failed');
+        }
         // {"event":"auth_result","result":{"id":7275460694,"first_name":"Ruby","username":"XiangNuans","photo_url":"https://t.me/i/userpic/320/YnOeGLl5e0HFkFhlJb1qNcPWJ_6o21MYavMhLLsw6T6uCwjNlDImTbVjGMElm1Jx.jpg","auth_date":1734947298,"hash":"80b50e006b1130acafd1eadae74e7e7bc68e9b5399dd5d17aaf5c013beda6807"},"origin":"http://mizu.local/login"}
         handleTelegramAuth(JSON.parse(event.data).result);
       };

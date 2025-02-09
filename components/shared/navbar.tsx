@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { useUserStore } from 'stores/userStore';
-import { deleteJwt } from '../lib/networkUtils';
+import { deleteJwt, getJwt } from '../lib/networkUtils';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { LoginDialog } from './login-dialog';
@@ -22,9 +22,20 @@ export function Navbar() {
   const setUser = useUserStore((state) => state.setUser);
   const pathname = usePathname();
   const router = useRouter();
+  const token = getJwt();
 
   const handleLogout = async () => {
     await deleteJwt();
+    if (user?.userKeyType === 'tgId') {
+      const botId = process.env.NEXT_PUBLIC_BOT_ID;
+      const origin = process.env.NEXT_PUBLIC_LOGIN_URL;
+
+      if (botId && origin) {
+        const encodedOrigin = encodeURIComponent(origin);
+        window.location.href = `https://oauth.telegram.org/auth/revoke?bot_id=${botId}&origin=${encodedOrigin}`;
+      }
+    }
+
     setUser(null as any);
     router.push('/');
   };
