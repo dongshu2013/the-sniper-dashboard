@@ -35,7 +35,7 @@ const TelegramLoginButton: React.FC = () => {
     }
 
     const encodeOrigin = encodeURIComponent(origin);
-    const url = `https://oauth.telegram.org/startattach?bot_id=${botId}&origin=${encodeOrigin}&redirect_uri=${encodeOrigin}`;
+    const url = `https://oauth.telegram.org/auth?bot_id=${botId}&origin=${encodeOrigin}&redirect_uri=${encodeOrigin}&force_sms=true`;
     window.open(url, '_blank');
   };
 
