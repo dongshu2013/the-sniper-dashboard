@@ -29,8 +29,8 @@ const TelegramLoginButton: React.FC = () => {
     }
 
     // 直接跳转到 Telegram 登录页面
-    const origin = encodeURIComponent(window.location.origin + '/login');
-    const redirectUri = encodeURIComponent('http://mizu.local/login');
+    const origin = encodeURIComponent(window.location.origin + '/home');
+    const redirectUri = encodeURIComponent('https://www.curifi.xyz/home');
     const url = `https://oauth.telegram.org/auth?bot_id=${botId}&origin=${origin}&redirect_uri=${redirectUri}`;
     window.open(url, '_blank');
   };
