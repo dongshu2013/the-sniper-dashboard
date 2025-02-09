@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { getJWT } from '@/lib/jwt';
+import { createAndUpdateUsers } from '@/lib/actions/user';
 
 /**
  * @description: google OAuth2.0 login
@@ -25,6 +26,12 @@ export async function POST(request: NextRequest) {
       userKey: email,
       userKeyType: 'email',
       isAdmin: false
+    });
+
+    const isAdmin = false;
+    await createAndUpdateUsers({
+      id: email,
+      isAdmin
     });
 
     return Response.json({
