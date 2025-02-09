@@ -1,7 +1,6 @@
 import { createPrivateKey } from 'crypto';
 import dayjs from 'dayjs';
 import { jwtVerify, SignJWT } from 'jose';
-import { json } from 'stream/consumers';
 
 export type UserKeyType = 'email' | 'tgId';
 

@@ -7,7 +7,6 @@ import toast from 'react-hot-toast';
 import { telegramLogin } from '@/lib/telelgram-login';
 import { saveJwt } from '@/components/lib/networkUtils';
 import { useUserStore } from 'stores/userStore';
-import { or } from 'drizzle-orm';
 
 const TelegramLoginButton: React.FC = () => {
   const [isClient, setIsClient] = useState(false);
@@ -107,7 +106,7 @@ const TelegramLoginButton: React.FC = () => {
 
   return (
     <button onClick={handleLogin} className="flex items-center gap-2">
-      <Image src={'/tg.png'} alt="telegram" width={50} height={50} />
+      <Image src={'/login/tg.png'} alt="telegram" width={50} height={50} />
     </button>
   );
 };

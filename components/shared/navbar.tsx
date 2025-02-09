@@ -29,15 +29,17 @@ export function Navbar() {
       // 清除所有可能的 Telegram 认证数据
       localStorage.removeItem('telegram_auth_result');
       localStorage.removeItem('telegram_user');
-      sessionStorage.clear();  // 清除会话存储
+      sessionStorage.clear(); // 清除会话存储
 
       // 清除所有 cookies
       const cookies = document.cookie.split(';');
-      cookies.forEach(cookie => {
+      cookies.forEach((cookie) => {
         const name = cookie.split('=')[0].trim();
         document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=.telegram.org`;
         document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=.oauth.telegram.org`;
       });
+
+      // tg://resolve?domain=sniper_dashboard_bot&logout=1
 
       const botId = process.env.NEXT_PUBLIC_BOT_ID?.split(':')[0];
       const origin = process.env.NEXT_PUBLIC_LOGIN_URL;
@@ -45,14 +47,17 @@ export function Navbar() {
       if (botId && origin) {
         try {
           // 首先尝试撤销授权
-          await fetch(`https://oauth.telegram.org/auth/revoke?bot_id=${botId}`, {
-            method: 'POST',
-            credentials: 'include'
-          });
+          await fetch(
+            `https://oauth.telegram.org/auth/revoke?bot_id=${botId}`,
+            {
+              method: 'POST',
+              credentials: 'include'
+            }
+          );
 
           // 然后执行登出
           const logoutWindow = window.open(
-            `https://oauth.telegram.org/logout?bot_id=${botId}`,
+            `https://oauth.telegram.org/auth/logout?bot_id=${botId}`,
             'telegram_logout',
             'width=600,height=400'
           );

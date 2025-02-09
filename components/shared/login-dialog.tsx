@@ -8,7 +8,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
   DialogTrigger
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -18,11 +17,13 @@ import { getJwt, saveJwt } from '@/components/lib/networkUtils';
 import toast from 'react-hot-toast';
 import { useUserStore } from 'stores/userStore';
 import { Spinner } from 'theme-ui';
+import Image from 'next/image';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { auth } from '@/components/lib/firebase';
 
 export function LoginDialog() {
   const setUser = useUserStore((state) => state.setUser);
   const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [code, setCode] = useState('');
@@ -31,6 +32,7 @@ export function LoginDialog() {
   const [isSending, setIsSending] = useState(false);
   const token = getJwt();
   const [showEmailLogin, setShowEmailLogin] = useState(false);
+  const [isLoginProgress, setIsLoginProgress] = useState(false);
 
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
@@ -81,7 +83,7 @@ export function LoginDialog() {
     // }
     setIsLoading(true);
     try {
-      const res = await fetch(`/api/auth/verify`, {
+      const res = await fetch(`/api/auth/password-login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -140,6 +142,49 @@ export function LoginDialog() {
   //     setIsLoading(false);
   //   }
   // }
+
+  const handleGoogleLogin = async () => {
+    if (isLoginProgress) return;
+    setIsLoginProgress(true);
+
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      console.log('result', result);
+      const idToken = await result.user.getIdToken();
+      console.log('idToken', idToken);
+
+      const response: any = await fetch(`/api/auth/google-login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          userId: result.user.uid,
+          email: result.user.email
+        })
+      });
+
+      const jsonRes = await response.json();
+
+      console.log('response', jsonRes);
+      if (jsonRes?.data?.token) {
+        saveJwt(jsonRes.data.token);
+        setUser({
+          isAdmin: false,
+          userKey: result.user.email || '',
+          userId: result.user.uid || '',
+          userKeyType: 'email'
+        });
+        return router.push('/home');
+      }
+    } catch (error) {
+      console.error('Google login error:', error);
+      toast.error('Login failed');
+    } finally {
+      setIsLoginProgress(false);
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -211,8 +256,22 @@ export function LoginDialog() {
           </div>
           <div className="border-t border-[#ABAFB3] flex-grow" />
         </div>
-        <div className="justify-center flex py-4">
-          <TelegramLoginButton />
+        <div className="flex flex-row justify-center items-center gap-8">
+          {/* <div className="justify-center flex">
+            <TelegramLoginButton />
+          </div> */}
+
+          <div
+            onClick={() => handleGoogleLogin()}
+            className="flex items-center justify-center rounded-full cursor-pointer"
+          >
+            <Image
+              src={'/login/google.png'}
+              alt="google"
+              width={50}
+              height={50}
+            />
+          </div>
         </div>
       </DialogContent>
     </Dialog>
