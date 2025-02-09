@@ -29,8 +29,12 @@ export function Navbar() {
       const botId = process.env.NEXT_PUBLIC_BOT_ID;
       const origin = process.env.NEXT_PUBLIC_LOGIN_URL;
 
+      console.log('botId: ', botId);
+      console.log('origin: ', origin);
+
       if (botId && origin) {
         const encodedOrigin = encodeURIComponent(origin);
+        // https://oauth.telegram.org/auth/revoke?bot_id=7663093115:AAFmJhX1KL9OuNzrwRvj6J95kIay1497MWU&origin=https%3A%2F%2Fwww.curifi.xyz%2Fhome
         window.location.href = `https://oauth.telegram.org/auth/revoke?bot_id=${botId}&origin=${encodedOrigin}`;
       }
     }
