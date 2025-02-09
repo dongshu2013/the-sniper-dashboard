@@ -84,7 +84,7 @@ const TelegramLoginButton: React.FC = () => {
       const handleMessage = (event: MessageEvent) => {
         console.log('Received message:', event);
         if (event.origin !== 'https://oauth.telegram.org') {
-          return toast.error('error origin');
+          return;
         }
         console.log('Telegram response:', event.data);
         if (!JSON.parse(event.data)?.result) {

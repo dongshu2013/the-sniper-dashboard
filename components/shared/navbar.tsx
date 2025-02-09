@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { useUserStore } from 'stores/userStore';
-import { deleteJwt, getJwt } from '../lib/networkUtils';
+import { deleteJwt } from '../lib/networkUtils';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { LoginDialog } from './login-dialog';
@@ -22,7 +22,6 @@ export function Navbar() {
   const setUser = useUserStore((state) => state.setUser);
   const pathname = usePathname();
   const router = useRouter();
-  const token = getJwt();
 
   const handleLogout = async () => {
     await deleteJwt();
