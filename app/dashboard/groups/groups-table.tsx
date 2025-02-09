@@ -240,10 +240,9 @@ export function GroupsTable({
   const filteredChats = handleFilter(localChats, filterConfig);
 
   return (
-    <Card className="border-0">
-      <CardHeader>
-        <CardTitle>Telegram Groups</CardTitle>
-        {showCheckboxes && (
+    <Card className="border border-gray-200/50 rounded-xl bg-muted/60">
+      {showCheckboxes && selectedChats.length > 0 && (
+        <CardHeader>
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">
               {selectedChats.length} selected
@@ -279,8 +278,8 @@ export function GroupsTable({
               </Button>
             )}
           </div>
-        )}
-      </CardHeader>
+        </CardHeader>
+      )}
       <CardContent>
         <Table>
           <TableHeader>

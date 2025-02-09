@@ -1,11 +1,14 @@
 import { getChatMetadataWithAccounts } from '@/lib/actions/chat';
 import { GROUP_TAB_COLUMNS } from '@/lib/types';
-import { ViewSwitcher } from '../dashboard/groups/view-switcher';
 import { GroupsGridView } from './groups-grid-view';
 import { GroupsTable } from './groups-table';
 import { SortDirection } from '@/components/ui/filterable-table-header';
 import { CategorySelect } from '../dashboard/groups/category-select';
 import { GeneralSort } from '../dashboard/groups/general-sort';
+import { ViewStateHandler } from '../dashboard/groups/view-state-handler';
+import { Button } from '@/components/ui/button';
+import { PlusCircle } from 'lucide-react';
+import { ImportLinksDialog } from 'app/dashboard/links/import-dialog';
 
 export default async function HomePage({
   searchParams: _searchParams
@@ -22,6 +25,7 @@ export default async function HomePage({
   }>;
 }) {
   const searchParams = await _searchParams;
+  const currentView = searchParams.view ?? 'list'; // 默认值会被 ViewStateHandler 覆盖
 
   const filters = Object.entries(searchParams).reduce(
     (acc, [key, value]) => {
@@ -51,13 +55,13 @@ export default async function HomePage({
 
   const offset = parseInt(searchParams.offset ?? '0');
   const pageSize = parseInt(searchParams.pageSize ?? '20');
-  const currentView = searchParams.view ?? 'list';
 
   return (
-    <div className="container mx-auto py-6">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4">
-          <ViewSwitcher currentView={currentView} basePath="/home" />
+    <div>
+      <ViewStateHandler basePath="/home" />
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <ImportLinksDialog dialogTitle="Add Group" source="user" />
         </div>
         <div className="flex items-center gap-4">
           <GeneralSort basePath="/home" />

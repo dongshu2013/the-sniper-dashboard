@@ -27,7 +27,7 @@ export function LoginForm() {
 
   useEffect(() => {
     if (token && pathname === '/login') {
-      router.push('/dashboard/overview');
+      router.push('/home');
     }
   }, [pathname]);
 
@@ -58,7 +58,7 @@ export function LoginForm() {
       if (res.code === 0) {
         await saveJwt(res?.data?.token);
         setUser(res?.data?.user);
-        router.push('/dashboard/overview');
+        router.push('/home');
       } else {
         return toast.error('Login failed!');
       }
@@ -70,10 +70,7 @@ export function LoginForm() {
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
-        <CardTitle>Login</CardTitle>
-        <CardDescription>
-          Enter your credentials to access the dashboard
-        </CardDescription>
+        <CardTitle>Admin Login</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={onSubmit} className="space-y-4">
@@ -83,22 +80,28 @@ export function LoginForm() {
               id="email"
               name="email"
               type="email"
-              placeholder="admin@gmail.com"
+              placeholder="Enter email"
               required
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" name="password" type="password" required />
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              placeholder="Enter password"
+              required
+            />
           </div>
           <Button className="w-full" disabled={isLoading}>
-            {isLoading ? 'Signing in...' : 'Sign in'}
+            {isLoading ? 'Signing In...' : 'Sign In'}
           </Button>
         </form>
         <div className="mt-8 flex items-center justify-center w-full">
           <div className="border-t border-[#ABAFB3] flex-grow" />
           <div className="text-[#202020] text-[14px] text-center font-semibold mx-2 text-nowrap">
-            Or sigin with
+            Sign in with
           </div>
           <div className="border-t border-[#ABAFB3] flex-grow" />
         </div>

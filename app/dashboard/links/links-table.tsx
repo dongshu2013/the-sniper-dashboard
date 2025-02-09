@@ -152,6 +152,8 @@ export function LinksTable({
             )}
           </TableCell>
         );
+      case 'source':
+        return <TableCell>{link.source || 'crawl'}</TableCell>;
       case 'status':
         return (
           <TableCell>
@@ -177,10 +179,9 @@ export function LinksTable({
   const filteredLinks = handleFilter(localLinks, filterConfig);
 
   return (
-    <Card className="border-0">
-      <CardHeader>
-        <CardTitle>Telegram Links</CardTitle>
-        {showCheckboxes && (
+    <Card className="border border-gray-200/50 rounded-xl bg-muted/60">
+      {showCheckboxes && selectedLinks.length > 0 && (
+        <CardHeader>
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">
               {selectedLinks.length} selected
@@ -202,8 +203,8 @@ export function LinksTable({
                 : 'Mark as Processed'}
             </Button>
           </div>
-        )}
-      </CardHeader>
+        </CardHeader>
+      )}
       <CardContent>
         <Table>
           <TableHeader>

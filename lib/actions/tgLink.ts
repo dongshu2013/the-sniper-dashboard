@@ -81,10 +81,7 @@ export async function updateTgLinkStatus(ids: number[], status: string) {
     .where(inArray(tgLinks.id, ids));
 }
 
-export async function importTgLinks(
-  links: string[],
-  source: string = 'manual'
-) {
+export async function importTgLinks(links: string[], source: string) {
   const values = links.map((link) => ({
     tgLink: link,
     source,

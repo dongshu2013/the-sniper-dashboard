@@ -133,5 +133,12 @@
 # 2025-02-08
 
 - [ ] dashboard
-  - [ ] UI: mobile auto responsive
-  - [ ] user add group: add tg_link
+  - [x] UI: mobile auto responsive
+  - [x] hide email login
+  - [x] user add group: add tg_link
+  - [x] login default home page remove overview page
+  - [x] unify layout
+  - [x] table to grid style
+  - [x] fix mobile view: for group info + messages
+  - [ ] remove table sort header
+  - [x] remove table title

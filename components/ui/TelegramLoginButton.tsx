@@ -62,7 +62,7 @@ const TelegramLoginButton: React.FC = () => {
         if (res?.code === 0) {
           await saveJwt(res?.data?.token);
           setUser(res.data.user);
-          router.push('/dashboard/overview');
+          router.push('/home');
         } else {
           toast.error('Login failed');
         }

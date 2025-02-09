@@ -46,15 +46,17 @@ export function GroupsGrid({
       className="border-0 flex flex-col p-3 h-full hover:shadow-md transition-shadow cursor-pointer bg-card"
       onClick={handleClick}
     >
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-2.5">
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex items-center gap-2">
           <GroupAvatar
             photo={chat.photo as { path?: string }}
             name={chat.name || ''}
-            size={40}
+            size={32}
           />
           <div>
-            <h3 className="font-medium leading-none text-sm">{chat.name}</h3>
+            <h3 className="font-medium leading-none text-sm line-clamp-1">
+              {chat.name}
+            </h3>
             <p className="text-xs text-muted-foreground mt-1">
               {chat.participantsCount} members
             </p>
@@ -62,38 +64,34 @@ export function GroupsGrid({
         </div>
       </div>
 
-      <div className="mt-2.5 text-xs text-muted-foreground line-clamp-1">
+      <div className="my-2 text-xs text-muted-foreground line-clamp-2">
         {chat.about || 'No info'}
       </div>
 
       {/* AI Analysis Section */}
-      <div className="relative mt-3 rounded-xl border border-border">
-        {/* AI Icon at top center */}
+      <div className="relative mt-2 rounded-xl border border-border">
         <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 bg-background px-2">
-          <AiIcon className="h-4 w-8" />
+          <AiIcon className="h-3 w-6" />
         </div>
 
-        {/* Content container */}
         <div className="grid grid-cols-2 divide-x divide-border">
-          {/* Entity section */}
-          <div className="py-2 px-3 flex flex-col items-center justify-center">
+          <div className="py-2 px-2 flex flex-col items-center justify-center">
             <div className="text-xs text-muted-foreground mb-1">Entity</div>
-            <div className="flex items-center gap-1.5">
-              <MemecoinIcon className="h-4 w-4" />
-              <span className="font-medium text-xs">
+            <div className="flex items-center gap-1">
+              <MemecoinIcon className="h-3 w-3" />
+              <span className="font-medium text-xs line-clamp-1">
                 {chat.entity?.name || 'Unknown'}
               </span>
             </div>
           </div>
 
-          {/* Quality section */}
-          <div className="py-2 px-3 flex flex-col items-center justify-center">
+          <div className="py-2 px-2 flex flex-col items-center justify-center">
             <div className="text-xs text-muted-foreground mb-1">Quality</div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-[#FFB800] font-semibold text-sm">
+            <div className="flex items-center gap-1">
+              <span className="text-[#FFB800] font-semibold text-xs">
                 {score}
               </span>
-              <Badge variant={variant} className="text-xs px-1.5 py-0.5 h-auto">
+              <Badge variant={variant} className="text-xs px-1 py-0.5 h-auto">
                 {label}
               </Badge>
             </div>

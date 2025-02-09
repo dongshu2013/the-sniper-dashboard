@@ -40,14 +40,17 @@ export default async function LinksPage(props: {
   return (
     <TabWrapper basePath="/dashboard/links" defaultTab="todo">
       <div className="flex items-center justify-between">
-        <TabsList>
-          <TabsTrigger value="queued">Queued</TabsTrigger>
-          <TabsTrigger value="todo">TODO</TabsTrigger>
-          <TabsTrigger value="processing">Processing</TabsTrigger>
-          <TabsTrigger value="processed">Processed</TabsTrigger>
-        </TabsList>
-        <div className="flex items-center gap-4">
-          <ImportLinksDialog />
+        <div className="flex items-center gap-4 overflow-x-auto pb-2 sm:pb-0">
+          <TabsList>
+            <TabsTrigger value="queued">Queued</TabsTrigger>
+            <TabsTrigger value="todo">TODO</TabsTrigger>
+            <TabsTrigger value="processing">Processing</TabsTrigger>
+            <TabsTrigger value="processed">Processed</TabsTrigger>
+          </TabsList>
+          <ImportLinksDialog dialogTitle="Add Links" source="manual" />
+        </div>
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0">
+          {/* <GeneralSort /> */}
         </div>
       </div>
       <TabsContent value="queued" className="mt-4">
